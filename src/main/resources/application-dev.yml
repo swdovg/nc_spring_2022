@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: "${db_host}/nc"
+    driver-class-name: org.postgresql.Driver
+    username: ${db_username}
+    password: ${db_password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
