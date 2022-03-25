@@ -1,17 +1,18 @@
 package com.example.nc_spring_2022.model;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
 @Entity
-public class Supplier {
+public class Supplier implements User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -32,13 +33,28 @@ public class Supplier {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Supplier supplier = (Supplier) o;
-        return id != null && Objects.equals(id, supplier.id);
+        if (!(o instanceof Supplier supplier)) return false;
+
+        if (getId() != null ? !getId().equals(supplier.getId()) : supplier.getId() != null) return false;
+        if (getName() != null ? !getName().equals(supplier.getName()) : supplier.getName() != null) return false;
+        if (getPhoneNumber() != null ? !getPhoneNumber().equals(supplier.getPhoneNumber()) : supplier.getPhoneNumber() != null)
+            return false;
+        if (getEmail() != null ? !getEmail().equals(supplier.getEmail()) : supplier.getEmail() != null) return false;
+        if (getPassword() != null ? !getPassword().equals(supplier.getPassword()) : supplier.getPassword() != null)
+            return false;
+        if (getCurrency() != supplier.getCurrency()) return false;
+        return getLocation() != null ? getLocation().equals(supplier.getLocation()) : supplier.getLocation() == null;
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (getPhoneNumber() != null ? getPhoneNumber().hashCode() : 0);
+        result = 31 * result + (getEmail() != null ? getEmail().hashCode() : 0);
+        result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
+        result = 31 * result + (getCurrency() != null ? getCurrency().hashCode() : 0);
+        result = 31 * result + (getLocation() != null ? getLocation().hashCode() : 0);
+        return result;
     }
 }

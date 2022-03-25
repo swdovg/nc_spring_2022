@@ -1,10 +1,11 @@
 package com.example.nc_spring_2022.model;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -23,13 +24,19 @@ public class FormQuestion {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        FormQuestion that = (FormQuestion) o;
-        return id != null && Objects.equals(id, that.id);
+        if (!(o instanceof FormQuestion that)) return false;
+
+        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+        if (getSubscription() != null ? !getSubscription().equals(that.getSubscription()) : that.getSubscription() != null)
+            return false;
+        return getQuestion() != null ? getQuestion().equals(that.getQuestion()) : that.getQuestion() == null;
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getSubscription() != null ? getSubscription().hashCode() : 0);
+        result = 31 * result + (getQuestion() != null ? getQuestion().hashCode() : 0);
+        return result;
     }
 }

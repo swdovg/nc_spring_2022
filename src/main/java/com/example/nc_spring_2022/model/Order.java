@@ -24,13 +24,19 @@ public class Order {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Order order = (Order) o;
-        return id != null && Objects.equals(id, order.id);
+        if (!(o instanceof Order order)) return false;
+
+        if (getId() != null ? !getId().equals(order.getId()) : order.getId() != null) return false;
+        if (getConsumer() != null ? !getConsumer().equals(order.getConsumer()) : order.getConsumer() != null)
+            return false;
+        return getSubscription() != null ? getSubscription().equals(order.getSubscription()) : order.getSubscription() == null;
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getConsumer() != null ? getConsumer().hashCode() : 0);
+        result = 31 * result + (getSubscription() != null ? getSubscription().hashCode() : 0);
+        return result;
     }
 }

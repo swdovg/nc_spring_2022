@@ -1,10 +1,11 @@
 package com.example.nc_spring_2022.model;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -23,13 +24,18 @@ public class Category {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Category category = (Category) o;
-        return id != null && Objects.equals(id, category.id);
+        if (!(o instanceof Category category)) return false;
+
+        if (getId() != null ? !getId().equals(category.getId()) : category.getId() != null) return false;
+        if (getName() != null ? !getName().equals(category.getName()) : category.getName() != null) return false;
+        return getParent() != null ? getParent().equals(category.getParent()) : category.getParent() == null;
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (getParent() != null ? getParent().hashCode() : 0);
+        return result;
     }
 }

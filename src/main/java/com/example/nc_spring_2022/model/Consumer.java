@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Embeddable
-public class Consumer {
+public class Consumer implements User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
