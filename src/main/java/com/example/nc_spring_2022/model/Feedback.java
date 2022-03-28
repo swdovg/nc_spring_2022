@@ -23,7 +23,7 @@ public class Feedback {
     private Long subscriptionId;
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     private String text;
     @Column(nullable = false)
     private Integer rating;

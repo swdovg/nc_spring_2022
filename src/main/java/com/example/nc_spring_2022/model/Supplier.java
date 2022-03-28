@@ -1,7 +1,7 @@
 package com.example.nc_spring_2022.model;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Supplier implements User {
     @Id
@@ -29,6 +29,9 @@ public class Supplier implements User {
     private Currency currency = Currency.RUB;
     @Column
     private String location;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.ROLE_SUPPLIER;
 
     @Override
     public boolean equals(Object o) {

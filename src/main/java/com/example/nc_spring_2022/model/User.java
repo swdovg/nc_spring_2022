@@ -6,4 +6,12 @@ public interface User {
     String getEmail();
 
     String getPassword();
+
+    Role getRole();
+
+    void setRole(Role role);
+
+    void setEmail(String email);
+
+    void setPassword(String password);
 }
