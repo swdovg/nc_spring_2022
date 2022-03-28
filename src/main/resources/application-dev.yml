@@ -9,8 +9,6 @@ spring:
     password: ${db_password}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
-  liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.xml
