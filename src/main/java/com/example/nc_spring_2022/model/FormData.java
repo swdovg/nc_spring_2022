@@ -1,14 +1,17 @@
 package com.example.nc_spring_2022.model;
 
+import com.example.nc_spring_2022.util.IdGenerator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -21,6 +24,9 @@ public class FormData {
     private Long formQuestionId;
     @Id
     private Long orderId;
+    @NaturalId
+    @Column(nullable = false, unique = true)
+    private UUID businessKey = IdGenerator.createId();
     @Column(nullable = false)
     private String answer;
 
@@ -29,18 +35,11 @@ public class FormData {
         if (this == o) return true;
         if (!(o instanceof FormData formData)) return false;
 
-        if (getFormQuestionId() != null ? !getFormQuestionId().equals(formData.getFormQuestionId()) : formData.getFormQuestionId() != null)
-            return false;
-        if (getOrderId() != null ? !getOrderId().equals(formData.getOrderId()) : formData.getOrderId() != null)
-            return false;
-        return getAnswer() != null ? getAnswer().equals(formData.getAnswer()) : formData.getAnswer() == null;
+        return getBusinessKey().equals(formData.getBusinessKey());
     }
 
     @Override
     public int hashCode() {
-        int result = getFormQuestionId() != null ? getFormQuestionId().hashCode() : 0;
-        result = 31 * result + (getOrderId() != null ? getOrderId().hashCode() : 0);
-        result = 31 * result + (getAnswer() != null ? getAnswer().hashCode() : 0);
-        return result;
+        return getBusinessKey().hashCode();
     }
 }

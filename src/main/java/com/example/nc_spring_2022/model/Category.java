@@ -1,21 +1,27 @@
 package com.example.nc_spring_2022.model;
 
+import com.example.nc_spring_2022.util.IdGenerator;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NaturalId
+    @Column(nullable = false, unique = true)
+    private UUID businessKey = IdGenerator.createId();
     @Column(nullable = false)
     private String name;
     @OneToOne(targetEntity = Category.class)
@@ -26,16 +32,11 @@ public class Category {
         if (this == o) return true;
         if (!(o instanceof Category category)) return false;
 
-        if (getId() != null ? !getId().equals(category.getId()) : category.getId() != null) return false;
-        if (getName() != null ? !getName().equals(category.getName()) : category.getName() != null) return false;
-        return getParent() != null ? getParent().equals(category.getParent()) : category.getParent() == null;
+        return getBusinessKey().equals(category.getBusinessKey());
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-        result = 31 * result + (getParent() != null ? getParent().hashCode() : 0);
-        return result;
+        return getBusinessKey().hashCode();
     }
 }
