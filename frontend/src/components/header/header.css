@@ -1,0 +1,14 @@
+.header{
+	background: #FAC960;
+	padding-top: 30px;
+	padding-bottom: 25px;
+}
+
+.header-sing-link{
+	color: #ffffff;
+}
+
+.icon{
+	display: inline;
+	background: transparent;
+}

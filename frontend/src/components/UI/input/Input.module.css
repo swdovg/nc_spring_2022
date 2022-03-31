@@ -1,0 +1,16 @@
+.input{
+ 	padding: 20px 17px;
+ 	width: 100%;
+ 	height: 50px;
+ 	border: 1px solid #E8E8E8;
+ 	box-sizing: border-box;
+ 	border-radius: 5px;
+ 	font-weigh: 400;
+ }
+
+ .label{
+ 	padding-top: 10px;
+  	display: block;
+ 	font-size: 18px;
+ 	font-weight: 400;
+ }

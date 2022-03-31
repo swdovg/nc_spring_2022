@@ -1,0 +1,17 @@
+.btn{
+	padding: 13px 30px;
+	margin-top: 15px;
+	margin-right: 15px;
+	max-width: 347px;
+	min-width: 200px;
+	width: 100%;
+	background: #794EFF;
+	color: #ffffff;
+	font-size: 16px;
+	font-weight: 700;
+	border: 1px solid #E8E8E8;
+	box-sizing: border-box;
+	border-radius: 5px;
+
+}
+
