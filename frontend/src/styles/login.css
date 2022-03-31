@@ -1,0 +1,55 @@
+.login-cont{
+	padding-top: 80px;
+	padding-bottom: 80px;
+	align-content: centre;
+}
+
+.login-img{
+	
+}
+
+.login-form{
+	padding-top: 40px;
+	align-content: centre;
+}
+
+.login-text{
+	font-size: 16px;
+	font-weight: 400;
+}
+
+.login-heading{
+	font-size: 30px;
+}
+
+.login-forgot-link{
+	margin-top: 28px;
+	margin-bottom: 27px;
+	display: inline-block;
+	color: #2C5282;
+	font-size: 14px;
+	text-align: right;
+}
+
+.login-google-button{
+	background: #2D3748;
+}
+
+.google-icon{
+	margin-right: 5px;
+}
+
+.login-bottom{
+	margin-bottom: 50px;
+	/*align-content: center;
+	text-align: center;*/
+}
+
+.login-bottom-text{
+	margin: 0;
+	display: inline;
+}
+.sing-link{
+	margin: 0;
+	display: inline;
+}
