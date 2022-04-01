@@ -22,8 +22,8 @@ public class Location {
     @NaturalId
     @Column(nullable = false, unique = true)
     private UUID businessKey = IdGenerator.createId();
-    @ManyToOne(targetEntity = Consumer.class)
-    private Consumer consumer;
+    @ManyToOne(targetEntity = User.class)
+    private User user;
     @Column(nullable = false)
     private String location;
 

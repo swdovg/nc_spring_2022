@@ -32,8 +32,8 @@ public class Subscription {
     private Currency currency = Currency.RUB;
     @Column
     private Double averageRating = 0.0;
-    @OneToOne(targetEntity = Supplier.class)
-    private Supplier supplier;
+    @OneToOne(targetEntity = User.class)
+    private User supplier;
     @OneToOne(targetEntity = Category.class)
     private Category category;
 

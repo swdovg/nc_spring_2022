@@ -23,8 +23,8 @@ public class Order {
     @NaturalId
     @Column(nullable = false, unique = true)
     private UUID businessKey = IdGenerator.createId();
-    @OneToOne(targetEntity = Consumer.class)
-    private Consumer consumer;
+    @OneToOne(targetEntity = User.class)
+    private User user;
     @OneToOne(targetEntity = Subscription.class)
     private Subscription subscription;
 
