@@ -1,0 +1,39 @@
+@font-face {
+font-family: "Roboto-Regular";
+src: url("../fonts/Roboto-Regular.ttf") format("truetype");
+font-style: normal;
+font-weight: 400;
+ }
+
+@font-face{
+font-family: "Roboto-Bold";
+src: url("../fonts/Roboto-Bold.ttf") format("truetype");
+font-style: normal;
+font-weight: 700;
+}
+
+body{
+	font-family: 'Roboto-Regular', sans-serif;
+	color: #525252;
+	background:#F6F6F6;
+	min-height: 100vh;
+}
+
+button{
+	display: block;
+	border-width: 0;
+}
+
+p{
+	font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6{
+	font-weight: 700;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
