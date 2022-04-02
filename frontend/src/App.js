@@ -9,7 +9,7 @@ import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom';
 const App = () => {
 
     return (
-        <Login/>
+        <EditConsumer/>
 /*
         <BrowserRouter>
             <Route path="/sign">

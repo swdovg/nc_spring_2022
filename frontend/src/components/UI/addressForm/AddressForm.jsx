@@ -5,7 +5,7 @@ import classes from './AddressForm.module.css'
 const AddressForm = ({children, ...props}) => {
     return (
         <div>
-            <h2 className={classes.heading}>Manage Address</h2>
+            <h2 className={classes.heading}>Add new address</h2>
             <hr className={classes.line} />
             <form method="post" className={classes.form}>
                 <ul className={classes.form_inputs}>
