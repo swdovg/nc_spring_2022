@@ -3,8 +3,8 @@ package com.example.nc_spring_2022.config;
 import com.example.nc_spring_2022.security.jwt.CustomUserDetailsService;
 import com.example.nc_spring_2022.security.jwt.JwtTokenFilter;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
+import com.example.nc_spring_2022.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,12 +22,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
                 .userDetailsService(customUserDetailsService)
-                .passwordEncoder(bCryptPasswordEncoder());
+                .passwordEncoder(bCryptPasswordEncoder);
     }
 
     @Override
@@ -43,16 +45,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/auth/**")
-                .permitAll()
-                .anyRequest()
+                .antMatchers("/api/v1/user", "/api/v1/location")
                 .authenticated()
+                .anyRequest()
+                .permitAll()
                 .and()
-                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-    }
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userService),
+                        UsernamePasswordAuthenticationFilter.class);
     }
 }

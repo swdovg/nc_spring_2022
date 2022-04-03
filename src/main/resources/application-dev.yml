@@ -14,6 +14,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
   flyway:
     enabled: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 app:
   auth:

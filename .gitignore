@@ -1,5 +1,6 @@
-# Compiled class file
+# Compiled file
 *.class
+src/main/resources/static
 
 # Log file
 logs
