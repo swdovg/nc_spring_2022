@@ -15,7 +15,7 @@ const Login = () => {
                 <Header />
                 <div className="container">
                     <div className="row  login-cont">
-                        <div className="col-xl-8 col-lg-7 c d-sm-none d-none d-md-none d-lg-block login-img">
+                        <div className="col-xl-8 col-lg-7 d-sm-none d-none d-md-none d-lg-block login-img">
                             <img src={login} alt="People look on laptop" className="login-img"/>
                         </div>
                         <div className="col-xl-4 col-lg-5 col-md-12 login-form">

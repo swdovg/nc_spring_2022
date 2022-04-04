@@ -3,6 +3,7 @@ import Input from '../input/Input.jsx';
 import Button from "../button/Button";
 import classes from './SubscriptionForm.module.css';
 import Select from '../select/Select';
+import Textarea from '../textarea/Textarea';
 
 class SubscriptionForm extends React.Component {
 
@@ -10,7 +11,8 @@ class SubscriptionForm extends React.Component {
         count: 0,
     }
 
-    addNewInput = () => {
+    addNewInput = (e) => {
+        e.preventDefault();
         this.setState(({ count }) => ({
           count: count + 1,
         }));
@@ -42,13 +44,14 @@ class SubscriptionForm extends React.Component {
                       />
                     </li>
                     <li>
-                      <Input type="text" id="description" name="description" label="Description"/>
+                      <Textarea id="description" name="description" label="Description" maxlength="120"/>
                     </li>
                 </ul>
+                {[...Array(this.state.count)].map(() => <Input type="text" id={this.state.count} name="subscription-question" label="Question"/>)}
                 <Button onClick={this.addNewInput}>
                     Add question
                 </Button>
-                {[...Array(this.state.count)].map(() => <Input />)}
+
                 <Button>
                     Save changes
                 </Button>
