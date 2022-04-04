@@ -1,10 +1,26 @@
+import React, {setState} from 'react';
 import Input from '../input/Input.jsx';
 import Button from "../button/Button";
 import classes from './SubscriptionForm.module.css';
 import Select from '../select/Select';
+import Textarea from '../textarea/Textarea';
 
-const SubscriptionForm = ({children, ...props}) => {
-    return (
+class SubscriptionForm extends React.Component {
+
+    state = {
+        count: 0,
+    }
+
+    addNewInput = (e) => {
+        e.preventDefault();
+        this.setState(({ count }) => ({
+          count: count + 1,
+        }));
+        console.log(this.state.count);
+    }
+
+    render() {
+        return (
         <div>
             <h2 className={classes.heading}>Manage Subscription</h2>
             <hr className={classes.line} />
@@ -28,15 +44,21 @@ const SubscriptionForm = ({children, ...props}) => {
                       />
                     </li>
                     <li>
-                      <Input type="description" id="description" name="description" label="Description"/>
+                      <Textarea id="description" name="description" label="Description" maxlength="120"/>
                     </li>
                 </ul>
+                {[...Array(this.state.count)].map(() => <Input type="text" id={this.state.count} name="subscription-question" label="Question"/>)}
+                <Button onClick={this.addNewInput}>
+                    Add question
+                </Button>
+
                 <Button>
                     Save changes
                 </Button>
             </form>
         </div>
-    );
+        );
+    }
 };
 
 export default SubscriptionForm;

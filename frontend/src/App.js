@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import Sign from './pages/Sign.jsx';
 import Login from './pages/Login.jsx';
 import Error from './pages/Error.jsx';
+import Main from './pages/Main.jsx';
 import EditConsumer from './pages/EditConsumer.jsx';
 import EditSupplier from './pages/EditSupplier.jsx';
 import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom';
@@ -9,7 +10,7 @@ import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom';
 const App = () => {
 
     return (
-        <Login/>
+        <Main/>
 /*
         <BrowserRouter>
             <Route path="/sign">

@@ -6,7 +6,7 @@ const Select = ({options, defaultValue, value, label}) => {
         <div>
             <label className={classes.label}>{label}</label>
             <select value={value} className={classes.select}>
-                <option value="">{defaultValue}</option>
+                <option disabled  value="">{defaultValue}</option>
                 {options.map(option =>
                     <option key={option.value} value={option.value}>
                         {option.name}
