@@ -1,6 +1,7 @@
 package com.example.nc_spring_2022.model;
 
 import com.example.nc_spring_2022.util.IdGenerator;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,6 +36,7 @@ public class User {
     @Column
     @Enumerated(EnumType.STRING)
     private Currency currency = Currency.RUB;
+    @JsonBackReference
     @OneToOne(targetEntity = Location.class)
     private Location defaultLocation;
     @Column
@@ -45,6 +47,8 @@ public class User {
     @Column
     @Enumerated(EnumType.STRING)
     private AuthProvider provider = AuthProvider.LOCAL;
+    @Column
+    private Integer version = 0;
 
     @Override
     public boolean equals(Object o) {

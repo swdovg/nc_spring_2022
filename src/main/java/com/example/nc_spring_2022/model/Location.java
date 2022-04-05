@@ -1,6 +1,7 @@
 package com.example.nc_spring_2022.model;
 
 import com.example.nc_spring_2022.util.IdGenerator;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class Location {
     @NaturalId
     @Column(nullable = false, unique = true)
     private UUID businessKey = IdGenerator.createId();
+    @JsonManagedReference
     @ManyToOne(targetEntity = User.class)
     private User user;
     @Column(nullable = false)

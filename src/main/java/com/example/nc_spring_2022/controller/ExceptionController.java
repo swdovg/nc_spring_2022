@@ -1,9 +1,7 @@
 package com.example.nc_spring_2022.controller;
 
-import com.example.nc_spring_2022.dto.ErrorResponse;
-import com.example.nc_spring_2022.exception.EntityAlreadyExistsException;
-import com.example.nc_spring_2022.exception.JwtAuthenticationException;
-import com.example.nc_spring_2022.exception.WrongCredentialsException;
+import com.example.nc_spring_2022.dto.model.ErrorResponse;
+import com.example.nc_spring_2022.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,5 +42,15 @@ public class ExceptionController {
         return ErrorResponse.badRequest(ex, 5);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public ErrorResponse handleBadRequestException(Exception ex) {
+        return ErrorResponse.validationException(ex, 6);
+    }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AuthorizationException.class)
+    public ErrorResponse handleAuthorizationException(Exception ex) {
+        return ErrorResponse.validationException(ex, 7);
+    }
 }

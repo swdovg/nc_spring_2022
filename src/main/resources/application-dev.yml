@@ -9,11 +9,11 @@ spring:
     password: ${db_password}
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
   flyway:
-    enabled: true
+    enabled: false
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -21,7 +21,7 @@ spring:
 app:
   auth:
     tokenSecret: ${SECURITY_SECRET}
-    tokenExpirationMSec: 864000000
+    tokenExpirationMSec: 86400000
     tokenPrefix: "Bearer "
     headerString: "Authorization"
     cors:

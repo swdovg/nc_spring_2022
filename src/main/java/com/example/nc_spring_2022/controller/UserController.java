@@ -1,15 +1,17 @@
 package com.example.nc_spring_2022.controller;
 
-import com.example.nc_spring_2022.dto.PasswordChangeDto;
-import com.example.nc_spring_2022.dto.Response;
-import com.example.nc_spring_2022.dto.UserDto;
+import com.example.nc_spring_2022.dto.mapper.LocationMapper;
+import com.example.nc_spring_2022.dto.mapper.UserMapper;
+import com.example.nc_spring_2022.dto.model.LocationDto;
+import com.example.nc_spring_2022.dto.model.PasswordChangeDto;
+import com.example.nc_spring_2022.dto.model.Response;
+import com.example.nc_spring_2022.dto.model.UserDto;
 import com.example.nc_spring_2022.model.Currency;
 import com.example.nc_spring_2022.model.Location;
 import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
 import com.example.nc_spring_2022.service.LocationService;
 import com.example.nc_spring_2022.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,18 +25,19 @@ public class UserController {
     private final UserService userService;
     private final LocationService locationService;
     private final AuthenticationFacade authenticationFacade;
-    private final ObjectMapper objectMapper;
+    private final UserMapper userMapper;
+    private final LocationMapper locationMapper;
 
     @PutMapping("/currency")
     public Response<UserDto> updateCurrency(@RequestBody Currency newCurrency) {
         User user = userService.updateCurrency(newCurrency);
-        return new Response<>(userToUserDto(user));
+        return new Response<>(userMapper.createFrom(user));
     }
 
     @PutMapping("/name")
     public Response<UserDto> updateName(@RequestBody String newName) {
         User user = userService.updateName(newName);
-        return new Response<>(userToUserDto(user));
+        return new Response<>(userMapper.createFrom(user));
     }
 
     @PutMapping("/password")
@@ -44,24 +47,26 @@ public class UserController {
     }
 
     @PutMapping("/location")
-    public Response<UserDto> updateDefaultLocation(@RequestBody Location newDefaultLocation) {
+    public Response<UserDto> updateDefaultLocation(@RequestBody LocationDto newDefaultLocation) {
         User user = userService.updateDefaultLocation(newDefaultLocation);
-        return new Response<>(userToUserDto(user));
+        return new Response<>(userMapper.createFrom(user));
     }
 
     @GetMapping("/location")
-    public Response<List<Location>> getLocations() {
+    public Response<List<LocationDto>> getLocations() {
         Long userId = authenticationFacade.getUserId();
-        return new Response<>(locationService.findByUserId(userId));
+        List<Location> locations = locationService.findByUserId(userId);
+        return new Response<>(locationMapper.createFrom(locations));
+    }
+
+    @GetMapping
+    public Response<UserDto> getUser() {
+        return new Response<>(userMapper.createFrom(userService.getUser()));
     }
 
     @DeleteMapping
     public Response<String> deleteUser(@Valid @RequestBody User user) {
         userService.delete(user);
         return new Response<>("User was successfully deleted");
-    }
-
-    private UserDto userToUserDto(User user) {
-        return objectMapper.convertValue(user, UserDto.class);
     }
 }

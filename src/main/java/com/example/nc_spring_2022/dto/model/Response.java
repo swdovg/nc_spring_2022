@@ -1,4 +1,4 @@
-package com.example.nc_spring_2022.dto;
+package com.example.nc_spring_2022.dto.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

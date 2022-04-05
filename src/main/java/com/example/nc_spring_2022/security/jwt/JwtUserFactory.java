@@ -8,10 +8,10 @@ public class JwtUserFactory {
     }
 
     public static JwtUser create(User user) {
-        return new JwtUser(user.getId(), user.getEmail(), user.getPassword(), user.getRole());
+        return new JwtUser(user.getId(), user.getEmail(), user.getPassword(), user.getRole(), user.getVersion());
     }
 
-    public static JwtUser create(Long id, Role role) {
-        return new JwtUser(id, null, null, role);
+    public static JwtUser create(Long id, Role role, Integer version) {
+        return new JwtUser(id, null, null, role, version);
     }
 }

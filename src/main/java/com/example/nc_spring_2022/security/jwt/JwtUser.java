@@ -15,6 +15,7 @@ public class JwtUser implements UserDetails {
     private final String username;
     private final String password;
     private final Role role;
+    private final Integer version;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -57,5 +58,9 @@ public class JwtUser implements UserDetails {
 
     public Role getRole() {
         return role;
+    }
+
+    public Integer getVersion() {
+        return version;
     }
 }

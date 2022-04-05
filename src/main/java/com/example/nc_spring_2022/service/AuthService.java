@@ -1,8 +1,9 @@
 package com.example.nc_spring_2022.service;
 
-import com.example.nc_spring_2022.dto.LoginDto;
-import com.example.nc_spring_2022.dto.RegisterDto;
+import com.example.nc_spring_2022.dto.model.LoginDto;
+import com.example.nc_spring_2022.dto.model.RegisterDto;
 import com.example.nc_spring_2022.exception.EntityAlreadyExistsException;
+import com.example.nc_spring_2022.model.Role;
 import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -50,11 +51,16 @@ public class AuthService {
         user.setPassword(bCryptPasswordEncoder.encode(registerDto.getPassword()));
         user.setName(registerDto.getName());
         user.setPhoneNumber(registerDto.getPhoneNumber());
+        if (registerDto.isConsumer()) {
+            user.setRole(Role.ROLE_CONSUMER);
+        } else {
+            user.setRole(Role.ROLE_SUPPLIER);
+        }
         return userService.save(user);
     }
 
     private Map<String, String> getToken(User user) {
-        String token = jwtTokenProvider.createToken(user.getId(), user.getRole());
+        String token = jwtTokenProvider.createToken(user.getId(), user.getRole(), user.getVersion());
 
         Map<String, String> response = new HashMap<>();
         response.put("token", token);

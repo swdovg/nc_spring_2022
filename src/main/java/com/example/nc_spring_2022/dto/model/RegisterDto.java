@@ -1,4 +1,4 @@
-package com.example.nc_spring_2022.dto;
+package com.example.nc_spring_2022.dto.model;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -14,4 +14,5 @@ public class RegisterDto {
     @Pattern(regexp = "^((\\+7|7|8)+([0-9]){10})$", message = "Wrong phone number")
     private final String phoneNumber;
     private final String name;
+    private final boolean isConsumer = true;
 }

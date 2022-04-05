@@ -1,4 +1,4 @@
-package com.example.nc_spring_2022.dto;
+package com.example.nc_spring_2022.dto.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

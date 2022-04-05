@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,14 +32,35 @@ public class JwtTokenProvider {
         algorithm = Algorithm.HMAC256(properties.getAuth().getTokenSecret());
     }
 
-    public String createToken(Long id, Role role) {
+    public String createToken(Long id, Role role, Integer version) {
+        Date expirationDate = new Date(new Date().getTime() + properties.getAuth().getTokenExpirationMSec());
+
         Map<String, String> claims = new HashMap<>();
         claims.put("id", id.toString());
         claims.put("role", role.toString());
+        claims.put("version", version.toString());
 
         return JWT.create()
                 .withPayload(claims)
                 .withIssuer("nc")
+                .withExpiresAt(expirationDate)
+                .sign(algorithm);
+    }
+
+    public String refreshToken(String token) {
+        Map<String, Claim> claims = getClaims(token);
+        Map<String, String> stringClaims = new HashMap<>();
+        for (Map.Entry<String, Claim> entry : claims.entrySet()) {
+            if (stringClaims.put(entry.getKey(), entry.getValue().asString()) != null) {
+                throw new IllegalStateException("Duplicate key");
+            }
+        }
+        Date expirationDate = new Date(new Date().getTime() + properties.getAuth().getTokenExpirationMSec());
+
+        return JWT.create()
+                .withPayload(stringClaims)
+                .withIssuer("nc")
+                .withExpiresAt(expirationDate)
                 .sign(algorithm);
     }
 
@@ -58,25 +80,29 @@ public class JwtTokenProvider {
             verifier.verify(token);
             return true;
         } catch (JWTVerificationException e) {
-            throw new JwtAuthenticationException("Your session has expired, please log in again");
+            throw new JwtAuthenticationException("Invalid session, please log in again");
         }
     }
 
-    private Map<String, Claim> getClaims(String token) {
+    public Map<String, Claim> getClaims(String token) {
         return JWT.decode(token).getClaims();
     }
 
-    private Long getUserId(Map<String, Claim> claims) {
-        return claims.get("id").asLong();
+    public Long getUserId(Map<String, Claim> claims) {
+        return Long.parseLong(claims.get("id").asString());
     }
 
-    private Role getUserRole(Map<String, Claim> claims) {
+    public Role getUserRole(Map<String, Claim> claims) {
         return claims.get("role").as(Role.class);
+    }
+
+    public Integer getUserVersion(Map<String, Claim> claims) {
+        return Integer.parseInt(claims.get("version").asString());
     }
 
     public Authentication getAuthentication(String token) {
         Map<String, Claim> claims = getClaims(token);
-        JwtUser userDetails = JwtUserFactory.create(getUserId(claims), getUserRole(claims));
+        JwtUser userDetails = JwtUserFactory.create(getUserId(claims), getUserRole(claims), getUserVersion(claims));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }
