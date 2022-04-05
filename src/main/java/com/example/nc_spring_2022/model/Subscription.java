@@ -23,7 +23,7 @@ public class Subscription {
     private UUID businessKey = IdGenerator.createId();
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     private String description;
     @Column(nullable = false)
     private Long price;

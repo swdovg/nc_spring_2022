@@ -22,7 +22,7 @@ public class Category {
     @NaturalId
     @Column(nullable = false, unique = true)
     private UUID businessKey = IdGenerator.createId();
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
     @OneToOne(targetEntity = Category.class)
     private Category parent;
