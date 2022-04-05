@@ -51,8 +51,8 @@ public class UserService {
         return userRepository.findById(userId).isPresent();
     }
 
-    public boolean isUserExists(String email) {
-        return userRepository.findByEmail(email).isPresent();
+    public boolean isUserExists(String email, String phoneNumber) {
+        return userRepository.findByEmail(email).isPresent() || userRepository.findByPhoneNumber(phoneNumber).isPresent();
     }
 
     public User save(User user) {

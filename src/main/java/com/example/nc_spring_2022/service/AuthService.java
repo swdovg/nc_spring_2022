@@ -37,8 +37,8 @@ public class AuthService {
     }
 
     public Map<String, String> register(RegisterDto registerDto) {
-        if (userService.isUserExists(registerDto.getEmail())) {
-            throw new EntityAlreadyExistsException("User with this email address is already registered");
+        if (userService.isUserExists(registerDto.getEmail(), registerDto.getPhoneNumber())) {
+            throw new EntityAlreadyExistsException("User with this email address or phone number is already registered");
         }
 
         User user = createUser(registerDto);

@@ -1,8 +1,8 @@
 package com.example.nc_spring_2022.dto.mapper;
 
-import com.example.nc_spring_2022.dto.model.LocationDto;
 import com.example.nc_spring_2022.dto.model.UserDto;
 import com.example.nc_spring_2022.model.User;
+import com.example.nc_spring_2022.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,17 +10,25 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserMapper {
     private final LocationMapper locationMapper;
+    private final UserRepository userRepository;
 
     public UserDto createFrom(User user) {
-        LocationDto locationDto = locationMapper.createFrom(user.getDefaultLocation());
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setCurrency(user.getCurrency());
-        userDto.setDefaultLocation(locationDto);
+        if (user.getDefaultLocation() != null) {
+            userDto.setDefaultLocation(locationMapper.createFrom(user.getDefaultLocation()));
+        } else {
+            userDto.setDefaultLocation(null);
+        }
         userDto.setName(user.getName());
         userDto.setEmail(user.getEmail());
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setRole(user.getRole());
         return userDto;
+    }
+
+    public User createFrom(UserDto userDto) {
+        return userRepository.getById(userDto.getId());
     }
 }
