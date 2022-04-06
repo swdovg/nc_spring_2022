@@ -16,4 +16,6 @@ public interface OrderRepository extends NaturalRepository<Order, Long> {
     Optional<Order> findByUserAndSubscription(User user, Subscription subscription);
 
     Optional<Order> findByUserIdAndSubscriptionId(Long userId, Long subscriptionId);
+
+    List<Order> findAllBySubscriptionId(Long subscriptionId, Pageable pageable);
 }

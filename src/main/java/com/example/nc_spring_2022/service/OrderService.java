@@ -1,7 +1,10 @@
 package com.example.nc_spring_2022.service;
 
+import com.example.nc_spring_2022.dto.mapper.OrderMapper;
 import com.example.nc_spring_2022.dto.mapper.SubscriptionMapper;
+import com.example.nc_spring_2022.dto.model.OrderDto;
 import com.example.nc_spring_2022.dto.model.SubscriptionDto;
+import com.example.nc_spring_2022.exception.AuthorizationException;
 import com.example.nc_spring_2022.model.Order;
 import com.example.nc_spring_2022.model.Subscription;
 import com.example.nc_spring_2022.model.User;
@@ -25,12 +28,19 @@ public class OrderService {
     private final SubscriptionMapper subscriptionMapper;
     private final UserRepository userRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final OrderMapper orderMapper;
 
     public Page<SubscriptionDto> getOrders(Pageable pageable) {
         Long userId = authenticationFacade.getUserId();
         List<Order> orders = orderRepository.findAllByUserId(userId, pageable);
         List<Subscription> subscriptions = orders.stream().map(Order::getSubscription).toList();
         return subscriptionMapper.createPageFrom(subscriptions);
+    }
+
+    public Page<OrderDto> getOrdersForSupplier(Long subscriptionId, Pageable pageable) {
+        checkPermission(subscriptionId);
+        List<Order> orders = orderRepository.findAllBySubscriptionId(subscriptionId, pageable);
+        return orderMapper.createPageFrom(orders);
     }
 
     public boolean isSubscriptionOrdered(Long subscriptionId) {
@@ -53,5 +63,13 @@ public class OrderService {
         Optional<Order> orderOptional = orderRepository.findByUserAndSubscription(user, subscription);
 
         return orderOptional.orElseGet(() -> orderRepository.save(order));
+    }
+
+    private void checkPermission(Long subscriptionId) {
+        Long userId = authenticationFacade.getUserId();
+        Subscription subscription = subscriptionRepository.getById(subscriptionId);
+        if (!subscription.getSupplier().getId().equals(userId)) {
+            throw new AuthorizationException("You can't see orders on another's subscriptions");
+        }
     }
 }

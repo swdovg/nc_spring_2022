@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface SubscriptionRepository extends NaturalRepository<Subscription, Long> {
     List<Subscription> findAllByCategory(Category category, Pageable pageable);
+
+    List<Subscription> findAllBySupplierId(Long supplierId);
 }

@@ -1,5 +1,6 @@
 package com.example.nc_spring_2022.controller;
 
+import com.example.nc_spring_2022.dto.model.OrderDto;
 import com.example.nc_spring_2022.dto.model.Response;
 import com.example.nc_spring_2022.dto.model.SubscriptionDto;
 import com.example.nc_spring_2022.service.OrderService;
@@ -32,6 +33,11 @@ public class SubscriptionController {
     @GetMapping
     public Response<Page<SubscriptionDto>> getOrders(Pageable pageable) {
         return new Response<>(orderService.getOrders(pageable));
+    }
+
+    @GetMapping("/order/{subscriptionId}")
+    public Response<Page<OrderDto>> getOrdersForSupplier(@PathVariable Long subscriptionId, Pageable pageable) {
+        return new Response<>(orderService.getOrdersForSupplier(subscriptionId, pageable));
     }
 
     @PostMapping("/{subscriptionId}")
