@@ -16,6 +16,7 @@ const EditSupplier = () => {
 
     const [modalVisible, setModalVisible] = useState(false);
 
+
     return (
         <div>
             <Header />
@@ -34,13 +35,24 @@ const EditSupplier = () => {
                         <form action="edit-form" method="post">
                             <ul>
                                 <li>
-                                  <Input type="text" id="company-name" name="company-name" label="Company Name"/>
+                                  <Input type="text" id="user-name" name="user-name" label="Company Name"/>
                                 </li>
                                 <li>
-                                  <Input type="phone" id="company-phone" name="company-phone" label={"Phone Number"}/>
+                                  <Input type="phone" id="user-phone" name="user-phone" label={"Phone Number"}/>
                                 </li>
                                 <li>
-                                  <Input type="text" id="company-location" name="company-location" label={"Location"}/>
+                                  <Input type="text" id="user-location" name="user-location" label={"Location"}/>
+                                </li>
+                                 <li>
+                                    <Select
+                                        name="currency" required="required"
+                                        defaultValue="Currency"
+                                        options={[
+                                            {value:"1", name:"USD"},
+                                            {value:"2", name:"RUB"}
+                                        ]}
+                                        label="Currency"
+                                    />
                                 </li>
                                 <li>
                                   <Input className="edit-form-input" type="password" id="password" name="user_password" label="Password"/>

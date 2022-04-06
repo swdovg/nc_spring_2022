@@ -27,38 +27,39 @@ const EditConsumer = () => {
                     <div className="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
                         <ProfilePhoto />
                         <Button onClick={()=>setModalVisible(true)}>
-                            Manage address
+                            Add new address
                         </Button>
                     </div>
                     <div className="offset-lg-2 col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
                         <form action="edit-form" method="post">
                             <ul>
                                 <li>
-                                  <Input type="text" id="first-name" name="first-name" label="First Name"/>
+                                  <Input type="text" id="user-name" name="user_name" label="Name"/>
                                 </li>
                                 <li>
-                                  <Input className="edit-form-input" type="text" id="last-name" name="last-name" label={"Last Name"}/>
+                                  <Input type="phone" id="phone" name="user_phone" label={"Phone Number"}/>
                                 </li>
                                 <li>
-                                  <Input type="phone" id="phone" name="phone" label={"Phone Number"}/>
+                                    <Select
+                                        defaultValue="Main Address"
+                                        options={[
+                                            {value:"1", name:"1"},
+                                            {value:"2", name:"2"}
+                                        ]}
+                                        label="Main Address"
+                                    />
                                 </li>
-                                <Select
-                                    defaultValue="Main Address"
-                                    options={[
-                                        {value:"1", name:"1"},
-                                        {value:"2", name:"2"}
-                                    ]}
-                                    label="Main Address"
-                                />
-                                <Select
-                                    name="currency" required="required"
-                                    defaultValue="Currency"
-                                    options={[
-                                        {value:"1", name:"USD"},
-                                        {value:"2", name:"RUB"}
-                                    ]}
-                                    label="Currency"
-                                />
+                                <li>
+                                    <Select
+                                        name="currency" required="required"
+                                        defaultValue="Currency"
+                                        options={[
+                                            {value:"1", name:"USD"},
+                                            {value:"2", name:"RUB"}
+                                        ]}
+                                        label="Currency"
+                                    />
+                                </li>
                                 <li>
                                   <Input className="edit-form-input" type="password" id="password" name="user_password" label="Password"/>
                                 </li>
