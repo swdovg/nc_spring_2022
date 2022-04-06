@@ -14,5 +14,5 @@ public class RegisterDto {
     @Pattern(regexp = "^((\\+7|7|8)+([0-9]){10})$", message = "Wrong phone number")
     private final String phoneNumber;
     private final String name;
-    private final boolean isConsumer = true;
+    private final boolean isConsumer;
 }
