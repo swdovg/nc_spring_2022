@@ -31,7 +31,9 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private Currency currency = Currency.RUB;
     @Column
-    private Double averageRating = 0.0;
+    private Long ratings = 0L;
+    @Column
+    private Long quantityOfFeedbacks = 0L;
     @OneToOne(targetEntity = User.class)
     private User supplier;
     @OneToOne(targetEntity = Category.class)

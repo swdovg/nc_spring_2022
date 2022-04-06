@@ -33,7 +33,11 @@ public class SubscriptionMapper {
         subscriptionDto.setCurrency(subscription.getCurrency());
         subscriptionDto.setPrice(subscription.getPrice());
         subscriptionDto.setSupplier(userMapper.createFrom(subscription.getSupplier()));
-        subscriptionDto.setAverageRating(subscription.getAverageRating());
+        if (subscription.getQuantityOfFeedbacks() == 0) {
+            subscriptionDto.setAverageRating(0.0);
+        } else {
+            subscriptionDto.setAverageRating((double) (subscription.getRatings() / subscription.getQuantityOfFeedbacks()));
+        }
         setOrdered(subscriptionDto);
 
         return subscriptionDto;
