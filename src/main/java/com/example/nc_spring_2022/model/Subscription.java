@@ -1,10 +1,13 @@
 package com.example.nc_spring_2022.model;
 
+import com.example.nc_spring_2022.util.IdGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,9 +18,12 @@ public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NaturalId
+    @Column(nullable = false, unique = true)
+    private UUID businessKey = IdGenerator.createId();
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     private String description;
     @Column(nullable = false)
     private Long price;
@@ -25,9 +31,11 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private Currency currency = Currency.RUB;
     @Column
-    private Double averageRating = 0.0;
-    @OneToOne(targetEntity = Supplier.class)
-    private Supplier supplier;
+    private Long ratings = 0L;
+    @Column
+    private Long quantityOfFeedbacks = 0L;
+    @OneToOne(targetEntity = User.class)
+    private User supplier;
     @OneToOne(targetEntity = Category.class)
     private Category category;
 
@@ -36,29 +44,11 @@ public class Subscription {
         if (this == o) return true;
         if (!(o instanceof Subscription that)) return false;
 
-        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-        if (getTitle() != null ? !getTitle().equals(that.getTitle()) : that.getTitle() != null) return false;
-        if (getDescription() != null ? !getDescription().equals(that.getDescription()) : that.getDescription() != null)
-            return false;
-        if (getPrice() != null ? !getPrice().equals(that.getPrice()) : that.getPrice() != null) return false;
-        if (getCurrency() != that.getCurrency()) return false;
-        if (getAverageRating() != null ? !getAverageRating().equals(that.getAverageRating()) : that.getAverageRating() != null)
-            return false;
-        if (getSupplier() != null ? !getSupplier().equals(that.getSupplier()) : that.getSupplier() != null)
-            return false;
-        return getCategory() != null ? getCategory().equals(that.getCategory()) : that.getCategory() == null;
+        return getBusinessKey().equals(that.getBusinessKey());
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getPrice() != null ? getPrice().hashCode() : 0);
-        result = 31 * result + (getCurrency() != null ? getCurrency().hashCode() : 0);
-        result = 31 * result + (getAverageRating() != null ? getAverageRating().hashCode() : 0);
-        result = 31 * result + (getSupplier() != null ? getSupplier().hashCode() : 0);
-        result = 31 * result + (getCategory() != null ? getCategory().hashCode() : 0);
-        return result;
+        return getBusinessKey().hashCode();
     }
 }

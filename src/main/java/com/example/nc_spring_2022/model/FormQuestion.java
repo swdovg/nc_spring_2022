@@ -1,11 +1,14 @@
 package com.example.nc_spring_2022.model;
 
+import com.example.nc_spring_2022.util.IdGenerator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,6 +19,9 @@ public class FormQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NaturalId
+    @Column(nullable = false, unique = true)
+    private UUID businessKey = IdGenerator.createId();
     @ManyToOne(targetEntity = Subscription.class)
     private Subscription subscription;
     @Column(nullable = false)
@@ -26,17 +32,11 @@ public class FormQuestion {
         if (this == o) return true;
         if (!(o instanceof FormQuestion that)) return false;
 
-        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-        if (getSubscription() != null ? !getSubscription().equals(that.getSubscription()) : that.getSubscription() != null)
-            return false;
-        return getQuestion() != null ? getQuestion().equals(that.getQuestion()) : that.getQuestion() == null;
+        return getBusinessKey().equals(that.getBusinessKey());
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getSubscription() != null ? getSubscription().hashCode() : 0);
-        result = 31 * result + (getQuestion() != null ? getQuestion().hashCode() : 0);
-        return result;
+        return getBusinessKey().hashCode();
     }
 }

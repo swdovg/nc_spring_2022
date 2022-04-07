@@ -1,14 +1,17 @@
 package com.example.nc_spring_2022.model;
 
+import com.example.nc_spring_2022.util.IdGenerator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -21,6 +24,9 @@ public class Feedback {
     private Long consumerId;
     @Id
     private Long subscriptionId;
+    @NaturalId
+    @Column(nullable = false, unique = true)
+    private UUID businessKey = IdGenerator.createId();
     @Column(nullable = false)
     private String title;
     @Column(nullable = false, columnDefinition = "text")
@@ -33,22 +39,11 @@ public class Feedback {
         if (this == o) return true;
         if (!(o instanceof Feedback feedback)) return false;
 
-        if (getConsumerId() != null ? !getConsumerId().equals(feedback.getConsumerId()) : feedback.getConsumerId() != null)
-            return false;
-        if (getSubscriptionId() != null ? !getSubscriptionId().equals(feedback.getSubscriptionId()) : feedback.getSubscriptionId() != null)
-            return false;
-        if (getTitle() != null ? !getTitle().equals(feedback.getTitle()) : feedback.getTitle() != null) return false;
-        if (getText() != null ? !getText().equals(feedback.getText()) : feedback.getText() != null) return false;
-        return getRating() != null ? getRating().equals(feedback.getRating()) : feedback.getRating() == null;
+        return getBusinessKey().equals(feedback.getBusinessKey());
     }
 
     @Override
     public int hashCode() {
-        int result = getConsumerId() != null ? getConsumerId().hashCode() : 0;
-        result = 31 * result + (getSubscriptionId() != null ? getSubscriptionId().hashCode() : 0);
-        result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
-        result = 31 * result + (getText() != null ? getText().hashCode() : 0);
-        result = 31 * result + (getRating() != null ? getRating().hashCode() : 0);
-        return result;
+        return getBusinessKey().hashCode();
     }
 }

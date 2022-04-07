@@ -1,10 +1,14 @@
 package com.example.nc_spring_2022.model;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import com.example.nc_spring_2022.util.IdGenerator;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,8 +20,11 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @OneToOne(targetEntity = Consumer.class)
-    private Consumer consumer;
+    @NaturalId
+    @Column(nullable = false, unique = true)
+    private UUID businessKey = IdGenerator.createId();
+    @OneToOne(targetEntity = User.class)
+    private User user;
     @OneToOne(targetEntity = Subscription.class)
     private Subscription subscription;
 
@@ -26,17 +33,11 @@ public class Order {
         if (this == o) return true;
         if (!(o instanceof Order order)) return false;
 
-        if (getId() != null ? !getId().equals(order.getId()) : order.getId() != null) return false;
-        if (getConsumer() != null ? !getConsumer().equals(order.getConsumer()) : order.getConsumer() != null)
-            return false;
-        return getSubscription() != null ? getSubscription().equals(order.getSubscription()) : order.getSubscription() == null;
+        return getBusinessKey().equals(order.getBusinessKey());
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getConsumer() != null ? getConsumer().hashCode() : 0);
-        result = 31 * result + (getSubscription() != null ? getSubscription().hashCode() : 0);
-        return result;
+        return getBusinessKey().hashCode();
     }
 }
