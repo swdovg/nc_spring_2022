@@ -1,0 +1,22 @@
+.heading{
+
+	padding: 50px 12px;
+}
+
+.heading_text{
+	font-size: 24px;
+}
+
+.line{
+	 border: none;
+    background-color: #C4C4C4;
+    color: #C4C4C4;
+    height: 2px;
+}
+
+.cont{
+	align-content: centre;
+    align:centre;
+    height: 100vh;
+}
+

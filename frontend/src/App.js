@@ -5,23 +5,23 @@ import Error from './pages/Error.jsx';
 import Main from './pages/Main.jsx';
 import EditConsumer from './pages/EditConsumer.jsx';
 import EditSupplier from './pages/EditSupplier.jsx';
-import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom';
+import CustomerView from './pages/CustomerView.jsx';
+import {BrowserRouter, Routes ,Route,Link} from "react-router-dom";
 
-const App = () => {
+function App() {
 
     return (
-        <Main/>
-/*
         <BrowserRouter>
-            <Route path="/sign">
-                <Sign />
-            </Route>
-            <Route path="/login">
-                <Login />
-            </Route>
+             <Routes>
+                  <Route path="/sign" element={<Sign/>} />
+                  <Route path="/login" element={<Login/>} />
+                  <Route path="/edit-consumer" element={<EditConsumer/>} />
+                  <Route path="/edit-supplier" element={<EditSupplier/>} />
+                  <Route path="/main" element={<Main/>} />
+                  <Route path="/" element={<Main/>} />
+                  <Route path="/customer-profile" element={<CustomerView/>} />
+              </Routes>
         </BrowserRouter>
-*/
-    );
-};
-
+    )
+}
 export default App;
