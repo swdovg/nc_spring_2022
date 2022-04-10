@@ -17,6 +17,16 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
   flyway:
     enabled: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${google_id}
+            clientSecret: ${google_secret}
 
 app:
   auth:

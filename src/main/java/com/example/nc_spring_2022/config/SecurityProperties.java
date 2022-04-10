@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Configuration
 @ConfigurationProperties(prefix = "app")
-public class Properties {
+public class SecurityProperties {
     private Auth auth;
 
     @Getter

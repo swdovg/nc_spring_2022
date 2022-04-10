@@ -3,9 +3,12 @@ package com.example.nc_spring_2022.service;
 import com.example.nc_spring_2022.dto.model.LoginDto;
 import com.example.nc_spring_2022.dto.model.RegisterDto;
 import com.example.nc_spring_2022.exception.EntityAlreadyExistsException;
+import com.example.nc_spring_2022.model.AuthProvider;
 import com.example.nc_spring_2022.model.Role;
 import com.example.nc_spring_2022.model.User;
+import com.example.nc_spring_2022.repository.UserRepository;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
+import com.example.nc_spring_2022.security.oauth2.user.OAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ public class AuthService {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
 
     public User getByUsernameAndPassword(String email, String password) {
         User user = userService.findByEmail(email);
@@ -42,6 +47,27 @@ public class AuthService {
         }
 
         User user = createUser(registerDto);
+        return getToken(user);
+    }
+
+    public Map<String, String> registerOrUpdateOAuthUser(OAuth2User oAuth2User) {
+        Optional<User> optionalUser = userRepository.findByEmail(oAuth2User.getEmail());
+        User user;
+
+        if (optionalUser.isPresent()) {
+            user = optionalUser.get();
+            user.setName(oAuth2User.getName());
+            user.setProviderId(oAuth2User.getId());
+        } else {
+            user = new User();
+            user.setName(oAuth2User.getName());
+            user.setEmail(oAuth2User.getEmail());
+            user.setProviderId(oAuth2User.getId());
+            user.setRole(Role.ROLE_CONSUMER);
+            user.setProvider(AuthProvider.GOOGLE);
+        }
+
+        user = userService.save(user);
         return getToken(user);
     }
 
