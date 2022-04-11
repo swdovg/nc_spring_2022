@@ -1,0 +1,56 @@
+.userinfo_head{
+    padding-left: 30px;
+}
+
+.userinfo_head_img{
+margin-right: 21px;
+    max-width: 55px;
+    display: inline;
+}
+
+.userinfo_head_name{
+    margin-right: 10px;
+    display: inline;
+    max-width: 162px;
+    font-size: 16px;
+}
+
+.setting_btn{
+    display:inline;
+    padding-top: 10px;
+    max-width: 30px;
+    max-height: 30px;
+    background: transparent;
+}
+
+.setting_btn_img{
+    max-width: 25px;
+}
+
+.userinfo_info{
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.userinfo_info_text{
+    margin-bottom:20px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.userinfo_info_number{
+    margin-bottom:10px;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 22px;
+}
+
+.userinfo_info_currency{
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+}

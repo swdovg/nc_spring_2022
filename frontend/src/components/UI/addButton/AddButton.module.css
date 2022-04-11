@@ -1,0 +1,20 @@
+.add_btn{
+    max-width: 65px;
+    max-height: 30px;
+    padding-left: 25px;
+    background: url("../../../img/add_btn.png");
+    background-repeat: no-repeat;
+    background-position: top 3px left 4px;
+    border: 2px solid #525252;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: center;
+    color: #525252;
+}
+
+.add_btn:hover{
+    background-color:#C0C0C0;
+
+}
