@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,7 +28,17 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         OAuth2User oAuth2User = OAuth2UserFactory.getOAuth2User(authenticationToken.getAuthorizedClientRegistrationId(),
                 authenticationToken.getPrincipal().getAttributes());
 
-        Map<String, String> token = authService.registerOrUpdateOAuthUser(oAuth2User);
-        response.sendRedirect("/?token=" + token.get("token"));
+        Map<String, String> userData = authService.registerOrUpdateOAuthUser(oAuth2User);
+        Cookie token = new Cookie("token", userData.get("token"));
+        token.setPath("/");
+        Cookie userId = new Cookie("userId", userData.get("userId"));
+        userId.setPath("/");
+        Cookie role = new Cookie("role", userData.get("role"));
+        role.setPath("/");
+
+        response.addCookie(token);
+        response.addCookie(userId);
+        response.addCookie(role);
+        response.sendRedirect("/");
     }
 }
