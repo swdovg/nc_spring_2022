@@ -1,6 +1,7 @@
 package com.example.nc_spring_2022.service;
 
 import com.example.nc_spring_2022.dto.model.LocationDto;
+import com.example.nc_spring_2022.dto.model.RequestDto;
 import com.example.nc_spring_2022.exception.AuthorizationException;
 import com.example.nc_spring_2022.model.Currency;
 import com.example.nc_spring_2022.model.Location;
@@ -43,14 +44,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateCurrency(Currency newCurrency) {
+    public User updateCurrency(RequestDto requestDto) {
+        Currency newCurrency = Currency.valueOf(requestDto.getValue());
         Long userId = authenticationFacade.getUserId();
         User user = findById(userId);
         user.setCurrency(newCurrency);
         return save(user);
     }
 
-    public User updateName(String newName) {
+    public User updateName(RequestDto requestDto) {
+        String newName = requestDto.getValue();
         Long userId = authenticationFacade.getUserId();
         User user = findById(userId);
         user.setName(newName);

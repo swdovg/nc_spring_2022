@@ -2,6 +2,7 @@ package com.example.nc_spring_2022.controller;
 
 import com.example.nc_spring_2022.dto.mapper.LocationMapper;
 import com.example.nc_spring_2022.dto.model.LocationDto;
+import com.example.nc_spring_2022.dto.model.RequestDto;
 import com.example.nc_spring_2022.dto.model.Response;
 import com.example.nc_spring_2022.model.Location;
 import com.example.nc_spring_2022.service.LocationService;
@@ -24,8 +25,8 @@ public class LocationController {
     }
 
     @PostMapping
-    public Response<LocationDto> addLocation(@RequestBody String locationName) {
-        Location location = locationService.save(locationName);
+    public Response<LocationDto> addLocation(@RequestBody RequestDto requestDto) {
+        Location location = locationService.save(requestDto);
         return new Response<>(locationMapper.createFrom(location));
     }
 

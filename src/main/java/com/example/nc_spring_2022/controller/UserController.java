@@ -2,11 +2,7 @@ package com.example.nc_spring_2022.controller;
 
 import com.example.nc_spring_2022.dto.mapper.LocationMapper;
 import com.example.nc_spring_2022.dto.mapper.UserMapper;
-import com.example.nc_spring_2022.dto.model.LocationDto;
-import com.example.nc_spring_2022.dto.model.PasswordChangeDto;
-import com.example.nc_spring_2022.dto.model.Response;
-import com.example.nc_spring_2022.dto.model.UserDto;
-import com.example.nc_spring_2022.model.Currency;
+import com.example.nc_spring_2022.dto.model.*;
 import com.example.nc_spring_2022.model.Location;
 import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
@@ -32,14 +28,14 @@ public class UserController {
     private final AuthService authService;
 
     @PutMapping("/currency")
-    public Response<UserDto> updateCurrency(@RequestBody Currency newCurrency) {
-        User user = userService.updateCurrency(newCurrency);
+    public Response<UserDto> updateCurrency(@RequestBody RequestDto requestDto) {
+        User user = userService.updateCurrency(requestDto);
         return new Response<>(userMapper.createFrom(user));
     }
 
     @PutMapping("/name")
-    public Response<UserDto> updateName(@RequestBody String newName) {
-        User user = userService.updateName(newName);
+    public Response<UserDto> updateName(@RequestBody RequestDto requestDto) {
+        User user = userService.updateName(requestDto);
         return new Response<>(userMapper.createFrom(user));
     }
 

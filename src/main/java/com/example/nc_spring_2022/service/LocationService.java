@@ -1,6 +1,7 @@
 package com.example.nc_spring_2022.service;
 
 import com.example.nc_spring_2022.dto.model.LocationDto;
+import com.example.nc_spring_2022.dto.model.RequestDto;
 import com.example.nc_spring_2022.exception.AuthorizationException;
 import com.example.nc_spring_2022.model.Location;
 import com.example.nc_spring_2022.model.User;
@@ -33,7 +34,8 @@ public class LocationService {
         return locationRepository.save(location);
     }
 
-    public Location save(String locationName) {
+    public Location save(RequestDto requestDto) {
+        String locationName = requestDto.getValue();
         Long userId = authenticationFacade.getUserId();
         User user = userService.findById(userId);
         Location location = new Location();
