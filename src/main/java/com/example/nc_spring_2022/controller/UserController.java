@@ -1,11 +1,7 @@
 package com.example.nc_spring_2022.controller;
 
-import com.example.nc_spring_2022.dto.mapper.LocationMapper;
-import com.example.nc_spring_2022.dto.mapper.UserMapper;
 import com.example.nc_spring_2022.dto.model.*;
-import com.example.nc_spring_2022.model.Location;
 import com.example.nc_spring_2022.model.User;
-import com.example.nc_spring_2022.security.AuthenticationFacade;
 import com.example.nc_spring_2022.service.AuthService;
 import com.example.nc_spring_2022.service.LocationService;
 import com.example.nc_spring_2022.service.UserService;
@@ -22,21 +18,16 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final LocationService locationService;
-    private final AuthenticationFacade authenticationFacade;
-    private final UserMapper userMapper;
-    private final LocationMapper locationMapper;
     private final AuthService authService;
 
     @PutMapping("/currency")
     public Response<UserDto> updateCurrency(@RequestBody RequestDto requestDto) {
-        User user = userService.updateCurrency(requestDto);
-        return new Response<>(userMapper.createFrom(user));
+        return new Response<>(userService.updateCurrency(requestDto));
     }
 
     @PutMapping("/name")
     public Response<UserDto> updateName(@RequestBody RequestDto requestDto) {
-        User user = userService.updateName(requestDto);
-        return new Response<>(userMapper.createFrom(user));
+        return new Response<>(userService.updateName(requestDto));
     }
 
     @PutMapping("/password")
@@ -46,21 +37,17 @@ public class UserController {
 
     @PutMapping("/location")
     public Response<UserDto> updateDefaultLocation(@RequestBody LocationDto newDefaultLocation) {
-        User user = userService.updateDefaultLocation(newDefaultLocation);
-        return new Response<>(userMapper.createFrom(user));
+        return new Response<>(userService.updateDefaultLocation(newDefaultLocation));
     }
 
     @GetMapping("/location")
     public Response<List<LocationDto>> getLocations() {
-        Long userId = authenticationFacade.getUserId();
-        List<Location> locations = locationService.findByUserId(userId);
-        return new Response<>(locationMapper.createFrom(locations));
+        return new Response<>(locationService.getDtosByUserId());
     }
 
     @GetMapping
     public Response<UserDto> getUser() {
-        User user = userService.getUser();
-        return new Response<>(userMapper.createFrom(user));
+        return new Response<>(userService.getUserDto());
     }
 
     @DeleteMapping

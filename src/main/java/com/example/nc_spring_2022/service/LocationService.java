@@ -1,5 +1,6 @@
 package com.example.nc_spring_2022.service;
 
+import com.example.nc_spring_2022.dto.mapper.LocationMapper;
 import com.example.nc_spring_2022.dto.model.LocationDto;
 import com.example.nc_spring_2022.dto.model.RequestDto;
 import com.example.nc_spring_2022.exception.AuthorizationException;
@@ -19,9 +20,16 @@ public class LocationService {
     private final LocationRepository locationRepository;
     private final AuthenticationFacade authenticationFacade;
     private final UserService userService;
+    private final LocationMapper locationMapper;
 
     public List<Location> findByUserId(Long userId) {
         return locationRepository.findAllByUserId(userId);
+    }
+
+    public List<LocationDto> getDtosByUserId() {
+        Long userId = authenticationFacade.getUserId();
+        List<Location> locations = findByUserId(userId);
+        return locationMapper.createFrom(locations);
     }
 
     public Location findById(Long id) {
@@ -29,28 +37,35 @@ public class LocationService {
                 new EntityNotFoundException(String.format("Location with id: %d was not found", id)));
     }
 
+    public LocationDto getDtoById(Long id) {
+        Location location = findById(id);
+        return locationMapper.createFrom(location);
+    }
+
     public Location save(Location location) {
         checkForPermission(location);
         return locationRepository.save(location);
     }
 
-    public Location save(RequestDto requestDto) {
+    public LocationDto save(RequestDto requestDto) {
         String locationName = requestDto.getValue();
         Long userId = authenticationFacade.getUserId();
         User user = userService.findById(userId);
         Location location = new Location();
         location.setLocation(locationName);
         location.setUser(user);
-        return locationRepository.save(location);
+        location = locationRepository.save(location);
+        return locationMapper.createFrom(location);
     }
 
-    public Location update(LocationDto locationDto) {
+    public LocationDto update(LocationDto locationDto) {
         Long userId = authenticationFacade.getUserId();
         User user = userService.findById(userId);
         Location location = findById(locationDto.getId());
         if (location.getUser().equals(user)) {
             location.setLocation(locationDto.getLocation());
-            return locationRepository.save(location);
+            location = locationRepository.save(location);
+            return locationMapper.createFrom(location);
         } else {
             throw new AuthorizationException("You can't edit another's locations");
         }

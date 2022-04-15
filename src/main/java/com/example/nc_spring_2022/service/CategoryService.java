@@ -24,6 +24,11 @@ public class CategoryService {
         }
     }
 
+    public List<CategoryDto> getAllDtosByParentId(Long id) {
+        List<Category> categories = findAllByParentId(id);
+        return categoryMapper.createFrom(categories);
+    }
+
     public boolean isCategoryExists(Category category) {
         return categoryRepository.findByName(category.getName()).isPresent();
     }
@@ -36,8 +41,9 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public Category save(CategoryDto categoryDto) {
+    public CategoryDto save(CategoryDto categoryDto) {
         Category category = categoryMapper.createFrom(categoryDto);
-        return save(category);
+        category = save(category);
+        return categoryMapper.createFrom(category);
     }
 }

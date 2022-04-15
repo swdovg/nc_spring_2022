@@ -1,7 +1,9 @@
 package com.example.nc_spring_2022.service;
 
+import com.example.nc_spring_2022.dto.mapper.UserMapper;
 import com.example.nc_spring_2022.dto.model.LocationDto;
 import com.example.nc_spring_2022.dto.model.RequestDto;
+import com.example.nc_spring_2022.dto.model.UserDto;
 import com.example.nc_spring_2022.exception.AuthorizationException;
 import com.example.nc_spring_2022.model.Currency;
 import com.example.nc_spring_2022.model.Location;
@@ -20,6 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationFacade authenticationFacade;
     private final LocationRepository locationRepository;
+    private final UserMapper userMapper;
 
     public User findById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
@@ -36,6 +39,11 @@ public class UserService {
         return findById(userId);
     }
 
+    public UserDto getUserDto() {
+        User user = getUser();
+        return userMapper.createFrom(user);
+    }
+
     public boolean isUserExists(String email, String phoneNumber) {
         return userRepository.findByEmail(email).isPresent() || userRepository.findByPhoneNumber(phoneNumber).isPresent();
     }
@@ -44,23 +52,25 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateCurrency(RequestDto requestDto) {
+    public UserDto updateCurrency(RequestDto requestDto) {
         Currency newCurrency = Currency.valueOf(requestDto.getValue());
         Long userId = authenticationFacade.getUserId();
         User user = findById(userId);
         user.setCurrency(newCurrency);
-        return save(user);
+        user = save(user);
+        return userMapper.createFrom(user);
     }
 
-    public User updateName(RequestDto requestDto) {
+    public UserDto updateName(RequestDto requestDto) {
         String newName = requestDto.getValue();
         Long userId = authenticationFacade.getUserId();
         User user = findById(userId);
         user.setName(newName);
-        return save(user);
+        user = save(user);
+        return userMapper.createFrom(user);
     }
 
-    public User updateDefaultLocation(LocationDto newDefaultLocation) {
+    public UserDto updateDefaultLocation(LocationDto newDefaultLocation) {
         Long userId = authenticationFacade.getUserId();
         User user = findById(userId);
         if (!newDefaultLocation.getUserId().equals(user.getId())) {
@@ -69,7 +79,8 @@ public class UserService {
         Location location = locationRepository.getById(newDefaultLocation.getId());
 
         user.setDefaultLocation(location);
-        return save(user);
+        user = save(user);
+        return userMapper.createFrom(user);
     }
 
     public void delete(User user) {
