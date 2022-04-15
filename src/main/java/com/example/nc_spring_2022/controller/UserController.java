@@ -10,6 +10,7 @@ import com.example.nc_spring_2022.model.Currency;
 import com.example.nc_spring_2022.model.Location;
 import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
+import com.example.nc_spring_2022.service.AuthService;
 import com.example.nc_spring_2022.service.LocationService;
 import com.example.nc_spring_2022.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class UserController {
     private final AuthenticationFacade authenticationFacade;
     private final UserMapper userMapper;
     private final LocationMapper locationMapper;
+    private final AuthService authService;
 
     @PutMapping("/currency")
     public Response<UserDto> updateCurrency(@RequestBody Currency newCurrency) {
@@ -41,9 +44,8 @@ public class UserController {
     }
 
     @PutMapping("/password")
-    public Response<String> updatePassword(@RequestBody PasswordChangeDto passwordChangeDto) {
-        userService.updatePassword(passwordChangeDto);
-        return new Response<>("Password was successfully changed");
+    public Response<Map<String, String>> updatePassword(@RequestBody PasswordChangeDto passwordChangeDto) {
+        return new Response<>(authService.updatePassword(passwordChangeDto));
     }
 
     @PutMapping("/location")
@@ -61,7 +63,8 @@ public class UserController {
 
     @GetMapping
     public Response<UserDto> getUser() {
-        return new Response<>(userMapper.createFrom(userService.getUser()));
+        User user = userService.getUser();
+        return new Response<>(userMapper.createFrom(user));
     }
 
     @DeleteMapping

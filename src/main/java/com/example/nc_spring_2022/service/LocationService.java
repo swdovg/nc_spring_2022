@@ -54,11 +54,6 @@ public class LocationService {
         }
     }
 
-    public void delete(Location location) {
-        checkForPermission(location);
-        locationRepository.delete(location);
-    }
-
     public void delete(Long locationId) {
         Long userId = authenticationFacade.getUserId();
         User user = userService.findById(userId);

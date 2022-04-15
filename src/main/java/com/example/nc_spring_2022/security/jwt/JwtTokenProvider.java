@@ -72,13 +72,12 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean verifyToken(String token) {
+    public void verifyToken(String token) {
         try {
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer("nc")
                     .build();
             verifier.verify(token);
-            return true;
         } catch (JWTVerificationException e) {
             throw new JwtAuthenticationException("Invalid session, please log in again");
         }

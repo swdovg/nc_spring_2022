@@ -16,19 +16,21 @@ public class CategoryMapper {
 
     public CategoryDto createFrom(Category category) {
         CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setId(category.getId());
-        categoryDto.setName(category.getName());
+
         Long parentId = 0L;
         if (category.getParent() != null) {
             parentId = category.getParent().getId();
         }
         categoryDto.setParentId(parentId);
+        categoryDto.setId(category.getId());
+        categoryDto.setName(category.getName());
+
         return categoryDto;
     }
 
-    public List<CategoryDto> createFrom(List<Category> categorys) {
+    public List<CategoryDto> createFrom(List<Category> categories) {
         List<CategoryDto> categoryDtos = new ArrayList<>();
-        for (Category category : categorys) {
+        for (Category category : categories) {
             categoryDtos.add(createFrom(category));
         }
         return categoryDtos;
@@ -41,14 +43,20 @@ public class CategoryMapper {
         } else {
             category = new Category();
         }
-        category.setName(categoryDto.getName());
-        Category parentCategory;
-        if (categoryDto.getParentId() != 0) {
-            parentCategory = categoryRepository.getById(categoryDto.getParentId());
-        } else {
-            parentCategory = null;
-        }
+
+        Category parentCategory = getParentCategory(categoryDto.getParentId());
         category.setParent(parentCategory);
+        category.setName(categoryDto.getName());
+
         return category;
     }
+
+    private Category getParentCategory(Long parentId) {
+        if (parentId != 0) {
+            return categoryRepository.getById(parentId);
+        } else {
+            return null;
+        }
+    }
+
 }

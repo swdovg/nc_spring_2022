@@ -7,8 +7,6 @@ import com.example.nc_spring_2022.repository.OrderRepository;
 import com.example.nc_spring_2022.repository.SubscriptionRepository;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -57,10 +55,6 @@ public class SubscriptionMapper {
             subscriptionDtos.add(createFrom(subscription));
         }
         return subscriptionDtos;
-    }
-
-    public Page<SubscriptionDto> createPageFrom(List<Subscription> subscriptions) {
-        return new PageImpl<>(createFrom(subscriptions));
     }
 
     public Subscription createFrom(SubscriptionDto subscriptionDto) {

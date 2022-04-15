@@ -4,12 +4,9 @@ import com.example.nc_spring_2022.dto.model.FeedbackDto;
 import com.example.nc_spring_2022.model.Feedback;
 import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.repository.FeedbackRepository;
-import com.example.nc_spring_2022.repository.SubscriptionRepository;
 import com.example.nc_spring_2022.repository.UserRepository;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,7 +17,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FeedbackMapper {
     private final FeedbackRepository feedbackRepository;
-    private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
     private final AuthenticationFacade authenticationFacade;
 
@@ -44,10 +40,6 @@ public class FeedbackMapper {
             feedbackDtos.add(createFrom(feedback));
         }
         return feedbackDtos;
-    }
-
-    public Page<FeedbackDto> createPageFrom(List<Feedback> feedbacks) {
-        return new PageImpl<>(createFrom(feedbacks));
     }
 
     public Feedback createFrom(FeedbackDto feedbackDto) {

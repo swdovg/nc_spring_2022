@@ -3,6 +3,7 @@ package com.example.nc_spring_2022.config;
 import com.example.nc_spring_2022.security.jwt.CustomUserDetailsService;
 import com.example.nc_spring_2022.security.jwt.JwtTokenFilter;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
+import com.example.nc_spring_2022.security.oauth2.AuthenticationEntryPoint;
 import com.example.nc_spring_2022.security.oauth2.CustomAuthenticationFailureHandler;
 import com.example.nc_spring_2022.security.oauth2.CustomAuthenticationSuccessHandler;
 import com.example.nc_spring_2022.service.UserService;
@@ -54,6 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .anyRequest()
                 .permitAll()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new AuthenticationEntryPoint())
                 .and()
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userService),
                         UsernamePasswordAuthenticationFilter.class)

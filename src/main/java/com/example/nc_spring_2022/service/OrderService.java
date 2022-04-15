@@ -14,6 +14,7 @@ import com.example.nc_spring_2022.repository.UserRepository;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -32,24 +33,19 @@ public class OrderService {
 
     public Page<SubscriptionDto> getOrders(Pageable pageable) {
         Long userId = authenticationFacade.getUserId();
-        List<Order> orders = orderRepository.findAllByUserId(userId, pageable);
-        List<Subscription> subscriptions = orders.stream().map(Order::getSubscription).toList();
-        return subscriptionMapper.createPageFrom(subscriptions);
+        Page<Order> orders = orderRepository.findAllByUserId(userId, pageable);
+        return mapPageOfOrdersToPageOfSubscriptions(orders).map(subscriptionMapper::createFrom);
+    }
+
+    private Page<Subscription> mapPageOfOrdersToPageOfSubscriptions(Page<Order> orders) {
+        List<Subscription> subscriptions = orders.getContent().stream().map(Order::getSubscription).toList();
+        return new PageImpl<>(subscriptions, orders.getPageable(), orders.getTotalElements());
     }
 
     public Page<OrderDto> getOrdersForSupplier(Long subscriptionId, Pageable pageable) {
         checkPermission(subscriptionId);
-        List<Order> orders = orderRepository.findAllBySubscriptionId(subscriptionId, pageable);
-        return orderMapper.createPageFrom(orders);
-    }
-
-    public boolean isSubscriptionOrdered(Long subscriptionId) {
-        Long userId = authenticationFacade.getUserId();
-        return isOrderExists(userId, subscriptionId);
-    }
-
-    public boolean isOrderExists(Long userId, Long subscriptionId) {
-        return orderRepository.findByUserIdAndSubscriptionId(userId, subscriptionId).isPresent();
+        Page<Order> orders = orderRepository.findAllBySubscriptionId(subscriptionId, pageable);
+        return orders.map(orderMapper::createFrom);
     }
 
     public Order save(Long subscriptionId) {

@@ -40,7 +40,8 @@ public class FormService {
     public FormQuestionDto saveQuestion(FormQuestionDto formQuestionDto) {
         FormQuestion formQuestion = formQuestionMapper.createFrom(formQuestionDto);
         checkPermission(formQuestion);
-        return formQuestionMapper.createFrom(saveQuestion(formQuestion));
+        formQuestion = saveQuestion(formQuestion);
+        return formQuestionMapper.createFrom(formQuestion);
     }
 
     public FormData saveAnswer(FormData formData) {

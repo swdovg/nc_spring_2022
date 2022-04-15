@@ -1,12 +1,14 @@
 package com.example.nc_spring_2022.service;
 
 import com.example.nc_spring_2022.dto.model.LoginDto;
+import com.example.nc_spring_2022.dto.model.PasswordChangeDto;
 import com.example.nc_spring_2022.dto.model.RegisterDto;
 import com.example.nc_spring_2022.exception.EntityAlreadyExistsException;
 import com.example.nc_spring_2022.model.AuthProvider;
 import com.example.nc_spring_2022.model.Role;
 import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.repository.UserRepository;
+import com.example.nc_spring_2022.security.AuthenticationFacade;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
 import com.example.nc_spring_2022.security.oauth2.user.OAuth2User;
 import lombok.RequiredArgsConstructor;
@@ -25,20 +27,21 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
+    private final AuthenticationFacade authenticationFacade;
 
-    public User getByUsernameAndPassword(String email, String password) {
+    public Map<String, String> login(LoginDto loginDTO) {
+        User user = getByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
+
+        return getToken(user);
+    }
+
+    private User getByEmailAndPassword(String email, String password) {
         User user = userService.findByEmail(email);
 
         if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
             return user;
         }
         throw new EntityNotFoundException("Wrong password");
-    }
-
-    public Map<String, String> login(LoginDto loginDTO) {
-        User user = getByUsernameAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
-
-        return getToken(user);
     }
 
     public Map<String, String> register(RegisterDto registerDto) {
@@ -48,6 +51,25 @@ public class AuthService {
 
         User user = createUser(registerDto);
         return getToken(user);
+    }
+
+    public Map<String, String> updatePassword(PasswordChangeDto passwordChangeDto) {
+        Long userId = authenticationFacade.getUserId();
+        User user = getByIdAndPassword(userId, passwordChangeDto.getOldPassword());
+        user.setVersion(user.getVersion() + 1);
+        user.setPassword(bCryptPasswordEncoder.encode(passwordChangeDto.getNewPassword()));
+        user = userService.save(user);
+
+        return getToken(user);
+    }
+
+    private User getByIdAndPassword(Long userId, String password) {
+        User user = userService.findById(userId);
+
+        if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
+            return user;
+        }
+        throw new EntityNotFoundException("Wrong password");
     }
 
     public Map<String, String> registerOrUpdateOAuthUser(OAuth2User oAuth2User) {
@@ -73,6 +95,7 @@ public class AuthService {
 
     private User createUser(RegisterDto registerDto) {
         User user = new User();
+
         user.setEmail(registerDto.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(registerDto.getPassword()));
         user.setName(registerDto.getName());
@@ -82,6 +105,7 @@ public class AuthService {
         } else {
             user.setRole(Role.ROLE_SUPPLIER);
         }
+
         return userService.save(user);
     }
 
