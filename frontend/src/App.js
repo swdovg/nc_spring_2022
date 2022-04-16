@@ -1,27 +1,14 @@
-import React, {useContext} from 'react';
-import Sign from './pages/Sign.jsx';
-import Login from './pages/Login.jsx';
-import Error from './pages/Error.jsx';
-import Main from './pages/Main.jsx';
-import EditConsumer from './pages/EditConsumer.jsx';
-import EditSupplier from './pages/EditSupplier.jsx';
-import CustomerView from './pages/CustomerView.jsx';
+import React, {useContext, useState} from 'react';
 import {BrowserRouter, Routes ,Route,Link} from "react-router-dom";
+import AppRouter from "./components/AppRouter.jsx";
+import { useForm } from "react-hook-form";
 
 function App() {
 
+    const [isAuth, setIsAuth] = useState(false);
+
     return (
-        <BrowserRouter>
-             <Routes>
-                  <Route path="/sign" element={<Sign/>} />
-                  <Route path="/login" element={<Login/>} />
-                  <Route path="/edit-consumer" element={<EditConsumer/>} />
-                  <Route path="/edit-supplier" element={<EditSupplier/>} />
-                  <Route path="/main" element={<Main/>} />
-                  <Route path="/" element={<Main/>} />
-                  <Route path="/customer-profile" element={<CustomerView/>} />
-              </Routes>
-        </BrowserRouter>
+         <AppRouter/>
     )
 }
 export default App;

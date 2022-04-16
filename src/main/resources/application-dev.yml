@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: "${db_host}/nc"
+    url:  "${db_host}/nc"
     driver-class-name: org.postgresql.Driver
     username: ${db_username}
     password: ${db_password}
@@ -25,4 +25,4 @@ app:
     tokenPrefix: "Bearer "
     headerString: "Authorization"
     cors:
-      allowedOrigins: http://localhost:8080
+      allowedOrigins: http://localhost:8080, http://localhost:3000

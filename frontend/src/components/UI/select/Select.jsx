@@ -2,6 +2,7 @@ import React from 'react';
 import classes from './Select.module.css';
 
 const Select = ({options, defaultValue, value, label}) => {
+
     return (
         <div>
             <label className={classes.label}>{label}</label>
