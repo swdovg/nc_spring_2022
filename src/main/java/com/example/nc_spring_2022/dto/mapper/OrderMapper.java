@@ -20,6 +20,7 @@ public class OrderMapper {
         orderDto.setConsumer(userMapper.createFrom(order.getUser()));
         orderDto.setSubscriptionId(order.getSubscription().getId());
         orderDto.setSubscriptionName(order.getSubscription().getTitle());
+        orderDto.setDate(order.getDate());
 
         return orderDto;
     }

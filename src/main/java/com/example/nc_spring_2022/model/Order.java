@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.UUID;
 
 @Getter
@@ -27,6 +28,8 @@ public class Order {
     private User user;
     @OneToOne(targetEntity = Subscription.class)
     private Subscription subscription;
+    @Column(nullable = false)
+    private Date date = new Date();
 
     @Override
     public boolean equals(Object o) {
