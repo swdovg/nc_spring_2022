@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: "${db_host}/nc"
+    url:  "${db_host}/nc"
     driver-class-name: org.postgresql.Driver
     username: ${db_username}
     password: ${db_password}

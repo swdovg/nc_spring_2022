@@ -12,6 +12,12 @@
 	border: 1px solid #E8E8E8;
 	box-sizing: border-box;
 	border-radius: 5px;
-
 }
 
+.btn:hover{
+    background: #8C68FF;
+}
+
+.btn:disabled{
+    background: #8C68FF;
+}

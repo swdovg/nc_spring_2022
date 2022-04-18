@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState, useRef} from 'react';
 import '../styles/login.css';
 import '../styles/bootstrap.min.css';
 import Input from "../components/UI/input/Input";
@@ -7,6 +7,8 @@ import google from '../img/google.svg';
 import Header from '../components/header/Header.jsx';
 import Footer from '../components/footer/Footer.jsx';
 import LoginForm from '../components/UI/loginForm/LoginForm.jsx';
+import {BrowserRouter, Routes ,Route,Link} from "react-router-dom";
+
 
 const Login = () => {
 
@@ -27,14 +29,14 @@ const Login = () => {
                     <div className="row">
                         <div className="offset-xl-8 offset-lg-8 col-xl-4 col-lg-4 col-md-12  col-sm-12 col-12 login-bottom">
                             <p className="login-bottom-text">Dont have an account?</p>
-                            <a href="/sign" className="login-bottom-link"> Join free today</a>
+                            <Link to="/sign" className="login-bottom-link"> Join free today</Link>
                         </div>
                     </div>
                 </div>
                 <Footer />
             </div>
 
-        );
-    };
+    );
+};
 
 export default Login;

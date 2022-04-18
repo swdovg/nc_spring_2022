@@ -1,40 +1,149 @@
+import React, {useContext, useState, useRef, useEffect} from 'react';
 import google from './google.svg';
 import Input from '../input/Input.jsx';
 import Button from "../button/Button";
 import Select from '../select/Select';
+import axios from "../../../api/axios.js"
+import {AuthContext} from '../../../context/AuthContext.js';
 
-const SignForm = ({children, ...props}) => {
+
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const PWD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+const PHONE_REGEX = /^((\+7|7|8)+([0-9]){10})$/;
+const LOGIN_REGEX = /^[a-z0-9_-]{3,16}$/;
+
+const REGISTER_URL = "api/v1/auth/register";
+
+const SignForm = () => {
+
+    const userRef = useRef();
+    const errRef = useRef();
+
+    const [email, setEmail] = useState("");
+    const [validEmail, setValidEmail] = useState(false);
+
+    const [login, setLogin] = useState("");
+    const [validLogin, setValidLogin] = useState(false);
+
+    const [name, setName] = useState("");
+    const [consumer, setConsumer] = useState(true);
+
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [validPhoneNumber, setValidPhoneNumber] = useState(false);
+
+    const [password, setPassword] = useState("");
+    const [validPassword, setValidPassword] = useState(false);
+
+    const [errMsg, setErrMsg] = useState("");
+
+
+    useEffect(() => {
+        const result = EMAIL_REGEX.test(email);
+        setValidEmail(result);
+    }, [email] );
+
+    useEffect(() => {
+        const result = PWD_REGEX.test(password);
+        setValidPassword(result);
+    }, [password] );
+
+    useEffect(() => {
+        const result = PHONE_REGEX.test(phoneNumber);
+        setValidPhoneNumber(result);
+    }, [phoneNumber] );
+
+    useEffect(() => {
+        const result = LOGIN_REGEX.test(login);
+        setValidLogin(result);
+    }, [login] );
+
+    useEffect(()=> {
+        setErrMsg("");
+    }, [email, login, name, phoneNumber, password, consumer]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(
+               REGISTER_URL,
+               JSON.stringify({email, password, phoneNumber, name, consumer}),
+               {
+                   headers: {'Content-Type': 'application/json'},
+                   withCredentials: true
+               }
+            )
+             console.log(response.data);
+             console.log(JSON.stringify({email, password, phoneNumber, name, consumer}));
+        }
+        catch(err) {
+            if (!err?.response)
+                setErrMsg("No server response");
+            else if (err.response?.status===400)
+                setErrMsg("Invalid Data");
+            else
+                setErrMsg("Registration Failed");
+            errRef.current.focus();
+        }
+    }
+
     return (
-        <form method="post">
+        <form onSubmit={handleSubmit}>
             <ul>
                 <li>
-                    <Input type="email" id="mail" name="user_mail" label="Email"/>
+                    <Input
+                        type="email"
+                        id="email"
+                        label="Email"
+                        ref={userRef}
+                        onChange={(e)=> setEmail(e.target.value)}
+                        required
+                        aria-invalid={validEmail ? "false" : "true"}
+                    />
                 </li>
                 <li>
-                    <Input type="login" id="login" name="user_login" label="Login"/>
+                    <Input
+                        type="text"
+                        id="name"
+                        label="Name"
+                        onChange={(e)=> setName(e.target.value)}
+                        required
+                    />
                 </li>
                 <li>
-                    <Input type="text" id="name" name="user_name" label="Name"/>
+                    <Input
+                        type="phone"
+                        id="phone"
+                        label="Phone Number"
+                        onChange={(e)=> setPhoneNumber(e.target.value)}
+                        required
+                        aria-invalid={validPhoneNumber ? "false" : "true"}
+                        />
                 </li>
                 <li>
-                    <Input type="phone" id="phone" name="user_phone" label="Phone Number"/>
-                </li>
-                <li>
-                  <Input type="password" id="password" name="user_password" label="Password"/>
+                  <Input
+                    type="password"
+                    id="password"
+                    label="Password"
+                    onChange={(e)=> setPassword(e.target.value)}
+                    required
+                    aria-invalid={validPassword ? "false" : "true"}
+                    />
                 </li>
                 <li>
                   <Select
-                      defaultValue="Role"
+                      onChange={(e)=> setConsumer(e.target.value)}
+                      defaultValue="true"
                       options={[
-                          {value:"1", name:"Supplier"},
-                          {value:"2", name:"Consumer"}
+                          {value:"false", name:"Supplier"},
+                          {value:"true", name:"Consumer"}
                       ]}
                       label="Role"
                   />
                 </li>
             </ul>
-            <Button>
-                Sign In
+            <p ref={errRef}>{errMsg}</p>
+            <Button disabled={!validEmail||!validPhoneNumber||!validPassword ? true : false}>
+                Sign Up
             </Button>
             <Button>
                 <img className="icon google-icon" src={google} alt="Google icon"/> Or sign-in with google

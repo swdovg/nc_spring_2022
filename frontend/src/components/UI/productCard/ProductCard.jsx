@@ -12,7 +12,7 @@ const ProductCard = () => {
                 <h3 className={cl.card_heading}>Spotify </h3>
                 <p className={cl.card_producer}> By Spotify Music</p>
                 <p className={cl.card_description}> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                <button className={cl.card_btn}> add</button>
+                <button  className={cl.card_btn}> add</button>
             </div>
         </div>
     );

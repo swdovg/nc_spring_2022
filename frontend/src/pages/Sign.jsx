@@ -8,12 +8,13 @@ import google from '../img/google.svg';
 import Header from '../components/header/Header.jsx';
 import SignForm from '../components/UI/signForm/SignForm.jsx';
 import Footer from '../components/footer/Footer.jsx';
+import {BrowserRouter, Routes ,Route,Link} from "react-router-dom";
 
 
 const Sign = () => {
-/*
-    const {isAuth, setIsAuth} = useContext(AuthContext);
 
+   /*  const {isAuth, setIsAuth} = useContext(AuthContext); */
+/*
     const login = event => {
         event.preventDefault();
         setIsAuth(true);
@@ -30,13 +31,13 @@ const Sign = () => {
                         </div>
                         <div className="col-xl-4 col-lg-5 col-md-12 login-form">
                             <h1 className="login-heading">Create account</h1>
-                            <SignForm action="login-form" method="post" />
+                            <SignForm method="post" />
                         </div>
                     </div>
                     <div className="row">
                         <div className="offset-xl-8 offset-lg-8 col-xl-4 col-lg-4 col-md-12  col-sm-12 col-12 login-bottom">
                             <p className="login-bottom-text">Do have an account?</p>
-                            <a href="/login" className="login-bottom-link"> Log in now</a>
+                            <Link to="/login" className="login-bottom-link"> Log in now</Link>
                         </div>
                     </div>
                 </div>
