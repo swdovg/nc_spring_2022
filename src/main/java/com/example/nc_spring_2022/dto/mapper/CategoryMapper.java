@@ -6,6 +6,7 @@ import com.example.nc_spring_2022.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class CategoryMapper {
     public Category createFrom(CategoryDto categoryDto) {
         Category category;
         if (categoryDto.getId() != null) {
-            category = categoryRepository.getById(categoryDto.getId());
+            category = findCategoryById(categoryDto.getId());
         } else {
             category = new Category();
         }
@@ -53,10 +54,14 @@ public class CategoryMapper {
 
     private Category getParentCategory(Long parentId) {
         if (parentId != 0) {
-            return categoryRepository.getById(parentId);
+            return findCategoryById(parentId);
         } else {
             return null;
         }
     }
 
+    private Category findCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() ->
+                new EntityNotFoundException(String.format("Category with id: %d was not found", categoryId)));
+    }
 }

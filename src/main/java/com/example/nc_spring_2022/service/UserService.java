@@ -76,7 +76,10 @@ public class UserService {
         if (!newDefaultLocation.getUserId().equals(user.getId())) {
             throw new AuthorizationException("You can't set default location to another user");
         }
-        Location location = locationRepository.getById(newDefaultLocation.getId());
+        Location location = locationRepository.findById(newDefaultLocation.getId())
+                .orElseThrow(() ->
+                        new EntityNotFoundException(String.format("Location with id: %d was not found",
+                                newDefaultLocation.getId())));
 
         user.setDefaultLocation(location);
         user = save(user);

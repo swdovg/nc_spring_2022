@@ -47,19 +47,19 @@ public class SubscriptionService {
     private void checkPermission(Subscription subscription) {
         Long userId = authenticationFacade.getUserId();
 
-        verifyNewSubscriptionsOwner(subscription, userId);
+        verifySubscriptionsOwner(subscription, userId);
         if (subscription.getId() != null) {
-            verifyExistingSubscriptionsOwner(subscription, userId);
+            verifyDbSubscriptionsOwner(subscription, userId);
         }
     }
 
-    private void verifyNewSubscriptionsOwner(Subscription subscription, Long userId) {
+    private void verifySubscriptionsOwner(Subscription subscription, Long userId) {
         if (!subscription.getSupplier().getId().equals(userId)) {
             throw new AuthorizationException("You can not edit another's subscription");
         }
     }
 
-    private void verifyExistingSubscriptionsOwner(Subscription subscription, Long userId) {
+    private void verifyDbSubscriptionsOwner(Subscription subscription, Long userId) {
         Subscription dbSubscription = findById(subscription.getId());
         if (!dbSubscription.getSupplier().getId().equals(userId)) {
             throw new AuthorizationException("You can not edit another's subscription");

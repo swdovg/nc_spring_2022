@@ -6,6 +6,8 @@ import com.example.nc_spring_2022.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
+
 @Component
 @RequiredArgsConstructor
 public class UserMapper {
@@ -29,6 +31,7 @@ public class UserMapper {
     }
 
     public User createFrom(UserDto userDto) {
-        return userRepository.getById(userDto.getId());
+        return userRepository.findById(userDto.getId()).orElseThrow(() ->
+                new EntityNotFoundException(String.format("User with id: %d does not exists", userDto.getId())));
     }
 }

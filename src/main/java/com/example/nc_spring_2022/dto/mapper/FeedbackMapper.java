@@ -9,6 +9,7 @@ import com.example.nc_spring_2022.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,8 @@ public class FeedbackMapper {
     private final AuthenticationFacade authenticationFacade;
 
     public FeedbackDto createFrom(Feedback feedback) {
-        User user = userRepository.getById(feedback.getConsumerId());
+        User user = userRepository.findById(feedback.getConsumerId()).orElseThrow(() ->
+                new EntityNotFoundException(String.format("User with id: %d was not found", feedback.getConsumerId())));
 
         FeedbackDto feedbackDto = new FeedbackDto();
 

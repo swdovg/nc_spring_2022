@@ -9,6 +9,7 @@ import com.example.nc_spring_2022.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +61,9 @@ public class SubscriptionMapper {
     public Subscription createFrom(SubscriptionDto subscriptionDto) {
         Subscription subscription;
         if (subscriptionDto.getId() != null) {
-            subscription = subscriptionRepository.getById(subscriptionDto.getId());
+            subscription = subscriptionRepository.findById(subscriptionDto.getId()).orElseThrow(() ->
+                    new EntityNotFoundException(String.format("Subscription with id: %d was not found",
+                            subscriptionDto.getId())));
         } else {
             subscription = new Subscription();
         }

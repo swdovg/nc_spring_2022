@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 @Service
@@ -29,6 +30,7 @@ public class OrderService {
     private final SubscriptionRepository subscriptionRepository;
     private final OrderMapper orderMapper;
     private final SubscriptionOrderMapper subscriptionOrderMapper;
+    private final SubscriptionService subscriptionService;
 
     public Page<SubscriptionOrderDto> getOrdersForConsumer(Pageable pageable) {
         Long userId = authenticationFacade.getUserId();
@@ -43,8 +45,10 @@ public class OrderService {
     }
 
     public SubscriptionOrderDto save(Long subscriptionId) {
-        User user = userRepository.getById(authenticationFacade.getUserId());
-        Subscription subscription = subscriptionRepository.getById(subscriptionId);
+        Long userId = authenticationFacade.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new EntityNotFoundException(String.format("User with id: %d was not found", userId)));
+        Subscription subscription = subscriptionService.findById(subscriptionId);
         Optional<Order> orderOptional = orderRepository.findByUserAndSubscription(user, subscription);
         if (orderOptional.isPresent()) {
             throw new EntityAlreadyExistsException("Order already exists");
@@ -60,7 +64,7 @@ public class OrderService {
 
     private void checkPermission(Long subscriptionId) {
         Long userId = authenticationFacade.getUserId();
-        Subscription subscription = subscriptionRepository.getById(subscriptionId);
+        Subscription subscription = subscriptionService.findById(subscriptionId);
         if (!subscription.getSupplier().getId().equals(userId)) {
             throw new AuthorizationException("You can't see orders on another's subscriptions");
         }

@@ -6,7 +6,6 @@ import com.example.nc_spring_2022.exception.EntityAlreadyExistsException;
 import com.example.nc_spring_2022.model.Feedback;
 import com.example.nc_spring_2022.model.Subscription;
 import com.example.nc_spring_2022.repository.FeedbackRepository;
-import com.example.nc_spring_2022.repository.SubscriptionRepository;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +21,7 @@ public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final FeedbackMapper feedbackMapper;
     private final AuthenticationFacade authenticationFacade;
-    private final SubscriptionRepository subscriptionRepository;
+    private final SubscriptionService subscriptionService;
 
     public Page<Feedback> findBySubscriptionId(Long subscriptionId, Pageable pageable) {
         return feedbackRepository.findAllBySubscriptionId(subscriptionId, pageable);
@@ -44,10 +43,10 @@ public class FeedbackService {
     }
 
     private void updateAverageRating(Feedback feedback) {
-        Subscription subscription = subscriptionRepository.getById(feedback.getSubscriptionId());
+        Subscription subscription = subscriptionService.findById(feedback.getSubscriptionId());
         subscription.setQuantityOfFeedbacks(subscription.getQuantityOfFeedbacks() + 1);
         subscription.setRatings(subscription.getRatings() + feedback.getRating());
-        subscriptionRepository.save(subscription);
+        subscriptionService.save(subscription);
     }
 
     public FeedbackDto save(FeedbackDto feedbackDto) {

@@ -8,6 +8,7 @@ import com.example.nc_spring_2022.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,9 @@ public class FormQuestionMapper {
     }
 
     public FormQuestion createFrom(FormQuestionDto formQuestionDto) {
-        Subscription subscription = subscriptionRepository.getById(formQuestionDto.getSubscriptionId());
+        Subscription subscription = subscriptionRepository.findById(formQuestionDto.getSubscriptionId()).orElseThrow(() ->
+                new EntityNotFoundException(String.format("Subscription with id: %d was not found",
+                        formQuestionDto.getSubscriptionId())));
 
         FormQuestion formQuestion = new FormQuestion();
         if (formQuestionDto.getId() != null) {
