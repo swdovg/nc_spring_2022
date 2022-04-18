@@ -42,9 +42,8 @@ public class SubscriptionController {
     }
 
     @PostMapping("/{subscriptionId}")
-    public Response<Void> createOrder(@PathVariable Long subscriptionId) {
-        orderService.save(subscriptionId);
-        return new Response<>("You successfully got this subscription");
+    public Response<SubscriptionOrderDto> createOrder(@PathVariable Long subscriptionId) {
+        return new Response<>(orderService.save(subscriptionId));
     }
 
     @PostMapping

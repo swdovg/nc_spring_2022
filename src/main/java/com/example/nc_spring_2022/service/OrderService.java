@@ -5,6 +5,7 @@ import com.example.nc_spring_2022.dto.mapper.SubscriptionOrderMapper;
 import com.example.nc_spring_2022.dto.model.OrderDto;
 import com.example.nc_spring_2022.dto.model.SubscriptionOrderDto;
 import com.example.nc_spring_2022.exception.AuthorizationException;
+import com.example.nc_spring_2022.exception.EntityAlreadyExistsException;
 import com.example.nc_spring_2022.model.Order;
 import com.example.nc_spring_2022.model.Subscription;
 import com.example.nc_spring_2022.model.User;
@@ -41,17 +42,20 @@ public class OrderService {
         return orders.map(orderMapper::createFrom);
     }
 
-    public Order save(Long subscriptionId) {
+    public SubscriptionOrderDto save(Long subscriptionId) {
         User user = userRepository.getById(authenticationFacade.getUserId());
         Subscription subscription = subscriptionRepository.getById(subscriptionId);
+        Optional<Order> orderOptional = orderRepository.findByUserAndSubscription(user, subscription);
+        if (orderOptional.isPresent()) {
+            throw new EntityAlreadyExistsException("Order already exists");
+        }
 
         Order order = new Order();
         order.setSubscription(subscription);
         order.setUser(user);
+        order = orderRepository.save(order);
 
-        Optional<Order> orderOptional = orderRepository.findByUserAndSubscription(user, subscription);
-
-        return orderOptional.orElseGet(() -> orderRepository.save(order));
+        return subscriptionOrderMapper.createFrom(order);
     }
 
     private void checkPermission(Long subscriptionId) {
