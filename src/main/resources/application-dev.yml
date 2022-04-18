@@ -17,6 +17,13 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${nc_oauth_id}
+            clientSecret: ${nc_oauth_secret}
 
 app:
   auth:
@@ -25,4 +32,4 @@ app:
     tokenPrefix: "Bearer "
     headerString: "Authorization"
     cors:
-      allowedOrigins: http://localhost:8080
+      allowedOrigins: http://localhost:8080, http://localhost:3000

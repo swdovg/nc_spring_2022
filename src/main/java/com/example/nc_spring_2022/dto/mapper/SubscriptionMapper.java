@@ -7,10 +7,9 @@ import com.example.nc_spring_2022.repository.OrderRepository;
 import com.example.nc_spring_2022.repository.SubscriptionRepository;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,14 +58,12 @@ public class SubscriptionMapper {
         return subscriptionDtos;
     }
 
-    public Page<SubscriptionDto> createPageFrom(List<Subscription> subscriptions) {
-        return new PageImpl<>(createFrom(subscriptions));
-    }
-
     public Subscription createFrom(SubscriptionDto subscriptionDto) {
         Subscription subscription;
         if (subscriptionDto.getId() != null) {
-            subscription = subscriptionRepository.getById(subscriptionDto.getId());
+            subscription = subscriptionRepository.findById(subscriptionDto.getId()).orElseThrow(() ->
+                    new EntityNotFoundException(String.format("Subscription with id: %d was not found",
+                            subscriptionDto.getId())));
         } else {
             subscription = new Subscription();
         }

@@ -1,9 +1,8 @@
 package com.example.nc_spring_2022.controller;
 
-import com.example.nc_spring_2022.dto.mapper.LocationMapper;
 import com.example.nc_spring_2022.dto.model.LocationDto;
+import com.example.nc_spring_2022.dto.model.RequestDto;
 import com.example.nc_spring_2022.dto.model.Response;
-import com.example.nc_spring_2022.model.Location;
 import com.example.nc_spring_2022.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,24 +14,20 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/location")
 public class LocationController {
     private final LocationService locationService;
-    private final LocationMapper locationMapper;
 
     @GetMapping("/{id}")
     public Response<LocationDto> getLocation(@PathVariable Long id) {
-        Location location = locationService.findById(id);
-        return new Response<>(locationMapper.createFrom(location));
+        return new Response<>(locationService.getDtoById(id));
     }
 
     @PostMapping
-    public Response<LocationDto> addLocation(@RequestBody String locationName) {
-        Location location = locationService.save(locationName);
-        return new Response<>(locationMapper.createFrom(location));
+    public Response<LocationDto> addLocation(@RequestBody RequestDto requestDto) {
+        return new Response<>(locationService.save(requestDto));
     }
 
     @PutMapping
     public Response<LocationDto> updateLocation(@Valid @RequestBody LocationDto locationDto) {
-        Location location = locationService.update(locationDto);
-        return new Response<>(locationMapper.createFrom(location));
+        return new Response<>(locationService.update(locationDto));
     }
 
     @DeleteMapping

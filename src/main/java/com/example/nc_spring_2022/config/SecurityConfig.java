@@ -3,6 +3,9 @@ package com.example.nc_spring_2022.config;
 import com.example.nc_spring_2022.security.jwt.CustomUserDetailsService;
 import com.example.nc_spring_2022.security.jwt.JwtTokenFilter;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
+import com.example.nc_spring_2022.security.oauth2.AuthenticationEntryPoint;
+import com.example.nc_spring_2022.security.oauth2.CustomAuthenticationFailureHandler;
+import com.example.nc_spring_2022.security.oauth2.CustomAuthenticationSuccessHandler;
 import com.example.nc_spring_2022.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -51,7 +56,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .permitAll()
                 .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new AuthenticationEntryPoint())
+                .and()
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userService),
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login()
+                .successHandler(customAuthenticationSuccessHandler)
+                .failureHandler(customAuthenticationFailureHandler);
     }
 }

@@ -21,45 +21,75 @@ import java.io.IOException;
 public class JwtTokenFilter extends GenericFilterBean {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
+    private ServletResponse servletResponse;
+    private ServletRequest servletRequest;
+    private FilterChain filterChain;
+    private String token;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
+        this.servletRequest = servletRequest;
+        this.servletResponse = servletResponse;
+        this.filterChain = filterChain;
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String requestURL = request.getRequestURL().toString();
-        String token;
+        token = jwtTokenProvider.resolveToken(request);
+
+        if (token == null) {
+            acceptRequest();
+            return;
+        }
+
+        String requestUrl = request.getRequestURL().toString();
+        if (requestUrl.contains("refreshToken")) {
+            acceptRequest();
+            return;
+        }
+
+        verifyToken();
+        setAuthentication();
+        acceptRequest();
+    }
+
+    private void setAuthentication() throws IOException {
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
+        verifyJwtUserValid(jwtUser);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private void verifyToken() throws IOException {
         try {
-            token = jwtTokenProvider.resolveToken(request);
-
-            if (token != null && jwtTokenProvider.verifyToken(token)) {
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
-                JwtUser tokenUser = (JwtUser) authentication.getPrincipal();
-                User dbUser = userService.findById(tokenUser.getId());
-
-                if (dbUser != null && tokenUser.getVersion().equals(dbUser.getVersion())) {
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else {
-                    rejectRequest(servletResponse);
-                }
-            }
-            if (requestURL.contains("refreshToken") && token == null) {
-                rejectRequest(servletResponse);
-            } else {
-                filterChain.doFilter(servletRequest, servletResponse);
-            }
-        } catch (JwtAuthenticationException e) {
-            if (requestURL.contains("refreshToken")) {
-                filterChain.doFilter(servletRequest, servletResponse);
-            } else {
-                rejectRequest(servletResponse);
-            }
-        } catch (EntityNotFoundException e) {
-            rejectRequest(servletResponse);
+            jwtTokenProvider.verifyToken(token);
+        } catch (JwtAuthenticationException exception) {
+            rejectRequest();
         }
     }
 
-    private void rejectRequest(ServletResponse servletResponse) throws IOException {
-        HttpServletResponse resp = ((HttpServletResponse) servletResponse);
-        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid session, please log in again");
+    private void verifyJwtUserValid(JwtUser jwtUser) throws IOException {
+        User dbUser = getDbUser(jwtUser.getId());
+
+        if (dbUser == null || !jwtUser.getVersion().equals(dbUser.getVersion())) {
+            rejectRequest();
+        }
+    }
+
+    private User getDbUser(Long userId) throws IOException {
+        try {
+            return userService.findById(userId);
+        } catch (EntityNotFoundException exception) {
+            rejectRequest();
+        }
+
+        return null;
+    }
+
+    private void acceptRequest() throws ServletException, IOException {
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    private void rejectRequest() throws IOException {
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid session, please log in again");
     }
 }

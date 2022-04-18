@@ -3,6 +3,7 @@ package com.example.nc_spring_2022.controller;
 import com.example.nc_spring_2022.dto.model.OrderDto;
 import com.example.nc_spring_2022.dto.model.Response;
 import com.example.nc_spring_2022.dto.model.SubscriptionDto;
+import com.example.nc_spring_2022.dto.model.SubscriptionOrderDto;
 import com.example.nc_spring_2022.service.OrderService;
 import com.example.nc_spring_2022.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +32,8 @@ public class SubscriptionController {
     }
 
     @GetMapping
-    public Response<Page<SubscriptionDto>> getOrders(Pageable pageable) {
-        return new Response<>(orderService.getOrders(pageable));
+    public Response<Page<SubscriptionOrderDto>> getOrdersForConsumer(Pageable pageable) {
+        return new Response<>(orderService.getOrdersForConsumer(pageable));
     }
 
     @GetMapping("/order/{subscriptionId}")
@@ -41,9 +42,8 @@ public class SubscriptionController {
     }
 
     @PostMapping("/{subscriptionId}")
-    public Response<Void> createOrder(@PathVariable Long subscriptionId) {
-        orderService.save(subscriptionId);
-        return new Response<>("You successfully got this subscription");
+    public Response<SubscriptionOrderDto> createOrder(@PathVariable Long subscriptionId) {
+        return new Response<>(orderService.save(subscriptionId));
     }
 
     @PostMapping

@@ -3,8 +3,6 @@ package com.example.nc_spring_2022.dto.mapper;
 import com.example.nc_spring_2022.dto.model.OrderDto;
 import com.example.nc_spring_2022.model.Order;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -22,6 +20,7 @@ public class OrderMapper {
         orderDto.setConsumer(userMapper.createFrom(order.getUser()));
         orderDto.setSubscriptionId(order.getSubscription().getId());
         orderDto.setSubscriptionName(order.getSubscription().getTitle());
+        orderDto.setDate(order.getDate());
 
         return orderDto;
     }
@@ -32,9 +31,5 @@ public class OrderMapper {
             orderDtos.add(createFrom(order));
         }
         return orderDtos;
-    }
-
-    public Page<OrderDto> createPageFrom(List<Order> orders) {
-        return new PageImpl<>(createFrom(orders));
     }
 }

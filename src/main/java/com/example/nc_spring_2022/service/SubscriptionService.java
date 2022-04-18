@@ -3,7 +3,6 @@ package com.example.nc_spring_2022.service;
 import com.example.nc_spring_2022.dto.mapper.SubscriptionMapper;
 import com.example.nc_spring_2022.dto.model.SubscriptionDto;
 import com.example.nc_spring_2022.exception.AuthorizationException;
-import com.example.nc_spring_2022.model.Category;
 import com.example.nc_spring_2022.model.Subscription;
 import com.example.nc_spring_2022.repository.SubscriptionRepository;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
@@ -13,13 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
-    private final CategoryService categoryService;
     private final SubscriptionMapper subscriptionMapper;
     private final AuthenticationFacade authenticationFacade;
 
@@ -32,13 +29,9 @@ public class SubscriptionService {
         return subscriptionMapper.createFrom(findById(id));
     }
 
-    public List<Subscription> findAllByCategory(Category category, Pageable pageable) {
-        return subscriptionRepository.findAllByCategory(category, pageable);
-    }
-
     public Page<SubscriptionDto> getDtosByCategoryId(Long categoryId, Pageable pageable) {
-        Category category = categoryService.findById(categoryId);
-        return subscriptionMapper.createPageFrom(findAllByCategory(category, pageable));
+        return subscriptionRepository.findAllByCategoryId(categoryId, pageable)
+                .map(subscriptionMapper::createFrom);
     }
 
     public Subscription save(Subscription subscription) {
@@ -53,14 +46,23 @@ public class SubscriptionService {
 
     private void checkPermission(Subscription subscription) {
         Long userId = authenticationFacade.getUserId();
+
+        verifySubscriptionsOwner(subscription, userId);
+        if (subscription.getId() != null) {
+            verifyDbSubscriptionsOwner(subscription, userId);
+        }
+    }
+
+    private void verifySubscriptionsOwner(Subscription subscription, Long userId) {
         if (!subscription.getSupplier().getId().equals(userId)) {
             throw new AuthorizationException("You can not edit another's subscription");
         }
-        if (subscription.getId() != null) {
-            Subscription dbSubscription = findById(subscription.getId());
-            if (!dbSubscription.getSupplier().getId().equals(userId)) {
-                throw new AuthorizationException("You can not edit another's subscription");
-            }
+    }
+
+    private void verifyDbSubscriptionsOwner(Subscription subscription, Long userId) {
+        Subscription dbSubscription = findById(subscription.getId());
+        if (!dbSubscription.getSupplier().getId().equals(userId)) {
+            throw new AuthorizationException("You can not edit another's subscription");
         }
     }
 }
