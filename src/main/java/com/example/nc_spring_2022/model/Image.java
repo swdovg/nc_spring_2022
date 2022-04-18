@@ -2,6 +2,7 @@ package com.example.nc_spring_2022.model;
 
 import com.example.nc_spring_2022.util.IdGenerator;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
@@ -9,44 +10,34 @@ import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import java.util.UUID;
 
+@Entity
+@Embeddable
 @Getter
 @Setter
 @ToString
-@Entity
-@Embeddable
-public class Subscription {
+@NoArgsConstructor
+public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NaturalId
     @Column(nullable = false, unique = true)
     private UUID businessKey = IdGenerator.createId();
+    @Column
+    private String name;
     @Column(nullable = false)
-    private String title;
-    @Column(nullable = false, columnDefinition = "text")
-    private String description;
+    private String type;
     @Column(nullable = false)
-    private Long price;
-    @Column
-    @Enumerated(EnumType.STRING)
-    private Currency currency = Currency.RUB;
-    @Column
-    private Long ratings = 0L;
-    @Column
-    private Long quantityOfFeedbacks = 0L;
-    @OneToOne(targetEntity = User.class)
-    private User supplier;
-    @OneToOne(targetEntity = Category.class)
-    private Category category;
-    @OneToOne(targetEntity = Image.class)
-    private Image image;
+    private byte[] image;
+    @Column(nullable = false)
+    private Long relatedEntityId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Subscription that)) return false;
+        if (!(o instanceof Image image)) return false;
 
-        return getBusinessKey().equals(that.getBusinessKey());
+        return getBusinessKey().equals(image.getBusinessKey());
     }
 
     @Override
