@@ -1,7 +1,5 @@
-import React, {useContext, useState} from 'react';
-import {BrowserRouter, Routes ,Route,Link} from "react-router-dom";
+import React, {useState} from 'react';
 import AppRouter from "./components/AppRouter.jsx";
-import { useForm } from "react-hook-form";
 
 function App() {
 

@@ -39,19 +39,3 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
-
-tasks.register('processFrontendResources', Copy) {
-    def frontendBuildDir = file("frontend/build")
-    def frontendResourcesDir = file("src/main/resources/static")
-
-    group 'Frontend'
-    description 'Process frontend resources'
-    dependsOn project(':frontend').tasks.named('assembleFrontend')
-
-    from frontendBuildDir
-    into frontendResourcesDir
-}
-
-tasks.named('processResources') {
-    dependsOn tasks.named('processFrontendResources')
-}
