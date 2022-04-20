@@ -7,6 +7,7 @@ import Input from '../input/Input.jsx';
 import {Link} from "react-router-dom";
 import axios from "../../../api/axios.js"
 import useAuth from '../../../hook/useAuth.js';
+import Cookies from 'js-cookie';
 
 const LOGIN_URL = "api/v1/auth/login";
 
@@ -40,8 +41,9 @@ const LoginForm = () => {
             const role = response?.data?.payload?.role;
             const isAuth = true;
             setAuth({email, password, role, accessToken, isAuth});
+            Cookies.set("token", accessToken);
 
-            console.log(auth.data);
+            console.log(response.data);
             setEmail("");
             setPassword("");
             navigate("/");

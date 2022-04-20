@@ -1,4 +1,5 @@
 import React, {useContext, useState, useRef, useEffect} from 'react';
+import {useNavigate} from "react-router-dom";
 import google from './google.svg';
 import Input from '../input/Input.jsx';
 import Button from "../button/Button";
@@ -18,6 +19,7 @@ const SignForm = () => {
 
     const userRef = useRef();
     const errRef = useRef();
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [validEmail, setValidEmail] = useState(false);
@@ -26,7 +28,7 @@ const SignForm = () => {
     const [validLogin, setValidLogin] = useState(false);
 
     const [name, setName] = useState("");
-    const [consumer, setConsumer] = useState(true);
+    const [isConsumer, setConsumer] = useState(false);
 
     const [phoneNumber, setPhoneNumber] = useState("");
     const [validPhoneNumber, setValidPhoneNumber] = useState(false);
@@ -35,7 +37,6 @@ const SignForm = () => {
     const [validPassword, setValidPassword] = useState(false);
 
     const [errMsg, setErrMsg] = useState("");
-
 
     useEffect(() => {
         const result = EMAIL_REGEX.test(email);
@@ -59,21 +60,26 @@ const SignForm = () => {
 
     useEffect(()=> {
         setErrMsg("");
-    }, [email, login, name, phoneNumber, password, consumer]);
+    }, [email, login, name, phoneNumber, password, isConsumer]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
+        console.log(JSON.stringify({email, password, phoneNumber, name, isConsumer}));
+         try {
             const response = await axios.post(
                REGISTER_URL,
-               JSON.stringify({email, password, phoneNumber, name, consumer}),
+               JSON.stringify({email, password, phoneNumber, name, isConsumer}),
                {
                    headers: {'Content-Type': 'application/json'},
                    withCredentials: true
                }
             )
+
              console.log(response.data);
-             console.log(JSON.stringify({email, password, phoneNumber, name, consumer}));
+             navigate("/login");
+             //Cookies.set("token", accessToken);
+
         }
         catch(err) {
             if (!err?.response)
@@ -132,10 +138,9 @@ const SignForm = () => {
                 <li>
                   <Select
                       onChange={(e)=> setConsumer(e.target.value)}
-                      defaultValue="true"
                       options={[
-                          {value:"false", name:"Supplier"},
-                          {value:"true", name:"Consumer"}
+                          {value: false, name:"Supplier"},
+                          {value: true, name:"Consumer"}
                       ]}
                       label="Role"
                   />
@@ -145,10 +150,12 @@ const SignForm = () => {
             <Button disabled={!validEmail||!validPhoneNumber||!validPassword ? true : false}>
                 Sign Up
             </Button>
-            <Button>
-                <img className="icon google-icon" src={google} alt="Google icon"/> Or sign-in with google
-            </Button>
+{/*             <Button> */}
+{/*                  <img className="icon google-icon" src={google} alt="Google icon" />  */}
+{/*                     Or sign-in with google */}
+{/*             </Button> */}
         </form>
+
     );
 };
 

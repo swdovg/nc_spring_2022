@@ -13,14 +13,6 @@ import {BrowserRouter, Routes ,Route,Link} from "react-router-dom";
 
 const Sign = () => {
 
-   /*  const {isAuth, setIsAuth} = useContext(AuthContext); */
-/*
-    const login = event => {
-        event.preventDefault();
-        setIsAuth(true);
-        localStorage.setItem('auth', 'true')
-    }
-*/
     return (
             <div>
                 <Header />

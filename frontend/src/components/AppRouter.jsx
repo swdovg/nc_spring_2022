@@ -23,14 +23,16 @@ const AppRouter = () => {
                 <Route path="/login" element= {<Login/>}/>
                 <Route path="/sign" element= {<Sign/>}/>
                 <Route path="/" element= {<Main/>}/>
-                <Route element = {<RequireAuth allowedRole = {ROLES.supplier}/>}>
-                    <Route path="/edit-supplier" element= {<EditSupplier/>}/>
+                <Route element = {<RequireAuth allowedRole = {[ROLES.consumer, ROLES.supplier]}/>}>
                     <Route path="/customer-profile" element= {<CustomerView/>}/>
                 </Route>
                 <Route element = {<RequireAuth allowedRole = {[ROLES.consumer]}/>}>
                     <Route path="/edit-consumer" element= {<EditConsumer/>}/>
-                    <Route path="/customer-profile" element= {<CustomerView/>}/>
                 </Route>
+                <Route element = {<RequireAuth allowedRole = {ROLES.supplier}/>}>
+                    <Route path="/edit-supplier" element= {<EditSupplier/>}/>
+                </Route>
+
             </Routes>
         </BrowserRouter>
         );

@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import '../styles/edit.css';
 import '../styles/style.css';
 import '../styles/bootstrap.min.css';
@@ -8,6 +8,7 @@ import Select from '../components/UI/select/Select';
 import Header from '../components/header/Header.jsx';
 import Footer from '../components/footer/Footer.jsx';
 import SubscriptionForm from '../components/UI/subscriptionForm/SubscriptionForm.jsx';
+import PasswordForm from '../components/UI/passwordForm/PasswordForm.jsx';
 import Modal from '../components/UI/modal/Modal.jsx';
 import Input from '../components/UI/input/Input.jsx';
 import useRefreshToken from "../hook/useRefreshToken.js"
@@ -16,26 +17,27 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const PHONE_REGEX = /^((\+7|7|8)+([0-9]){10})$/;
 const PWD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+const NAME_URL = "/api/v1/user/name";
+const LOCATION_URL = "/api/v1/user/location";
+const CUR_URL = "/api/v1/user/currency";
 
 const EditSupplier = () => {
     const axiosPrivate = useAxiosPrivate();
+    const [errMsg, setErrMsg] = useState("");
 
     const [phoneNumber, setPhoneNumber] = useState("");
     const [validPhoneNumber, setValidPhoneNumber] = useState(false);
 
     const [name, setName] = useState("");
+    const [id, setId] = useState("");
     const [defaultLocation, setDefaultLocation] = useState("");
     const [currency, setCurrency] = useState("");
 
     const [password, setPassword] = useState("");
     const [validPassword, setValidPassword] = useState(false);
 
-    const [modalVisible, setModalVisible] = useState(false);
-
-    useEffect(() => {
-        const result = PHONE_REGEX.test(phoneNumber);
-        setValidPhoneNumber(result);
-    }, [phoneNumber] );
+    const [subscriptionModalVisible, setSubscriptionModalVisible] = useState(false);
+    const [passwordModalVisible, setPasswordModalVisible] = useState(false);
 
     useEffect(() => {
         const result = PWD_REGEX.test(password);
@@ -46,12 +48,13 @@ const EditSupplier = () => {
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
 
-        const getUserInfo = async () => {
+        const getInfo = async () => {
             try {
                 const response = await axiosPrivate.get("api/v1/user", {
                     signal: controller.signal      //to allow to cansel a request
                 });
                 isMounted && setName(response.data.payload.name);
+                isMounted && setId(response.data.payload.id);
                 isMounted && setPhoneNumber(response.data.payload.phoneNumber);
                 isMounted && setDefaultLocation(response.data.payload.defaultLocation);
                 isMounted && setCurrency(response.data.payload.currency);
@@ -61,13 +64,58 @@ const EditSupplier = () => {
                 console.log(err);
             }
         }
-        getUserInfo();
+        getInfo();
 
         return () =>{
             isMounted=false;
             controller.abort();
         }
     }, []);
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axiosPrivate.put(
+               NAME_URL,
+               JSON.stringify(name),
+               {
+                   headers: {'Content-Type': 'application/json'},
+                   withCredentials: true
+               }
+            )
+//             response = await axiosPrivate.put(
+//                LOCATION_URL,
+//                {
+//                    location: JSON.stringify(defaultLocation),
+//                    userId: id
+//                },
+//                {
+//                    headers: {'Content-Type': 'application/json'},
+//                    withCredentials: true
+//                }
+//             )
+            response = await axiosPrivate.put(
+               CUR_URL,
+               JSON.stringify(currency),
+               {
+                   headers: {'Content-Type': 'application/json'},
+                   withCredentials: true
+               }
+            )
+             console.log(response.data);
+        }
+        catch(err) {
+            if (!err?.response)
+                setErrMsg("No server response");
+            else if (err.response?.status===400)
+                setErrMsg("Invalid Data");
+            else
+                setErrMsg("Submission Failed");
+            //errRef.current.focus();
+        }
+    }
+
 
     return (
         <div>
@@ -79,12 +127,12 @@ const EditSupplier = () => {
                 <div className="row edit-cont">
                     <div className="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
                         <ProfilePhoto />
-                        <Button onClick={()=>setModalVisible(true)}>
+                        <Button onClick={()=>setSubscriptionModalVisible(true)}>
                             Add New Subscription
                         </Button>
                     </div>
                     <div className="offset-lg-2 col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
-                        <form method="post">
+                        <form method="post" onSubmit={handleSubmit}>
                             <ul>
                                 <li>
                                     <Input
@@ -92,16 +140,15 @@ const EditSupplier = () => {
                                         id="name"
                                         label="Name"
                                         onChange={(e)=> setName(e.target.value)}
-                                        placeholder = {name}/>
+                                        value = {name}/>
                                 </li>
                                 <li>
                                     <Input
                                         type="phone"
                                         id="user-phone"
-                                        onChange={(e)=> setPhoneNumber(e.target.value)}
                                         label={"Phone Number"}
-                                        aria-invalid={validPhoneNumber ? "false" : "true"}
-                                        placeholder = {phoneNumber}/>
+                                        value = {phoneNumber}
+                                        readonly/>
                                 </li>
                                 <li>
                                     <Input
@@ -117,8 +164,8 @@ const EditSupplier = () => {
                                         required="required"
                                         defaultValue={currency}
                                         options={[
-                                            {value:"1", name:"USD"},
-                                            {value:"2", name:"RUB"}
+                                            {value:"USD", name:"USD"},
+                                            {value:"RUB", name:"RUB"}
                                         ]}
                                         label="Currency"
                                         onChange={(e)=> setCurrency(e.target.value)}
@@ -130,21 +177,22 @@ const EditSupplier = () => {
                                         id="password"
                                         label="Password"
                                         onChange={(e)=> setPassword(e.target.value)}
-                                        required
                                         aria-invalid={validPassword ? "false" : "true"}
                                     />
                                 </li>
                             </ul>
-                            <Button className="inline-btn">Change password</Button>
                             <Button className="inline-btn">Save changes</Button>
                         </form>
-
+                        <Button className="inline-btn" onClick={()=>setPasswordModalVisible(true)}>Change password</Button>
                     </div>
                 </div>
             </div>
             <Footer />
-            <Modal visible={modalVisible} setVisible={setModalVisible}>
+            <Modal visible={subscriptionModalVisible} setVisible={setSubscriptionModalVisible}>
                 <SubscriptionForm />
+            </Modal>
+            <Modal visible={passwordModalVisible} setVisible={setPasswordModalVisible}>
+                <PasswordForm />
             </Modal>
         </div>
         );

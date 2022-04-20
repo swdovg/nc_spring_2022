@@ -28,14 +28,12 @@ const UserInfo = ({heading}) => {
                 });
                 isMounted && setRole(response.data.payload.role) ;
                 isMounted && setName(response.data.payload.name);
-                console.log(role==="ROLE_SUPPLIER");
             } catch(err) {
                 console.log(err);
-                navigate('/login', { state: { from: location }, replace: true });
+                //navigate('/', { state: { from: location }, replace: true });
             }
         }
         getUserInfo();
-
         return () =>{
             isMounted=false;
             controller.abort();
