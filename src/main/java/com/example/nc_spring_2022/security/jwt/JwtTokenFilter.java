@@ -3,10 +3,10 @@ package com.example.nc_spring_2022.security.jwt;
 import com.example.nc_spring_2022.exception.JwtAuthenticationException;
 import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.service.UserService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.FilterChain;
@@ -17,8 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@RequiredArgsConstructor
-public class JwtTokenFilter extends GenericFilterBean {
+public class JwtTokenFilter extends BasicAuthenticationFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private ServletResponse servletResponse;
@@ -26,21 +25,30 @@ public class JwtTokenFilter extends GenericFilterBean {
     private FilterChain filterChain;
     private String token;
 
+    public JwtTokenFilter(JwtTokenProvider jwtTokenProvider,
+                          UserService userService,
+                          AuthenticationManager authenticationManager) {
+        super(authenticationManager);
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userService = userService;
+    }
+
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest servletRequest,
+                                    HttpServletResponse servletResponse,
+                                    FilterChain filterChain)
             throws IOException, ServletException {
         this.servletRequest = servletRequest;
         this.servletResponse = servletResponse;
         this.filterChain = filterChain;
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        token = jwtTokenProvider.resolveToken(request);
+        token = jwtTokenProvider.resolveToken(servletRequest);
 
         if (token == null) {
             acceptRequest();
             return;
         }
 
-        String requestUrl = request.getRequestURL().toString();
+        String requestUrl = servletRequest.getRequestURL().toString();
         if (requestUrl.contains("refreshToken")) {
             acceptRequest();
             return;

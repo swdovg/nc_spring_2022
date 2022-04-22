@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationEntryPoint())
                 .and()
-                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userService),
+                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userService, authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login()
                 .successHandler(customAuthenticationSuccessHandler)
