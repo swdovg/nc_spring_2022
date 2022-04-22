@@ -1,5 +1,6 @@
 import axios from "../api/axios.js";
 import useAuth from "./useAuth.js";
+import Cookies from 'js-cookie';
 
 const useRefreshToken = () => {
     const {auth, setAuth} = useAuth();
@@ -19,6 +20,7 @@ const useRefreshToken = () => {
             console.log(response.data.message);
             return { ...prev, accessToken: response.data.message }
         });
+        Cookies.set("token", response.accessToken,  { expires: 5 });
         return response.data.message;
     }
     return refresh;
