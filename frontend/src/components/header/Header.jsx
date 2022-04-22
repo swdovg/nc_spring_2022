@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import './header.css';
 import '../../styles/bootstrap.min.css';
 import '../../styles/style.css';
@@ -7,14 +7,18 @@ import facebook from '../../img/facebook.png';
 import twitter from '../../img/twitter.png';
 import {BrowserRouter, Routes ,Route,Link} from "react-router-dom";
 import {AuthContext} from '../../context/AuthContext.js';
+import Cookies from 'js-cookie';
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Header = () => {
+    const navigate = useNavigate();
     const {auth, setAuth} = useContext(AuthContext);
 
     const logout = event => {
         event.preventDefault();
         setAuth({});
-
+        Cookies.remove("token");
+        navigate("/login");
     }
 
     return(
@@ -42,8 +46,6 @@ const Header = () => {
                             :
                                 <Link to="/login" className="header-sing-link">Log In</Link>
                         }
-
-
                         </div>
                     </div>
                 </div>

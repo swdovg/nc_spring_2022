@@ -6,8 +6,7 @@ import Sign from '../pages/Sign.jsx';
 import Login from '../pages/Login.jsx';
 import Error from '../pages/Error.jsx';
 import Main from '../pages/Main.jsx';
-import EditConsumer from '../pages/EditConsumer.jsx';
-import EditSupplier from '../pages/EditSupplier.jsx';
+import EditUser from '../pages/EditUser.jsx';
 import CustomerView from '../pages/CustomerView.jsx';
 
 const ROLES= {
@@ -23,13 +22,9 @@ const AppRouter = () => {
                 <Route path="/login" element= {<Login/>}/>
                 <Route path="/sign" element= {<Sign/>}/>
                 <Route path="/" element= {<Main/>}/>
-                <Route element = {<RequireAuth allowedRole = {ROLES.supplier}/>}>
-                    <Route path="/edit-supplier" element= {<EditSupplier/>}/>
+                <Route element = {<RequireAuth allowedRole = {[ROLES.consumer, ROLES.supplier]}/>}>
                     <Route path="/customer-profile" element= {<CustomerView/>}/>
-                </Route>
-                <Route element = {<RequireAuth allowedRole = {[ROLES.consumer]}/>}>
-                    <Route path="/edit-consumer" element= {<EditConsumer/>}/>
-                    <Route path="/customer-profile" element= {<CustomerView/>}/>
+                    <Route path="/edit-user" element= {<EditUser/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

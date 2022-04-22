@@ -3,6 +3,7 @@ import {axiosPrivate} from "../api/axios.js";
 import {useEffect} from "react";
 import useAuth from "./useAuth.js";
 import useRefreshToken from "./useRefreshToken.js";
+import Cookies from 'js-cookie';
 
 //this hook attaches interceptors into request
 
@@ -14,9 +15,14 @@ const useAxiosPrivate = () => {
 
         const requestIntercept = axiosPrivate.interceptors.request.use(
             config => {
-                if (!config.headers['Authorization']) {
-                    config.headers['Authorization'] = `Bearer ${auth?.accessToken}`
+                const authToken = Cookies.get("token")
+                if (authToken)
+                {
+                    if (!config.headers['Authorization']) {
+                        config.headers['Authorization'] = `Bearer ${authToken}`
+                    }
                 }
+
                 return config;
             }, (err) => Promise.reject(err)
         );

@@ -28,14 +28,12 @@ const UserInfo = ({heading}) => {
                 });
                 isMounted && setRole(response.data.payload.role) ;
                 isMounted && setName(response.data.payload.name);
-                console.log(role==="ROLE_SUPPLIER");
             } catch(err) {
                 console.log(err);
-                navigate('/login', { state: { from: location }, replace: true });
+                //navigate('/', { state: { from: location }, replace: true });
             }
         }
         getUserInfo();
-
         return () =>{
             isMounted=false;
             controller.abort();
@@ -51,13 +49,13 @@ const UserInfo = ({heading}) => {
 
                 {role==="ROLE_SUPPLIER"
                     ?
-                    <Link to="/edit-supplier">
+                    <Link to="/edit-user">
                         <button className="setting_btn float-right" >
                             <img className="setting_btn_img" src={setting} alt="setting"/>
                         </button>
                     </Link>
                     :
-                    <Link to="/edit-consumer">
+                    <Link to="/edit-user">
                         <button className="setting_btn float-right" >
                             <img className="setting_btn_img" src={setting} alt="setting"/>
                         </button>
