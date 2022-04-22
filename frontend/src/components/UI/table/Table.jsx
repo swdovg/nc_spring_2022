@@ -22,30 +22,29 @@ const Table = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-//     useEffect( () => {
-//
-//         let isMounted = true;
-//         const controller = new AbortController(); //to cansel request if the component on mounting
-//
-//         const getSubscriptions = async () => {
-//             try {
-//                 const response = await axiosPrivate.get("/api/v1/subscriptions", {
-//                     signal: controller.signal      //to allow to cansel a request
-//                 });
-//                 console.log(response.data.payload.content);
-//                 isMounted && setSubscriptions(response.data.payload.content);
-//             } catch(err) {
-//                 console.log(err);
-//                 //navigate('/login', { state: { from: location }, replace: true });
-//             }
-//         }
-//         getSubscriptions();
-//
-//         return () =>{
-//             isMounted=false;
-//             controller.abort();
-//         }
-//     }, []);
+      useEffect( () => {
+
+         let isMounted = true;
+         const controller = new AbortController(); //to cansel request if the component on mounting
+
+         const getSubscriptions = async () => {
+             try {
+                 const response = await axiosPrivate.get("/api/v1/subscription?page=1&size=2&sort=id", {
+                     signal: controller.signal      //to allow to cansel a request
+                 });
+                 isMounted && setSubscriptions(response.data.payload.content);
+             } catch(err) {
+                 console.log(err);
+                 //navigate('/login', { state: { from: location }, replace: true });
+             }
+         }
+         getSubscriptions();
+
+         return () =>{
+             isMounted=false;
+             controller.abort();
+         }
+     }, []);
 
     return (
     <>

@@ -42,7 +42,6 @@ const LoginForm = () => {
             const isAuth = true;
             setAuth({email, password, role, accessToken, isAuth});
             Cookies.set("token", accessToken);
-
             console.log(response.data);
             setEmail("");
             setPassword("");

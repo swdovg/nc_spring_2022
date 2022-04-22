@@ -49,13 +49,13 @@ const UserInfo = ({heading}) => {
 
                 {role==="ROLE_SUPPLIER"
                     ?
-                    <Link to="/edit-supplier">
+                    <Link to="/edit-user">
                         <button className="setting_btn float-right" >
                             <img className="setting_btn_img" src={setting} alt="setting"/>
                         </button>
                     </Link>
                     :
-                    <Link to="/edit-consumer">
+                    <Link to="/edit-user">
                         <button className="setting_btn float-right" >
                             <img className="setting_btn_img" src={setting} alt="setting"/>
                         </button>
