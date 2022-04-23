@@ -3,7 +3,6 @@ package com.example.nc_spring_2022.controller;
 import com.example.nc_spring_2022.dto.model.LoginDto;
 import com.example.nc_spring_2022.dto.model.RegisterDto;
 import com.example.nc_spring_2022.dto.model.Response;
-import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
 import com.example.nc_spring_2022.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
     public Response<Map<String, String>> loginSupplier(@Valid @RequestBody LoginDto loginDto) {
@@ -30,8 +28,7 @@ public class AuthController {
     }
 
     @GetMapping("/refreshToken")
-    public Response<Void> refreshToken(HttpServletRequest request) {
-        String token = jwtTokenProvider.resolveToken(request);
-        return new Response<>(jwtTokenProvider.refreshToken(token));
+    public Response<Map<String, String>> refreshToken(HttpServletRequest request) {
+        return new Response<>(authService.refreshToken(request));
     }
 }

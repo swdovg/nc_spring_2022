@@ -28,7 +28,8 @@ public class ImageService {
 
     public Image findById(Long id) {
         return imageRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Image with id: %d was not found", id)));
+                new EntityNotFoundException(String.format("Image with id: %d was not found", id))
+        );
     }
 
     public ImageDto getInfo(Long id) {
@@ -69,7 +70,6 @@ public class ImageService {
         Subscription subscription = subscriptionService.findById(subscriptionId);
         deleteOldImage(subscription.getImage());
 
-        System.out.println(subscriptionId.toString());
         Image newImage = save(multipartFile, subscriptionId);
         subscription.setImage(newImage);
         subscriptionService.save(subscription);

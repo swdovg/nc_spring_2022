@@ -22,7 +22,8 @@ public class SubscriptionService {
 
     public Subscription findById(Long id) {
         return subscriptionRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Subscription with id: %d was not found", id)));
+                new EntityNotFoundException(String.format("Subscription with id: %d was not found", id))
+        );
     }
 
     public SubscriptionDto getDtoById(Long id) {

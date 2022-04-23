@@ -1,12 +1,11 @@
 package com.example.nc_spring_2022.config;
 
-import com.example.nc_spring_2022.security.jwt.CustomUserDetailsService;
 import com.example.nc_spring_2022.security.jwt.JwtTokenFilter;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
+import com.example.nc_spring_2022.security.jwt.JwtUserDetailsService;
 import com.example.nc_spring_2022.security.oauth2.AuthenticationEntryPoint;
 import com.example.nc_spring_2022.security.oauth2.CustomAuthenticationFailureHandler;
 import com.example.nc_spring_2022.security.oauth2.CustomAuthenticationSuccessHandler;
-import com.example.nc_spring_2022.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,9 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtUserDetailsService jwtUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
@@ -33,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
+                .userDetailsService(jwtUserDetailsService)
                 .passwordEncoder(bCryptPasswordEncoder);
     }
 
@@ -59,8 +57,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationEntryPoint())
                 .and()
-                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userService, authenticationManager()),
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(
+                        new JwtTokenFilter(jwtTokenProvider, jwtUserDetailsService, authenticationManager()),
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 .oauth2Login()
                 .successHandler(customAuthenticationSuccessHandler)
                 .failureHandler(customAuthenticationFailureHandler);

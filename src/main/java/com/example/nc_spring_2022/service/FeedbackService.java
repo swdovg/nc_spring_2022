@@ -50,12 +50,16 @@ public class FeedbackService {
     }
 
     public FeedbackDto save(FeedbackDto feedbackDto) {
-        if (isExists(feedbackDto)) {
-            throw new EntityAlreadyExistsException("You have already posted your feedback on this subscription");
-        }
+        checkForFeedbackExistence(feedbackDto);
         Feedback feedback = feedbackMapper.createFrom(feedbackDto);
         feedback = save(feedback);
         return feedbackMapper.createFrom(feedback);
+    }
+
+    private void checkForFeedbackExistence(FeedbackDto feedbackDto) {
+        if (isExists(feedbackDto)) {
+            throw new EntityAlreadyExistsException("You have already posted your feedback on this subscription");
+        }
     }
 
     public String delete(Long subscriptionId) {

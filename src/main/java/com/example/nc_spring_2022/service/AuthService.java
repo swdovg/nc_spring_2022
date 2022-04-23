@@ -10,12 +10,15 @@ import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.repository.UserRepository;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
+import com.example.nc_spring_2022.security.jwt.JwtUser;
+import com.example.nc_spring_2022.security.jwt.JwtUserFactory;
 import com.example.nc_spring_2022.security.oauth2.user.OAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +31,13 @@ public class AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final AuthenticationFacade authenticationFacade;
+
+    public Map<String, String> refreshToken(HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+        JwtUser jwtUser = jwtTokenProvider.getJwtUser(token);
+
+        return getToken(jwtUser);
+    }
 
     public Map<String, String> login(LoginDto loginDTO) {
         User user = getByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
@@ -53,6 +63,22 @@ public class AuthService {
         return getToken(user);
     }
 
+    private User createUser(RegisterDto registerDto) {
+        User user = new User();
+
+        user.setEmail(registerDto.getEmail());
+        user.setPassword(bCryptPasswordEncoder.encode(registerDto.getPassword()));
+        user.setName(registerDto.getName());
+        user.setPhoneNumber(registerDto.getPhoneNumber());
+        if (registerDto.isConsumer()) {
+            user.setRole(Role.ROLE_CONSUMER);
+        } else {
+            user.setRole(Role.ROLE_SUPPLIER);
+        }
+
+        return userService.save(user);
+    }
+
     public Map<String, String> updatePassword(PasswordChangeDto passwordChangeDto) {
         Long userId = authenticationFacade.getUserId();
         User user = getByIdAndPassword(userId, passwordChangeDto.getOldPassword());
@@ -73,6 +99,12 @@ public class AuthService {
     }
 
     public Map<String, String> registerOrUpdateOAuthUser(OAuth2User oAuth2User) {
+        User user = createUser(oAuth2User);
+        user = userService.save(user);
+        return getToken(user);
+    }
+
+    private User createUser(OAuth2User oAuth2User) {
         Optional<User> optionalUser = userRepository.findByEmail(oAuth2User.getEmail());
         User user;
 
@@ -89,28 +121,16 @@ public class AuthService {
             user.setProvider(AuthProvider.GOOGLE);
         }
 
-        user = userService.save(user);
-        return getToken(user);
-    }
-
-    private User createUser(RegisterDto registerDto) {
-        User user = new User();
-
-        user.setEmail(registerDto.getEmail());
-        user.setPassword(bCryptPasswordEncoder.encode(registerDto.getPassword()));
-        user.setName(registerDto.getName());
-        user.setPhoneNumber(registerDto.getPhoneNumber());
-        if (registerDto.isConsumer()) {
-            user.setRole(Role.ROLE_CONSUMER);
-        } else {
-            user.setRole(Role.ROLE_SUPPLIER);
-        }
-
-        return userService.save(user);
+        return user;
     }
 
     private Map<String, String> getToken(User user) {
-        String token = jwtTokenProvider.createToken(user.getId(), user.getRole(), user.getVersion());
+        JwtUser jwtUser = JwtUserFactory.create(user);
+        return getToken(jwtUser);
+    }
+
+    private Map<String, String> getToken(JwtUser user) {
+        String token = jwtTokenProvider.createToken(user);
 
         Map<String, String> response = new HashMap<>();
         response.put("token", token);

@@ -25,16 +25,17 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        addCookies(response, authentication);
+        OAuth2AuthenticationToken authenticationToken = (OAuth2AuthenticationToken) authentication;
+        OAuth2User oAuth2User = OAuth2UserFactory.getOAuth2User(
+                authenticationToken.getAuthorizedClientRegistrationId(),
+                authenticationToken.getPrincipal().getAttributes()
+        );
+        addCookies(response, oAuth2User);
 
         response.sendRedirect(redirectPath);
     }
 
-    private void addCookies(HttpServletResponse response, Authentication authentication) {
-        OAuth2AuthenticationToken authenticationToken = (OAuth2AuthenticationToken) authentication;
-        OAuth2User oAuth2User = OAuth2UserFactory.getOAuth2User(authenticationToken.getAuthorizedClientRegistrationId(),
-                authenticationToken.getPrincipal().getAttributes());
-
+    private void addCookies(HttpServletResponse response, OAuth2User oAuth2User) {
         Map<String, String> userData = authService.registerOrUpdateOAuthUser(oAuth2User);
         Cookie token = new Cookie("token", userData.get("token"));
         token.setPath(redirectPath);

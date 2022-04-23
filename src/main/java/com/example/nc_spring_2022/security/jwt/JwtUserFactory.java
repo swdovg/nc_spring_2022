@@ -8,10 +8,24 @@ public class JwtUserFactory {
     }
 
     public static JwtUser create(User user) {
-        return new JwtUser(user.getId(), user.getEmail(), user.getPassword(), user.getRole(), user.getVersion());
+        JwtUser jwtUser = new JwtUser();
+
+        jwtUser.setId(user.getId());
+        jwtUser.setUsername(user.getEmail());
+        jwtUser.setPassword(user.getPassword());
+        jwtUser.setRole(user.getRole());
+        jwtUser.setVersion(user.getVersion());
+
+        return jwtUser;
     }
 
     public static JwtUser create(Long id, Role role, Integer version) {
-        return new JwtUser(id, null, null, role, version);
+        JwtUser jwtUser = new JwtUser();
+
+        jwtUser.setId(id);
+        jwtUser.setRole(role);
+        jwtUser.setVersion(version);
+
+        return jwtUser;
     }
 }

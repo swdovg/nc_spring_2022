@@ -16,6 +16,7 @@ public class UserMapper {
 
     public UserDto createFrom(User user) {
         UserDto userDto = new UserDto();
+
         userDto.setId(user.getId());
         userDto.setCurrency(user.getCurrency());
         if (user.getDefaultLocation() != null) {
@@ -27,6 +28,7 @@ public class UserMapper {
         userDto.setEmail(user.getEmail());
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setRole(user.getRole());
+
         return userDto;
     }
 
