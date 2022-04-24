@@ -22,7 +22,7 @@ const Table = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-      useEffect( () => {
+    /* useEffect( () => {
 
          let isMounted = true;
          const controller = new AbortController(); //to cansel request if the component on mounting
@@ -44,7 +44,7 @@ const Table = (props) => {
              isMounted=false;
              controller.abort();
          }
-     }, []);
+     }, []); */
 
     return (
     <>

@@ -32,10 +32,19 @@
     font-size: 16px;
     line-height: 19px;
     margin-bottom: 12px;
-    color: #747474;
+}
+
+.card_price{
+    display: block;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 8px;
+    margin-left: 19%;
+    margin-top: 10px;
 }
 
 .card_btn{
+    display: inline;
     max-width: 65px;
     max-height: 30px;
     padding-left: 25px;

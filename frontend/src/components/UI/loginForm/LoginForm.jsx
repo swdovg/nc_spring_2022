@@ -84,9 +84,9 @@ const LoginForm = () => {
             <Button>
                 Login now
             </Button>
-            <Button>
+{/*             <Button>
                 <img className="icon google-icon" src={google} alt="Google icon"/> Or sign-in with google
-            </Button>
+            </Button> */}
         </form>
     );
 };

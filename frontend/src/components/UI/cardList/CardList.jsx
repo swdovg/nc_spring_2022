@@ -7,16 +7,16 @@ const CardList = () => {
     return (
         <div className="row">
             <div className="col-xl-6 col-lg-6">
-                <ProductCard />
+                <ProductCard price="50 $" title="Netflix" supplier="Netflix Co" description="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."/>
             </div>
             <div className="col-xl-6 col-lg-6">
-               <ProductCard />
+               <ProductCard price="50 $" title="Netflix" supplier="Netflix Co" description="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."/>
             </div>
             <div className="col-xl-6 col-lg-6">
-               <ProductCard />
+               <ProductCard price="50 $" title="Netflix" supplier="Netflix Co" description="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."/>
             </div>
             <div className="col-xl-6 col-lg-6">
-               <ProductCard />
+               <ProductCard price="50 $" title="Netflix" supplier="Netflix Co" description="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."/>
             </div>
         </div>
 
