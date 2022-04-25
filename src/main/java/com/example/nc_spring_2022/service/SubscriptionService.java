@@ -20,6 +20,11 @@ public class SubscriptionService {
     private final SubscriptionMapper subscriptionMapper;
     private final AuthenticationFacade authenticationFacade;
 
+    public Page<SubscriptionDto> getAll(Pageable pageable) {
+        Page<Subscription> subscriptions = subscriptionRepository.findAll(pageable);
+        return subscriptions.map(subscriptionMapper::createFrom);
+    }
+
     public Subscription findById(Long id) {
         return subscriptionRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException(String.format("Subscription with id: %d was not found", id))

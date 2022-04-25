@@ -32,6 +32,11 @@ public class SubscriptionController {
     }
 
     @GetMapping
+    public Response<Page<SubscriptionDto>> getAllSubscriptions(Pageable pageable) {
+        return new Response<>(subscriptionService.getAll(pageable));
+    }
+
+    @GetMapping("/order")
     public Response<Page<SubscriptionOrderDto>> getOrdersForConsumer(Pageable pageable) {
         return new Response<>(orderService.getOrdersForConsumer(pageable));
     }
