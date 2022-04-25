@@ -69,7 +69,6 @@ const EditUser = () => {
                 isMounted && setRole(response.data.payload.role);
                 isMounted && setCurrency(response.data.payload.currency);
                 isMounted && setId(response.data.payload.id);
-                Cookies.set("user", JSON.stringify(response.data.payload))
 
                  response = await axiosPrivate.get(
                  LOCATION_URL,

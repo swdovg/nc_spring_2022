@@ -7,6 +7,7 @@ import {BrowserRouter, Routes ,Route,Link} from "react-router-dom";
 import useRefreshToken from "../../../hook/useRefreshToken.js"
 import useAxiosPrivate from "../../../hook/useAxiosPrivate.js"
 import { useNavigate, useLocation } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const UserInfo = ({heading}) => {
 
@@ -28,6 +29,7 @@ const UserInfo = ({heading}) => {
                 });
                 isMounted && setRole(response.data.payload.role) ;
                 isMounted && setName(response.data.payload.name);
+                Cookies.set("user", JSON.stringify(response.data.payload))
             } catch(err) {
                 console.log(err);
                 //navigate('/', { state: { from: location }, replace: true });

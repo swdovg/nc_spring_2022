@@ -9,7 +9,7 @@ const ProductCard = (props) => {
         <div className={cl.card}>
             <div>
                 <img src={card_img} alt="Profile Image" className={cl.card_img} />
-                <p className={cl.card_price}>{props.price}</p>
+                <p className={cl.card_price}>{props.price} {props.currency}</p>
             </div>
             <div className={cl.card_info}>
                 <h3 className={cl.card_heading}>{props.title} </h3>

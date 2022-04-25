@@ -14,6 +14,11 @@ import CardList from '../components/UI/cardList/CardList.jsx';
 
 const Main = () => {
 
+    const [selectedCategory, setSelectedCategory] = useState();
+    const updateCategory = (value) => {
+       setSelectedCategory(value);
+    }
+
     return (
         <div>
             <Header />
@@ -28,10 +33,10 @@ const Main = () => {
             </div>
                 <div className="row">
                     <div className="col-xl-3 col-lg-3 d-sm-none d-none d-md-none d-lg-block">
-                        <Menu/>
+                        <Menu updateCategory={updateCategory}/>
                     </div>
                     <div className="col-xl-9 col-lg-9 main_cards">
-                        <CardList />
+                        <CardList selectedCategory={selectedCategory}/>
                     </div>
 
                 </div>

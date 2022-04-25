@@ -6,6 +6,7 @@ import Select from '../select/Select';
 import Textarea from '../textarea/Textarea';
 import InputBtn from '../button/InputBtn';
 import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
+import Cookies from 'js-cookie';
 
 const SUBSCRIPTION_URL = "api/v1/subscription"
 
@@ -23,10 +24,11 @@ const SubscriptionForm = (...props) =>  {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [price, setPrice] = useState();
+    const [price, setPrice] = useState(0);
     const [currency, setCurrency] = useState({});
-    const [averageRating, setAverageRating] = useState();
+    const [averageRating, setAverageRating] = useState(0);
     const [category, setCategory] = useState({});
+    const [categoryId, setCategoryId] = useState(0);
     const [categoryList, setCategoryList] = useState([]);
 
     useEffect( () => {
@@ -44,16 +46,54 @@ const SubscriptionForm = (...props) =>  {
             }
         }
         getCategories();
-        console.log(categoryList);
         return () =>{
             isMounted=false;
             controller.abort();
         }
     }, []);
 
+    const onCategoryChange = (e) => {
+        setCategory(e.target.value);
+        const el = e.target.childNodes[e.target.selectedIndex];
+        setCategoryId(Number(el.getAttribute('id')));
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
+        const supplier = JSON.parse(Cookies.get("user"));
+        console.log(description);
+        const subInfo ={
+            title,
+            description,
+            price,
+            averageRating,
+            category: {
+                id: categoryId,
+                name: category,
+                parentId: 0
+            }
+         };
+         try {
+            const response = await axiosPrivate.post(
+                SUBSCRIPTION_URL,
+                {
+                    title,
+                    description,
+                    price,
+                    averageRating,
+                    category: {
+                     id: categoryId,
+                     name: category,
+                     parentId: 0
+                    },
+                    supplier,
+                    ordered:true
+                 },
+                 {
+                     headers: {'Content-Type': 'application/json'},
+                     withCredentials: true
+                 }
+             );
         }
         catch(err) {
             if (!err?.response)
@@ -72,16 +112,17 @@ const SubscriptionForm = (...props) =>  {
         <form onSubmit = {handleSubmit} className={classes.form}>
             <ul className={classes.form_inputs}>
                 <li>
-                    <Input type="text" id="subscription-name" name="subscription-name" label="Name"/>
+                    <Input required type="text" id="subscription-name" name="subscription-name" label="Name" onChange={(e)=> setTitle(e.target.value)}/>
                 </li>
                 <li>
-                    <Input type="number" id="price" name="price" label="Price"/>
+                    <Input required type="number" id="price" name="price" label="Price" onChange={(e)=> setPrice(e.target.value)}/>
                 </li>
                 <li>
                     <Select
                         name="currency" required="required"
                         defaultValue="Currency"
-                        label="Currency">
+                        label="Currency"
+                        onChange={(e)=> setCurrency(e.target.value)}>
                         <option>USD </option>
                         <option>RUB </option>
                     </Select>
@@ -90,13 +131,15 @@ const SubscriptionForm = (...props) =>  {
                     <Select
                         name="currency" required="required"
                         defaultValue="Category"
-                        label="Currency">
-                         {categoryList.map((loc) =>
+                        label="Category"
+                        onChange={onCategoryChange}>
+                         {categoryList?.map((loc) =>
                             <option key={loc.id} id={loc.id} value={loc.name}>{loc.name}</option>)}
                     </Select>
                 </li>
                 <li>
-                  <Textarea id="description" name="description" label="Description" maxlength="120"/>
+                  <Textarea required id="description" name="description" label="Description" maxlength="120"
+                  onChange={(e)=> setDescription(e.target.value)}/>
                 </li>
             </ul>
             {[...Array(count)].map(() => <Input type="text" id={count} name="subscription-question" label="Question"/>)}

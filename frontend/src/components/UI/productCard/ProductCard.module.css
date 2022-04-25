@@ -1,6 +1,7 @@
 .card{
     display: flex;
-    margin-bottom:48px;
+    margin-bottom:40px;
+    margin-top:20px;
 }
 
 .card_img{
@@ -39,7 +40,7 @@
     font-weight: 700;
     font-size: 18px;
     margin-bottom: 8px;
-    margin-left: 19%;
+    margin-left: 10%;
     margin-top: 10px;
 }
 
