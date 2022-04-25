@@ -112,6 +112,7 @@ public class AuthService {
             user = optionalUser.get();
             user.setName(oAuth2User.getName());
             user.setProviderId(oAuth2User.getId());
+            user.setImageUrl(oAuth2User.getImageUrl());
         } else {
             user = new User();
             user.setName(oAuth2User.getName());
@@ -119,6 +120,7 @@ public class AuthService {
             user.setProviderId(oAuth2User.getId());
             user.setRole(Role.ROLE_CONSUMER);
             user.setProvider(AuthProvider.GOOGLE);
+            user.setImageUrl(oAuth2User.getImageUrl());
         }
 
         return user;

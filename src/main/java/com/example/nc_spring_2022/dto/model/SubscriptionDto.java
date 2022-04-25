@@ -22,4 +22,5 @@ public class SubscriptionDto {
     private CategoryDto category;
     private UserDto supplier;
     private boolean isOrdered = false;
+    private String imageUrl;
 }

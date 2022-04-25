@@ -28,6 +28,7 @@ public class UserMapper {
         userDto.setEmail(user.getEmail());
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setRole(user.getRole());
+        userDto.setImageUrl(user.getImageUrl());
 
         return userDto;
     }

@@ -2,6 +2,7 @@ package com.example.nc_spring_2022.service;
 
 import com.example.nc_spring_2022.dto.mapper.ImageMapper;
 import com.example.nc_spring_2022.dto.model.ImageDto;
+import com.example.nc_spring_2022.exception.AuthorizationException;
 import com.example.nc_spring_2022.model.Image;
 import com.example.nc_spring_2022.model.Subscription;
 import com.example.nc_spring_2022.model.User;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
@@ -56,34 +58,49 @@ public class ImageService {
     public ImageDto saveUserImage(MultipartFile multipartFile) throws IOException {
         Long userId = authenticationFacade.getUserId();
         User user = userService.findById(userId);
-        deleteOldImage(user.getImage());
+        deleteOldImage(user.getImageId());
 
         Image newImage = save(multipartFile, userId);
-        user.setImage(newImage);
+        user.setImageUrl(getImageUrl(newImage));
         userService.save(user);
 
         return imageMapper.createFrom(newImage);
     }
 
+
+    private void deleteOldImage(Long imageId) {
+        if (imageId != null) {
+            delete(imageId);
+        }
+    }
+
     @Transactional
     public ImageDto saveSubscriptionImage(MultipartFile multipartFile, Long subscriptionId) throws IOException {
         Subscription subscription = subscriptionService.findById(subscriptionId);
-        deleteOldImage(subscription.getImage());
+        checkPermissionsToUpdateSubscriptionImage(subscription);
+        deleteOldImage(subscription.getImageId());
 
         Image newImage = save(multipartFile, subscriptionId);
-        subscription.setImage(newImage);
+        subscription.setImageUrl(getImageUrl(newImage));
         subscriptionService.save(subscription);
 
         return imageMapper.createFrom(newImage);
     }
 
-    private void deleteOldImage(Image image) {
-        if (image != null) {
-            delete(image);
+    private void checkPermissionsToUpdateSubscriptionImage(Subscription subscription) {
+        Long userId = authenticationFacade.getUserId();
+        if (subscription.getSupplier().getId().equals(userId)) {
+            throw new AuthorizationException("You can not edit another's subscription");
         }
     }
 
-    public void delete(Image image) {
-        imageRepository.delete(image);
+    private String getImageUrl(Image image) {
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        String imagesEndpoint = baseUrl + "/api/v1/image/";
+        return imagesEndpoint + image.getId();
+    }
+
+    public void delete(Long id) {
+        imageRepository.deleteById(id);
     }
 }

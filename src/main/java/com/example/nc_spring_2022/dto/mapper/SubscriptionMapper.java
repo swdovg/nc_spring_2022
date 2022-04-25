@@ -34,6 +34,7 @@ public class SubscriptionMapper {
         subscriptionDto.setPrice(subscription.getPrice());
         subscriptionDto.setSupplier(userMapper.createFrom(subscription.getSupplier()));
         subscriptionDto.setAverageRating(getAverageRating(subscription));
+        subscriptionDto.setImageUrl(subscription.getImageUrl());
         setOrdered(subscriptionDto);
 
         return subscriptionDto;
