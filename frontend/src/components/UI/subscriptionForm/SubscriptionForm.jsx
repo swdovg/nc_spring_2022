@@ -123,8 +123,8 @@ const SubscriptionForm = (...props) =>  {
                         defaultValue="Currency"
                         label="Currency"
                         onChange={(e)=> setCurrency(e.target.value)}>
-                        <option>USD </option>
-                        <option>RUB </option>
+                        <option value = "USD">USD </option>
+                        <option value = "RUB">RUB </option>
                     </Select>
                 </li>
                 <li>
