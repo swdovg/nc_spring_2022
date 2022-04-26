@@ -1,20 +1,18 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import '../styles/main.css';
 import '../styles/style.css';
 import '../styles/bootstrap.min.css';
-import Button from '../components/UI/button/Button';
-import Select from '../components/UI/select/Select';
 import Header from '../components/header/Header.jsx';
 import Footer from '../components/footer/Footer.jsx';
 import Menu from '../components/UI/menu/Menu.jsx';
 import Search from '../components/UI/search/Search.jsx';
-import ProductCard from '../components/UI/productCard/ProductCard.jsx';
 import CardList from '../components/UI/cardList/CardList.jsx';
 
 
 const Main = () => {
 
     const [selectedCategory, setSelectedCategory] = useState();
+
     const updateCategory = (value) => {
        setSelectedCategory(value);
     }

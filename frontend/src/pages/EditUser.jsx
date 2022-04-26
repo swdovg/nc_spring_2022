@@ -52,25 +52,21 @@ const EditUser = () => {
     }, [password] );
 
     useEffect( () => {
-        console.log(defaultLocation);
+        const user = JSON.parse(Cookies.get("user"));
+        setName(user.name);
+        setDefaultLocation(user.defaultLocation?.location);
+        setLocationId(user.defaultLocation?.id);
+        setPhoneNumber(user.phoneNumber);
+        setRole(user.role);
+        setCurrency(user.currency);
+        setId(user.id);
+
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
 
         const getInfo = async () => {
             try {
-                let response = await axiosPrivate.get("api/v1/user", {
-                    signal: controller.signal      //to allow to cansel a request
-                });
-
-                isMounted && setName(response.data.payload.name);
-                isMounted && setDefaultLocation(response.data.payload.defaultLocation.location);
-                isMounted && setLocationId(response.data.payload.defaultLocation.id);
-                isMounted && setPhoneNumber(response.data.payload.phoneNumber);
-                isMounted && setRole(response.data.payload.role);
-                isMounted && setCurrency(response.data.payload.currency);
-                isMounted && setId(response.data.payload.id);
-
-                 response = await axiosPrivate.get(
+                 const response = await axiosPrivate.get(
                  LOCATION_URL,
                  {
                     signal: controller.signal      //to allow to cansel a request
@@ -173,7 +169,7 @@ const EditUser = () => {
                                     label={"Phone Number"}/>
                                 </li>
                                 <li>
-                                {locations?.length>1
+                                {locations?.length>0
                                 ?
                                     <Select
                                         defaultValue={defaultLocation}
@@ -186,7 +182,7 @@ const EditUser = () => {
                                     <Input
                                         type="text"
                                         id="defaultLocation"
-                                        value = {defaultLocation?.location}
+                                        value = {defaultLocation}
                                         label={"Main Address"}
                                         onChange={(e)=> setDefaultLocation(e.target)}/>
                                 }

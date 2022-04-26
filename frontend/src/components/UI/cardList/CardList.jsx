@@ -35,7 +35,7 @@ const CardList = (props) => {
         <div className="row">
              {cardList.map((card) =>
                 <div className="col-xl-6 col-lg-6">
-                    <ProductCard key={card.id} price={card.price} currency={card.currency} title={card.title} supplier={card.supplier.name} description={card.description}/>
+                    <ProductCard key={card.id} id={card.id} price={card.price} currency={card.currency} title={card.title} supplier={card.supplier.name} description={card.description}/>
                 </div>)}
         </div>
 

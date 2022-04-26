@@ -9,7 +9,7 @@ import useAxiosPrivate from "../../../hook/useAxiosPrivate.js"
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
 
-const UserInfo = ({heading}) => {
+const UserInfo = (props) => {
 
     const [name, setName] = useState();
     const [role, setRole] = useState();
@@ -27,9 +27,9 @@ const UserInfo = ({heading}) => {
                 const response = await axiosPrivate.get("api/v1/user", {
                     signal: controller.signal      //to allow to cansel a request
                 });
-                isMounted && setRole(response.data.payload.role) ;
-                isMounted && setName(response.data.payload.name);
-                Cookies.set("user", JSON.stringify(response.data.payload))
+                isMounted && setRole(response.data?.payload.role) ;
+                isMounted && setName(response.data?.payload.name);
+                Cookies.set("user", JSON.stringify(response.data?.payload))
             } catch(err) {
                 console.log(err);
                 //navigate('/', { state: { from: location }, replace: true });
@@ -72,7 +72,7 @@ const UserInfo = ({heading}) => {
             <hr />
             <div className="userinfo_info">
                 <p className="userinfo_info_text"> Subcriptions:</p>
-                <p className="userinfo_info_number">50 </p>
+                <p className="userinfo_info_number">{props.amount} </p>
                 <p className="userinfo_info_currency"> USD/month</p>
             </div>
         </div>
