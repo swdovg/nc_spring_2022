@@ -10,14 +10,17 @@
     display: none;
     overflow: auto;
     z-index: 1000;
-    align-content: center;
+
 }
 
 .modalContent {
-    width: 60%;
+    align-items: center;
+    padding: 50px;
+    min-width: 50%;
     padding: 2%;
     background: #F6F6F6;
     border-radius: 16px;
+    align-content: center;
 }
 
 .modal.active {

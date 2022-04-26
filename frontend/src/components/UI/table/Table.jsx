@@ -4,17 +4,26 @@ import '../../../styles/bootstrap.min.css';
 import useRefreshToken from "../../../hook/useRefreshToken.js"
 import useAxiosPrivate from "../../../hook/useAxiosPrivate.js"
 import { useNavigate, useLocation } from "react-router-dom";
+import Modal from '../modal/Modal.jsx';
+import Button from '../button/Button.jsx';
 
 const Subscription = (props)=>{
+    const [modalVisible, setModalVisible] = useState(false);
     return(
-        <tr className="table_row">
-            <td className="table_cont_item col-xl-6 col-lg-6">{props.title}</td>
-            <td className="table_cont_item col-xl-3 col-lg-3">{props.price} {props.currency}</td>
-            <td className="table_cont_item col-xl-3 col-lg-3">
-                {props.date}
-                <button className="remove_btn"/>
-            </td>
-        </tr>
+        <>
+            <tr className="table_row">
+                <td className="table_cont_item col-xl-6 col-lg-6">{props.title}</td>
+                <td className="table_cont_item col-xl-3 col-lg-3">{props.price} {props.currency}</td>
+                <td className="table_cont_item col-xl-3 col-lg-3">
+                    {props.date}
+                    <button className="remove_btn" onClick={()=>setModalVisible(true)}/>
+                </td>
+            </tr>
+            <Modal visible={modalVisible} setVisible={setModalVisible}>
+                <p>Do you want to delete subscription?</p>
+                <Button onClick={()=>setModalVisible(false)}>Yes </Button>
+            </Modal>
+        </>
     )
 };
 
@@ -90,9 +99,9 @@ const Table = (props) => {
                     </>
                 ) : <tr><td></td></tr>
             }
-
             </tbody>
         </table>
+
         </>
     )
 };
