@@ -1,5 +1,6 @@
 package com.example.nc_spring_2022.security.jwt;
 
+import com.example.nc_spring_2022.exception.AuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -62,18 +63,18 @@ public class JwtTokenFilter extends BasicAuthenticationFilter {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    private void rejectRequest() throws IOException {
-        servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+    private void rejectRequest() {
+        throw new AuthenticationException("Unauthorized");
     }
 
-    private void setAuthentication() throws IOException {
+    private void setAuthentication() {
         Authentication authentication = jwtTokenProvider.getAuthentication(token);
         JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
         verifyJwtUserValid(jwtUser);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private void verifyJwtUserValid(JwtUser jwtUser) throws IOException {
+    private void verifyJwtUserValid(JwtUser jwtUser) {
         JwtUser dbUser = getDbUser(jwtUser.getId());
 
         if (dbUser == null || !jwtUser.getVersion().equals(dbUser.getVersion())) {
@@ -81,7 +82,7 @@ public class JwtTokenFilter extends BasicAuthenticationFilter {
         }
     }
 
-    private JwtUser getDbUser(Long userId) throws IOException {
+    private JwtUser getDbUser(Long userId) {
         try {
             return (JwtUser) jwtUserDetailsService.loadUserById(userId);
         } catch (EntityNotFoundException exception) {
