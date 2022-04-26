@@ -19,7 +19,6 @@ const CardList = (props) => {
                     signal: controller.signal      //to allow to cansel a request
                 });
                 isMounted && setCardList(response.data.payload.content);
-                console.log(cardList);
             } catch(err) {
                 console.log(err);
             }
@@ -33,9 +32,9 @@ const CardList = (props) => {
 
     return (
         <div className="row">
-             {cardList.map((card) =>
+             {cardList.map((card, i) =>
                 <div className="col-xl-6 col-lg-6">
-                    <ProductCard key={card.id} id={card.id} price={card.price} currency={card.currency} title={card.title} supplier={card.supplier.name} description={card.description}/>
+                    <ProductCard key={i} id={card.id} price={card.price} currency={card.currency} title={card.title} supplier={card.supplier.name} description={card.description}/>
                 </div>)}
         </div>
 

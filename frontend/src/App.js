@@ -5,6 +5,17 @@ import {AuthContext} from './context/AuthContext.js';
 import useAuth from './hook/useAuth.js';
 
 function App() {
+    const {auth, setAuth} = useAuth();
+
+    useEffect(() => {
+        try{
+            setAuth(JSON.parse(Cookies.get("user")));
+            //console.log(auth);
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+    }, []);
 
     return (
          <AppRouter/>

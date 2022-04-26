@@ -12,34 +12,14 @@ import Cookies from 'js-cookie';
 const UserInfo = (props) => {
 
     const [name, setName] = useState();
+    const [user, setUser] = useState({});
     const [role, setRole] = useState();
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect( () => {
-
-        let isMounted = true;
-        const controller = new AbortController(); //to cansel request if the component on mounting
-
-        const getUserInfo = async () => {
-            try {
-                const response = await axiosPrivate.get("api/v1/user", {
-                    signal: controller.signal      //to allow to cansel a request
-                });
-                isMounted && setRole(response.data?.payload.role) ;
-                isMounted && setName(response.data?.payload.name);
-                Cookies.set("user", JSON.stringify(response.data?.payload))
-            } catch(err) {
-                console.log(err);
-                //navigate('/', { state: { from: location }, replace: true });
-            }
-        }
-        getUserInfo();
-        return () =>{
-            isMounted=false;
-            controller.abort();
-        }
+        setUser(JSON.parse(Cookies.get("user")));
     }, []);
 
 
@@ -47,7 +27,7 @@ const UserInfo = (props) => {
         <div className="col-xl-4 col-lg-4 d-md-none d-sm-none d-none d-lg-block d-xl-block">
             <div className="userinfo_head">
                 <img className="userinfo_head_img" src={profile_img} alt="Profile Image"/>
-                <p className="userinfo_head_name"> {name} </p>
+                <p className="userinfo_head_name"> {user.name} </p>
 
                 {role==="ROLE_SUPPLIER"
                     ?

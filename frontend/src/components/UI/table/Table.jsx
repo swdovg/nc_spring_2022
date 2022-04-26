@@ -10,7 +10,10 @@ const Subscription = (props)=>{
         <tr className="table_row">
             <td className="table_cont_item col-xl-6 col-lg-6">{props.title}</td>
             <td className="table_cont_item col-xl-3 col-lg-3">{props.price} {props.currency}</td>
-            <td className="table_cont_item col-xl-3 col-lg-3">{props.date}</td>
+            <td className="table_cont_item col-xl-3 col-lg-3">
+                {props.date}
+                <button className="remove_btn"/>
+            </td>
         </tr>
     )
 };

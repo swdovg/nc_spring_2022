@@ -27,3 +27,20 @@
     font-weight: 400;
     font-size: 18px;
 }
+
+.remove_btn{
+    display: inline;
+    margin-left: 50%;
+    opacity: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 5px;
+    background: url("../../../img/remove_btn.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 0px;
+}
+
+.table_row:hover .remove_btn {
+    opacity: 1;
+}
