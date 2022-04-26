@@ -4,7 +4,8 @@ import com.example.nc_spring_2022.model.Role;
 import com.example.nc_spring_2022.model.User;
 
 public class JwtUserFactory {
-    public JwtUserFactory() {
+    private JwtUserFactory() {
+        throw new IllegalStateException();
     }
 
     public static JwtUser create(User user) {

@@ -31,7 +31,7 @@ public class LocationController {
     }
 
     @DeleteMapping("/{id}")
-    public Response<?> deleteLocation(@PathVariable Long id) {
+    public Response<Void> deleteLocation(@PathVariable Long id) {
         locationService.delete(id);
         return new Response<>("Location was successfully deleted");
     }

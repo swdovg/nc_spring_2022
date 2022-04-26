@@ -15,7 +15,7 @@ public class LocationMapper {
         LocationDto locationDto = new LocationDto();
 
         locationDto.setId(location.getId());
-        locationDto.setLocation(location.getLocation());
+        locationDto.setLocation(location.getName());
         locationDto.setUserId(location.getUser().getId());
 
         return locationDto;

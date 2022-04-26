@@ -19,7 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final AuthService authService;
-    private final String redirectPath = "/";
+    private static final String REDIRECT_PATH = "/";
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -32,17 +32,17 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         );
         addCookies(response, oAuth2User);
 
-        response.sendRedirect(redirectPath);
+        response.sendRedirect(REDIRECT_PATH);
     }
 
     private void addCookies(HttpServletResponse response, OAuth2User oAuth2User) {
         Map<String, String> userData = authService.registerOrUpdateOAuthUser(oAuth2User);
         Cookie token = new Cookie("token", userData.get("token"));
-        token.setPath(redirectPath);
+        token.setPath(REDIRECT_PATH);
         Cookie userId = new Cookie("userId", userData.get("userId"));
-        userId.setPath(redirectPath);
+        userId.setPath(REDIRECT_PATH);
         Cookie role = new Cookie("role", userData.get("role"));
-        role.setPath(redirectPath);
+        role.setPath(REDIRECT_PATH);
 
         response.addCookie(token);
         response.addCookie(userId);

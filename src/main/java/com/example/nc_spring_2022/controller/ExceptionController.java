@@ -53,4 +53,10 @@ public class ExceptionController {
     public ErrorResponse handleAuthorizationException(Exception ex) {
         return ErrorResponse.validationException(ex, 7);
     }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AuthenticationException.class)
+    public ErrorResponse handleAuthenticationException(Exception ex) {
+        return ErrorResponse.unauthorized(ex, 8);
+    }
 }

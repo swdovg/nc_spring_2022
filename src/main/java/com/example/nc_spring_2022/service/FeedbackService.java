@@ -49,6 +49,7 @@ public class FeedbackService {
         subscriptionService.save(subscription);
     }
 
+    @Transactional
     public FeedbackDto save(FeedbackDto feedbackDto) {
         checkForFeedbackExistence(feedbackDto);
         Feedback feedback = feedbackMapper.createFrom(feedbackDto);

@@ -49,7 +49,7 @@ public class LocationService {
         String locationName = requestDto.getValue();
 
         Location location = new Location();
-        location.setLocation(locationName);
+        location.setName(locationName);
         location.setUser(user);
         location = save(location);
 
@@ -78,7 +78,7 @@ public class LocationService {
     public LocationDto update(LocationDto locationDto) {
         Location location = findById(locationDto.getId());
         checkPermissions(location);
-        location.setLocation(locationDto.getLocation());
+        location.setName(locationDto.getLocation());
         location = locationRepository.save(location);
         return locationMapper.createFrom(location);
     }

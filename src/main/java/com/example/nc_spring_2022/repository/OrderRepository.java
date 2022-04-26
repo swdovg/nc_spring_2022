@@ -18,4 +18,6 @@ public interface OrderRepository extends NaturalRepository<Order, Long> {
     Optional<Order> findByUserIdAndSubscriptionId(Long userId, Long subscriptionId);
 
     Page<Order> findAllBySubscriptionId(Long subscriptionId, Pageable pageable);
+
+    void deleteAllBySubscriptionId(Long subscriptionId);
 }

@@ -44,7 +44,7 @@ public class SubscriptionMapper {
         if (subscription.getQuantityOfFeedbacks() == 0) {
             return 0.0;
         } else {
-            return (double) (subscription.getRatings() / subscription.getQuantityOfFeedbacks());
+            return subscription.getRatings() / (double) subscription.getQuantityOfFeedbacks();
         }
     }
 
@@ -57,7 +57,8 @@ public class SubscriptionMapper {
                             subscriptionDto.getId()
                     ).isPresent()
             );
-        } catch (WrongCredentialsException ignored) {
+        } catch (WrongCredentialsException exception) {
+            subscriptionDto.setOrdered(false);
         }
     }
 

@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface NaturalRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
-    Optional<T> findByNaturalId(ID naturalId);
+public interface NaturalRepository<T, Id extends Serializable> extends JpaRepository<T, Id> {
+    Optional<T> findByNaturalId(Id naturalId);
 
     Optional<T> findByNaturalId(Map<String, Object> naturalIds);
 }

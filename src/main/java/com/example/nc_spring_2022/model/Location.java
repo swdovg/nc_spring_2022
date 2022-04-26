@@ -27,7 +27,7 @@ public class Location {
     @ManyToOne(targetEntity = User.class)
     private User user;
     @Column(nullable = false)
-    private String location;
+    private String name;
 
     @Override
     public boolean equals(Object o) {

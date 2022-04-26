@@ -48,7 +48,7 @@ public class ImageService {
 
         newImage.setName(image.getOriginalFilename());
         newImage.setType(image.getContentType());
-        newImage.setImage(ImageUtility.compressImage(image.getBytes()));
+        newImage.setImageBytes(ImageUtility.compressImage(image.getBytes()));
         newImage.setRelatedEntityId(relatedEntityId);
 
         return save(newImage);
