@@ -68,4 +68,12 @@ public class OrderService {
             throw new AuthorizationException("You can't see orders on another's subscriptions");
         }
     }
+
+    public void deleteBySubscriptionId(Long subscriptionId) {
+        orderRepository.deleteAllBySubscriptionId(subscriptionId);
+    }
+
+    public void delete(Long id) {
+        orderRepository.deleteById(id);
+    }
 }
