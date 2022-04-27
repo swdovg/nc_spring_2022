@@ -8,7 +8,7 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response<T> {
-    private final Status status = Status.OK;
+    private static final Status status = Status.OK;
     private String message;
     private T payload;
 

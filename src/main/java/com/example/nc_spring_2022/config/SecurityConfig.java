@@ -1,12 +1,12 @@
 package com.example.nc_spring_2022.config;
 
-import com.example.nc_spring_2022.security.jwt.CustomUserDetailsService;
+import com.example.nc_spring_2022.security.FilterChainExceptionHandler;
 import com.example.nc_spring_2022.security.jwt.JwtTokenFilter;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
+import com.example.nc_spring_2022.security.jwt.JwtUserDetailsService;
 import com.example.nc_spring_2022.security.oauth2.AuthenticationEntryPoint;
 import com.example.nc_spring_2022.security.oauth2.CustomAuthenticationFailureHandler;
 import com.example.nc_spring_2022.security.oauth2.CustomAuthenticationSuccessHandler;
-import com.example.nc_spring_2022.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,23 +17,24 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtUserDetailsService jwtUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    private final FilterChainExceptionHandler filterChainExceptionHandler;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
+                .userDetailsService(jwtUserDetailsService)
                 .passwordEncoder(bCryptPasswordEncoder);
     }
 
@@ -51,7 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/user", "/api/v1/location", "/api/v1/category",
-                        "/api/v1/subscription", "/api/v1/feedback")
+                        "/api/v1/subscription", "/api/v1/feedback", "/api/v1/form",
+                        "/api/v1/image/user", "/api/v1/image/subscription")
                 .authenticated()
                 .anyRequest()
                 .permitAll()
@@ -59,8 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationEntryPoint())
                 .and()
-                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userService),
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
+                .addFilterBefore(
+                        new JwtTokenFilter(jwtTokenProvider, jwtUserDetailsService, authenticationManager()),
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 .oauth2Login()
                 .successHandler(customAuthenticationSuccessHandler)
                 .failureHandler(customAuthenticationFailureHandler);

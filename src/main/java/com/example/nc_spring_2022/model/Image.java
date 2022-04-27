@@ -28,7 +28,7 @@ public class Image {
     @Column(nullable = false)
     private String type;
     @Column(nullable = false)
-    private byte[] image;
+    private byte[] imageBytes;
     @Column(nullable = false)
     private Long relatedEntityId;
 

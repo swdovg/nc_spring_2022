@@ -6,7 +6,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.example.nc_spring_2022.config.SecurityProperties;
-import com.example.nc_spring_2022.exception.JwtAuthenticationException;
 import com.example.nc_spring_2022.model.Role;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,33 +31,16 @@ public class JwtTokenProvider {
         algorithm = Algorithm.HMAC256(securityProperties.getAuth().getTokenSecret());
     }
 
-    public String createToken(Long id, Role role, Integer version) {
+    public String createToken(JwtUser jwtUser) {
         Date expirationDate = new Date(new Date().getTime() + securityProperties.getAuth().getTokenExpirationMSec());
 
         Map<String, String> claims = new HashMap<>();
-        claims.put("id", id.toString());
-        claims.put("role", role.toString());
-        claims.put("version", version.toString());
+        claims.put("id", jwtUser.getId().toString());
+        claims.put("role", jwtUser.getRole().toString());
+        claims.put("version", jwtUser.getVersion().toString());
 
         return JWT.create()
                 .withPayload(claims)
-                .withIssuer("nc")
-                .withExpiresAt(expirationDate)
-                .sign(algorithm);
-    }
-
-    public String refreshToken(String token) {
-        Map<String, Claim> claims = getClaims(token);
-        Map<String, String> stringClaims = new HashMap<>();
-        for (Map.Entry<String, Claim> entry : claims.entrySet()) {
-            if (stringClaims.put(entry.getKey(), entry.getValue().asString()) != null) {
-                throw new IllegalStateException("Duplicate key");
-            }
-        }
-        Date expirationDate = new Date(new Date().getTime() + securityProperties.getAuth().getTokenExpirationMSec());
-
-        return JWT.create()
-                .withPayload(stringClaims)
                 .withIssuer("nc")
                 .withExpiresAt(expirationDate)
                 .sign(algorithm);
@@ -72,14 +54,15 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public void verifyToken(String token) {
+    public boolean verifyToken(String token) {
         try {
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer("nc")
                     .build();
             verifier.verify(token);
+            return true;
         } catch (JWTVerificationException e) {
-            throw new JwtAuthenticationException("Invalid session, please log in again");
+            return false;
         }
     }
 
@@ -99,9 +82,13 @@ public class JwtTokenProvider {
         return Integer.parseInt(claims.get("version").asString());
     }
 
-    public Authentication getAuthentication(String token) {
+    public JwtUser getJwtUser(String token) {
         Map<String, Claim> claims = getClaims(token);
-        JwtUser userDetails = JwtUserFactory.create(getUserId(claims), getUserRole(claims), getUserVersion(claims));
+        return JwtUserFactory.create(getUserId(claims), getUserRole(claims), getUserVersion(claims));
+    }
+
+    public Authentication getAuthentication(String token) {
+        JwtUser userDetails = getJwtUser(token);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }

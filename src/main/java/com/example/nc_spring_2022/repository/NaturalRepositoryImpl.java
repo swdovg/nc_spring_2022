@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
-public class NaturalRepositoryImpl<T, ID extends Serializable>
-        extends SimpleJpaRepository<T, ID> implements NaturalRepository<T, ID> {
+public class NaturalRepositoryImpl<T, Id extends Serializable>
+        extends SimpleJpaRepository<T, Id> implements NaturalRepository<T, Id> {
     private final EntityManager entityManager;
 
     public NaturalRepositoryImpl(JpaEntityInformation entityInformation,

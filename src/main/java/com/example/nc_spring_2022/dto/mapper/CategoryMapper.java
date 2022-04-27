@@ -2,31 +2,36 @@ package com.example.nc_spring_2022.dto.mapper;
 
 import com.example.nc_spring_2022.dto.model.CategoryDto;
 import com.example.nc_spring_2022.model.Category;
-import com.example.nc_spring_2022.repository.CategoryRepository;
+import com.example.nc_spring_2022.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class CategoryMapper {
-    private final CategoryRepository categoryRepository;
+    @Lazy
+    private final CategoryService categoryService;
 
     public CategoryDto createFrom(Category category) {
         CategoryDto categoryDto = new CategoryDto();
 
-        Long parentId = 0L;
-        if (category.getParent() != null) {
-            parentId = category.getParent().getId();
-        }
-        categoryDto.setParentId(parentId);
+        categoryDto.setParentId(getParentCategoryId(category));
         categoryDto.setId(category.getId());
         categoryDto.setName(category.getName());
 
         return categoryDto;
+    }
+
+    private Long getParentCategoryId(Category category) {
+        if (category.getParent() != null) {
+            return category.getParent().getId();
+        } else {
+            return 0L;
+        }
     }
 
     public List<CategoryDto> createFrom(List<Category> categories) {
@@ -38,12 +43,7 @@ public class CategoryMapper {
     }
 
     public Category createFrom(CategoryDto categoryDto) {
-        Category category;
-        if (categoryDto.getId() != null) {
-            category = findCategoryById(categoryDto.getId());
-        } else {
-            category = new Category();
-        }
+        Category category = getCategoryFromDbOrNew(categoryDto);
 
         Category parentCategory = getParentCategory(categoryDto.getParentId());
         category.setParent(parentCategory);
@@ -52,16 +52,19 @@ public class CategoryMapper {
         return category;
     }
 
-    private Category getParentCategory(Long parentId) {
-        if (parentId != 0) {
-            return findCategoryById(parentId);
+    private Category getCategoryFromDbOrNew(CategoryDto categoryDto) {
+        if (categoryDto.getId() != null) {
+            return categoryService.findById(categoryDto.getId());
         } else {
-            return null;
+            return new Category();
         }
     }
 
-    private Category findCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Category with id: %d was not found", categoryId)));
+    private Category getParentCategory(Long parentId) {
+        if (parentId != 0) {
+            return categoryService.findById(parentId);
+        } else {
+            return null;
+        }
     }
 }
