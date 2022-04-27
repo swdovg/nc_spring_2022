@@ -33,9 +33,13 @@ const CardList = (props) => {
         }
     }, [props.selectedCategory]);
 
+     const filteredCards = cardList.filter( card => {
+            return card.title.toLowerCase().includes(props.searchValue.toLowerCase())
+    } )
+
     return (
         <div className="row">
-             {cardList.map((card, i) =>
+             {filteredCards.map((card, i) =>
                 <div className="col-xl-6 col-lg-6">
                     <ProductCard key={i} id={card.id} price={card.price} currency={card.currency} title={card.title} supplier={card.supplier.name} description={card.description}/>
                 </div>)}

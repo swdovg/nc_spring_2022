@@ -12,9 +12,14 @@ import CardList from '../components/UI/cardList/CardList.jsx';
 const Main = () => {
 
     const [selectedCategory, setSelectedCategory] = useState();
+    const [search, setSearch] = useState("");
 
     const updateCategory = (value) => {
        setSelectedCategory(value);
+    }
+
+    const updateSearchInput = (value) => {
+        setSearch(value);
     }
 
     return (
@@ -26,7 +31,7 @@ const Main = () => {
                 <h2 className="main_heading">Categories </h2>
             </div>
             <div className="col-xl-9 col-lg-9 col-sm-12 ">
-                <Search/>
+                <Search onUpdateSearchInput={updateSearchInput}/>
             </div>
             </div>
                 <div className="row">
@@ -34,7 +39,7 @@ const Main = () => {
                         <Menu updateCategory={updateCategory}/>
                     </div>
                     <div className="col-xl-9 col-lg-9 main_cards">
-                        <CardList selectedCategory={selectedCategory}/>
+                        <CardList selectedCategory={selectedCategory} searchValue={search}/>
                     </div>
 
                 </div>

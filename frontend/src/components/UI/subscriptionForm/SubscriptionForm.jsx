@@ -19,7 +19,7 @@ const SubscriptionForm = (...props) =>  {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState(0);
-    const [currency, setCurrency] = useState({});
+    const [currency, setCurrency] = useState("USD");
     const [averageRating, setAverageRating] = useState(0);
     const [category, setCategory] = useState({});
     const [categoryId, setCategoryId] = useState(0);
