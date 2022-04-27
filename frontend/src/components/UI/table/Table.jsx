@@ -8,7 +8,7 @@ import Modal from '../modal/Modal.jsx';
 import Button from '../button/Button.jsx';
 import Cookies from 'js-cookie';
 
-//const user = JSON.parse(Cookies.get("user"));
+const user = JSON.parse(Cookies.get("user"));
 
 const Subscription = (props)=>{
     const [modalVisible, setModalVisible] = useState(false);
@@ -43,7 +43,7 @@ const Table = (props) => {
         {subscriptions.length>0
         ?
             subscriptions.map((subscription) => {
-                amount = amount+subscription.subscription.price;
+                amount = amount+subscription.price;
             })
         :
             amount =0;
@@ -57,16 +57,18 @@ const Table = (props) => {
          const controller = new AbortController(); //to cansel request if the component on mounting
 
          const getSubscriptions = async () => {
-            let URL = "api/v1/subscription/supplier"
-             try {
+            let URL = "api/v1/subscription/supplier";
+            if (user.role === "ROLE_CONSUMER")
+                URL = "api/v1/order";
+            try {
                  const response = await axiosPrivate.get(URL, {
                      signal: controller.signal      //to allow to cansel a request
                  });
                  isMounted && setSubscriptions(response.data?.payload.content);
-             } catch(err) {
+            } catch(err) {
                  console.log(err);
                  //navigate('/login', { state: { from: location }, replace: true });
-             }
+            }
          }
          getSubscriptions();
          updateAmount();
@@ -88,7 +90,7 @@ const Table = (props) => {
                 </tr>
             </thead>
             <tbody>
-                {subscriptions?.length
+                {subscriptions.length>0
                 ? (
                     <>
                         {subscriptions?.map((subscription, i) =>
@@ -97,7 +99,7 @@ const Table = (props) => {
                                 title={subscription.subscription.title}
                                 price = {subscription.subscription.price}
                                 currency = {subscription.subscription.currency}
-                                date = {(subscription.date).slice(8, 10)}
+                                //date = {(subscription.date).slice(8, 10)}
                             />
                         )}
                     </>

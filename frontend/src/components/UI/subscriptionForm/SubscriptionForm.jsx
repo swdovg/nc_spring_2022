@@ -88,6 +88,7 @@ const SubscriptionForm = (...props) =>  {
             else
                 setErrMsg("Submission Failed");
         }
+
     }
 
     const addNewInput = async (e) => {

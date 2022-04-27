@@ -10,10 +10,10 @@ const POST_IMG_URL = "/api/v1/image/user";
 const ProfilePhoto = ({children,  ...props}) =>  {
      const [modalVisible, setModalVisible] = useState(false);
      const axiosPrivate = useAxiosPrivate();
-     const [image, setImage] = useState(`${profile_img}`);
+     const [image, setImage] = useState({});
      const [errMsg, setErrMsg] = useState("");
 
-/*      useEffect( () => {
+     useEffect( () => {
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
 
@@ -35,7 +35,7 @@ const ProfilePhoto = ({children,  ...props}) =>  {
             isMounted=false;
             controller.abort();
         }
-    }); */
+    }, [image]);
 
 
     const onFileChange = (e) => {
@@ -48,11 +48,7 @@ const ProfilePhoto = ({children,  ...props}) =>  {
         e.preventDefault();
 
         const formData = new FormData();
-        formData.append(
-            "newUserPic",
-            image,
-            image.name
-        );
+        formData.append("image", image);
         console.log(formData);
         try {
             const response = await axiosPrivate.post(

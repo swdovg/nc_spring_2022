@@ -18,7 +18,7 @@ const ProductCard = (props) => {
 
             const addSubscription = async () => {
                 try {
-                    const response = await axiosPrivate.post(`api/v1/subscription/${props.id}`, {
+                    const response = await axiosPrivate.post(`api/v1/order/${props.id}`, {
                         signal: controller.signal      //to allow to cansel a request
                     });
                 } catch(err) {
