@@ -26,7 +26,6 @@ function CustomerView ()  {
 
     async function fetchSubscriptions(){
         const response = await axios.get("http://localhost:8080/api/v1/subscription");
-        console.log(response.data);
         setSubscription(...subscriptions, ...response.data);
     }
 

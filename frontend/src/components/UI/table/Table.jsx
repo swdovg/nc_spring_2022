@@ -6,6 +6,9 @@ import useAxiosPrivate from "../../../hook/useAxiosPrivate.js"
 import { useNavigate, useLocation } from "react-router-dom";
 import Modal from '../modal/Modal.jsx';
 import Button from '../button/Button.jsx';
+import Cookies from 'js-cookie';
+
+//const user = JSON.parse(Cookies.get("user"));
 
 const Subscription = (props)=>{
     const [modalVisible, setModalVisible] = useState(false);
@@ -54,8 +57,9 @@ const Table = (props) => {
          const controller = new AbortController(); //to cansel request if the component on mounting
 
          const getSubscriptions = async () => {
+            let URL = "api/v1/subscription/supplier"
              try {
-                 const response = await axiosPrivate.get("/api/v1/subscription", {
+                 const response = await axiosPrivate.get(URL, {
                      signal: controller.signal      //to allow to cansel a request
                  });
                  isMounted && setSubscriptions(response.data?.payload.content);

@@ -33,24 +33,25 @@ const ProductCard = (props) => {
     }
 
     return (
-
-        <div className={cl.card}>
-            <div>
-                <img src={card_img} alt="Profile Image" className={cl.card_img} />
-                <p className={cl.card_price}>{props.price} {props.currency}</p>
+        <>
+            <div className={cl.card}>
+                <div>
+                    <img src={card_img} alt="Profile Image" className={cl.card_img} />
+                    <p className={cl.card_price}>{props.price} {props.currency}</p>
+                </div>
+                <div className={cl.card_info}>
+                    <h3 className={cl.card_heading}>{props.title} </h3>
+                    <p className={cl.card_producer}> {props.supplier}</p>
+                    <p className={cl.card_description}> {props.description}</p>
+                    {role==="ROLE_CONSUMER"
+                        ?
+                        <button  className={cl.card_btn} onClick= {addSubscription}> add</button>
+                        :
+                        <> </>
+                    }
+                </div>
             </div>
-            <div className={cl.card_info}>
-                <h3 className={cl.card_heading}>{props.title} </h3>
-                <p className={cl.card_producer}> {props.supplier}</p>
-                <p className={cl.card_description}> {props.description}</p>
-                {role==="ROLE_CONSUMER"
-                    ?
-                    <button  className={cl.card_btn} onClick= {addSubscription}> add</button>
-                    :
-                    <> </>
-                }
-            </div>
-        </div>
+        </>
     );
 };
 

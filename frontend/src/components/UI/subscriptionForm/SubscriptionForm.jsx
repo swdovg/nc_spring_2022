@@ -8,17 +8,11 @@ import InputBtn from '../button/InputBtn';
 import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
 import Cookies from 'js-cookie';
 
-const SUBSCRIPTION_URL = "api/v1/subscription"
+const SUBSCRIPTION_URL = "api/v1/subscription";
 
 const SubscriptionForm = (...props) =>  {
 
     const [count, setCount] = useState(0);
-
-    function addNewInput (e) {
-        e.preventDefault();
-        setCount(count+1);
-    }
-
     const axiosPrivate = useAxiosPrivate();
     const [errMsg, setErrMsg] = useState("");
 
@@ -30,8 +24,10 @@ const SubscriptionForm = (...props) =>  {
     const [category, setCategory] = useState({});
     const [categoryId, setCategoryId] = useState(0);
     const [categoryList, setCategoryList] = useState([]);
+    const [question, setQuestion] = useState("");
 
     useEffect( () => {
+
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
 
@@ -58,22 +54,11 @@ const SubscriptionForm = (...props) =>  {
         setCategoryId(Number(el.getAttribute('id')));
     }
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const supplier = JSON.parse(Cookies.get("user"));
-        console.log(description);
-        const subInfo ={
-            title,
-            description,
-            price,
-            averageRating,
-            category: {
-                id: categoryId,
-                name: category,
-                parentId: 0
-            }
-         };
-         try {
+        try {
             const response = await axiosPrivate.post(
                 SUBSCRIPTION_URL,
                 {
@@ -89,10 +74,10 @@ const SubscriptionForm = (...props) =>  {
                     supplier,
                     ordered:true
                  },
-                 {
-                     headers: {'Content-Type': 'application/json'},
-                     withCredentials: true
-                 }
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
+                }
              );
         }
         catch(err) {
@@ -103,11 +88,17 @@ const SubscriptionForm = (...props) =>  {
             else
                 setErrMsg("Submission Failed");
         }
-     }
+    }
+
+    const addNewInput = async (e) => {
+        e.preventDefault();
+        setCount(count+1);
+        console.log(question);
+    }
 
     return (
     <div>
-        <h2 className={classes.heading}>Manage Subscription</h2>
+        <h2 className={classes.heading}>Add New Subscription</h2>
         <hr className={classes.line} />
         <form onSubmit = {handleSubmit} className={classes.form}>
             <ul className={classes.form_inputs}>
@@ -138,11 +129,12 @@ const SubscriptionForm = (...props) =>  {
                     </Select>
                 </li>
                 <li>
-                  <Textarea required id="description" name="description" label="Description" maxlength="120"
+                  <Textarea required id="description" name="description" label="Description" maxLength="120"
                   onChange={(e)=> setDescription(e.target.value)}/>
                 </li>
             </ul>
-            {[...Array(count)].map(() => <Input type="text" id={count} name="subscription-question" label="Question"/>)}
+            {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question"
+                 onChange={(e)=> setQuestion(e.target.value)} />)}
 
             <Button onClick={addNewInput}>
                 Add question
