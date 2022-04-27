@@ -6,11 +6,12 @@ import useAxiosPrivate from "../../../hook/useAxiosPrivate.js"
 import { useNavigate, useLocation } from "react-router-dom";
 import Modal from '../modal/Modal.jsx';
 import Button from '../button/Button.jsx';
+import DeleteModal from '../deleteModal/DeleteModal.jsx';
 import Cookies from 'js-cookie';
 
-const user = JSON.parse(Cookies.get("user"));
 
 const Subscription = (props)=>{
+
     const [modalVisible, setModalVisible] = useState(false);
     return(
         <>
@@ -22,15 +23,12 @@ const Subscription = (props)=>{
                     <button className="remove_btn" onClick={()=>setModalVisible(true)}/>
                 </td>
             </tr>
-            <Modal visible={modalVisible} setVisible={setModalVisible}>
-                <p>Do you want to delete subscription?</p>
-                <Button onClick={()=>setModalVisible(false)}>Yes </Button>
-            </Modal>
+            <DeleteModal orderId={props.id} visible = {modalVisible} setVisible={setModalVisible}/>
         </>
     )
 };
 
-const Table = (props) => {
+const SupplierTable = (props) => {
 
     const [subscriptions, setSubscriptions] = useState({});
     const [amount, setAmount] = useState(0);
@@ -38,7 +36,7 @@ const Table = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const updateAmount = ()=> {
+/*     const updateAmount = ()=> {
         let amount = 0;
         {subscriptions.length>0
         ?
@@ -49,7 +47,7 @@ const Table = (props) => {
             amount =0;
         }
         props.updateAmount(amount);
-    }
+    } */
 
      useEffect( () => {
 
@@ -57,9 +55,7 @@ const Table = (props) => {
          const controller = new AbortController(); //to cansel request if the component on mounting
 
          const getSubscriptions = async () => {
-            let URL = "api/v1/subscription/supplier";
-            if (user.role === "ROLE_CONSUMER")
-                URL = "api/v1/order";
+             const URL = "api/v1/subscription/supplier";
             try {
                  const response = await axiosPrivate.get(URL, {
                      signal: controller.signal      //to allow to cansel a request
@@ -71,8 +67,7 @@ const Table = (props) => {
             }
          }
          getSubscriptions();
-         updateAmount();
-         //console.log(subscriptions);
+         //updateAmount();
          return () =>{
              isMounted=false;
              controller.abort();
@@ -84,9 +79,9 @@ const Table = (props) => {
         <table className="user_table col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
             <thead>
                 <tr className="table_heading">
-                    <th className="table_heading_item col-xl-6 col-lg-6">service:</th>
+                    <th className="table_heading_item col-xl-8 col-lg-8">service:</th>
                     <th className="table_heading_item col-xl-3 col-lg-3">price:</th>
-                    <th className="table_heading_item col-xl-3 col-lg-3">{props.heading}</th>
+                    {/* <th className="table_heading_item col-xl-3 col-lg-3">{props.heading}</th> */}
                 </tr>
             </thead>
             <tbody>
@@ -96,9 +91,10 @@ const Table = (props) => {
                         {subscriptions?.map((subscription, i) =>
                             <Subscription
                                 key={i}
-                                title={subscription.subscription.title}
-                                price = {subscription.subscription.price}
-                                currency = {subscription.subscription.currency}
+                                title={subscription.title}
+                                price = {subscription.price}
+                                currency = {subscription.currency}
+                                id={subscription.id}
                                 //date = {(subscription.date).slice(8, 10)}
                             />
                         )}
@@ -112,4 +108,4 @@ const Table = (props) => {
     )
 };
 
-export default Table;
+export default SupplierTable;
