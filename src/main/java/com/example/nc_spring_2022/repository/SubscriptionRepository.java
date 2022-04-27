@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SubscriptionRepository extends NaturalRepository<Subscription, Long> {
     Page<Subscription> findAllByCategoryId(Long categoryId, Pageable pageable);
+
+    Page<Subscription> findAllBySupplierId(Long supplierId, Pageable pageable);
 }

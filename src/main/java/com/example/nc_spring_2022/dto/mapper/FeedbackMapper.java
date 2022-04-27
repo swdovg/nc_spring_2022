@@ -4,12 +4,12 @@ import com.example.nc_spring_2022.dto.model.FeedbackDto;
 import com.example.nc_spring_2022.model.Feedback;
 import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.repository.FeedbackRepository;
-import com.example.nc_spring_2022.repository.UserRepository;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
+import com.example.nc_spring_2022.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,13 +18,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FeedbackMapper {
     private final FeedbackRepository feedbackRepository;
-    private final UserRepository userRepository;
+    @Lazy
+    private final UserService userService;
     private final AuthenticationFacade authenticationFacade;
 
     public FeedbackDto createFrom(Feedback feedback) {
-        User user = userRepository.findById(feedback.getConsumerId()).orElseThrow(() ->
-                new EntityNotFoundException(String.format("User with id: %d was not found", feedback.getConsumerId())));
-
+        User user = userService.findById(feedback.getConsumerId());
         FeedbackDto feedbackDto = new FeedbackDto();
 
         feedbackDto.setTitle(feedback.getTitle());

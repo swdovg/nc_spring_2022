@@ -10,15 +10,12 @@ import com.example.nc_spring_2022.model.Order;
 import com.example.nc_spring_2022.model.Subscription;
 import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.repository.OrderRepository;
-import com.example.nc_spring_2022.repository.SubscriptionRepository;
-import com.example.nc_spring_2022.repository.UserRepository;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 @Service
@@ -26,8 +23,7 @@ import java.util.Optional;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final AuthenticationFacade authenticationFacade;
-    private final UserRepository userRepository;
-    private final SubscriptionRepository subscriptionRepository;
+    private final UserService userService;
     private final OrderMapper orderMapper;
     private final SubscriptionOrderMapper subscriptionOrderMapper;
     private final SubscriptionService subscriptionService;
@@ -46,13 +42,9 @@ public class OrderService {
 
     public SubscriptionOrderDto save(Long subscriptionId) {
         Long userId = authenticationFacade.getUserId();
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new EntityNotFoundException(String.format("User with id: %d was not found", userId)));
+        User user = userService.findById(userId);
         Subscription subscription = subscriptionService.findById(subscriptionId);
-        Optional<Order> orderOptional = orderRepository.findByUserAndSubscription(user, subscription);
-        if (orderOptional.isPresent()) {
-            throw new EntityAlreadyExistsException("Order already exists");
-        }
+        checkIsOrderExists(user, subscription);
 
         Order order = new Order();
         order.setSubscription(subscription);
@@ -62,11 +54,26 @@ public class OrderService {
         return subscriptionOrderMapper.createFrom(order);
     }
 
+    private void checkIsOrderExists(User user, Subscription subscription) {
+        Optional<Order> orderOptional = orderRepository.findByUserAndSubscription(user, subscription);
+        if (orderOptional.isPresent()) {
+            throw new EntityAlreadyExistsException("Order already exists");
+        }
+    }
+
     private void checkPermission(Long subscriptionId) {
         Long userId = authenticationFacade.getUserId();
         Subscription subscription = subscriptionService.findById(subscriptionId);
         if (!subscription.getSupplier().getId().equals(userId)) {
             throw new AuthorizationException("You can't see orders on another's subscriptions");
         }
+    }
+
+    public void deleteBySubscriptionId(Long subscriptionId) {
+        orderRepository.deleteAllBySubscriptionId(subscriptionId);
+    }
+
+    public void delete(Long id) {
+        orderRepository.deleteById(id);
     }
 }

@@ -34,7 +34,8 @@ public class LocationService {
 
     public Location findById(Long id) {
         return locationRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(String.format("Location with id: %d was not found", id)));
+                new EntityNotFoundException(String.format("Location with id: %d was not found", id))
+        );
     }
 
     public LocationDto getDtoById(Long id) {
@@ -42,51 +43,48 @@ public class LocationService {
         return locationMapper.createFrom(location);
     }
 
+    public LocationDto save(RequestDto requestDto) {
+        Long userId = authenticationFacade.getUserId();
+        User user = userService.findById(userId);
+        String locationName = requestDto.getValue();
+
+        Location location = new Location();
+        location.setName(locationName);
+        location.setUser(user);
+        location = save(location);
+
+        return locationMapper.createFrom(location);
+    }
+
     public Location save(Location location) {
-        checkForPermission(location);
+        checkPermissions(location.getId());
         return locationRepository.save(location);
     }
 
-    public LocationDto save(RequestDto requestDto) {
-        String locationName = requestDto.getValue();
+    private void checkPermissions(Long locationId) {
+        Location dbLocation = findById(locationId);
+        checkPermissions(dbLocation);
+    }
+
+    private void checkPermissions(Location location) {
         Long userId = authenticationFacade.getUserId();
         User user = userService.findById(userId);
-        Location location = new Location();
-        location.setLocation(locationName);
-        location.setUser(user);
+
+        if (!location.getUser().equals(user)) {
+            throw new AuthorizationException("You can't edit another's locations");
+        }
+    }
+
+    public LocationDto update(LocationDto locationDto) {
+        Location location = findById(locationDto.getId());
+        checkPermissions(location);
+        location.setName(locationDto.getLocation());
         location = locationRepository.save(location);
         return locationMapper.createFrom(location);
     }
 
-    public LocationDto update(LocationDto locationDto) {
-        Long userId = authenticationFacade.getUserId();
-        User user = userService.findById(userId);
-        Location location = findById(locationDto.getId());
-        if (location.getUser().equals(user)) {
-            location.setLocation(locationDto.getLocation());
-            location = locationRepository.save(location);
-            return locationMapper.createFrom(location);
-        } else {
-            throw new AuthorizationException("You can't edit another's locations");
-        }
-    }
-
     public void delete(Long locationId) {
-        Long userId = authenticationFacade.getUserId();
-        User user = userService.findById(userId);
-        Location location = findById(locationId);
-        if (location.getUser().equals(user)) {
-            locationRepository.delete(location);
-        } else {
-            throw new AuthorizationException("You can't edit another's locations");
-        }
-    }
-
-    private void checkForPermission(Location location) {
-        Location dbLocation = findById(location.getId());
-        Long userId = authenticationFacade.getUserId();
-        if (!userId.equals(dbLocation.getUser().getId())) {
-            throw new AuthorizationException("You can't edit another's locations");
-        }
+        checkPermissions(locationId);
+        locationRepository.deleteById(locationId);
     }
 }

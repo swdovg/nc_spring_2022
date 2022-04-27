@@ -1,7 +1,9 @@
 package com.example.nc_spring_2022.security.jwt;
 
 import com.example.nc_spring_2022.model.Role;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,13 +11,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Set;
 
-@RequiredArgsConstructor
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class JwtUser implements UserDetails {
-    private final Long id;
-    private final String username;
-    private final String password;
-    private final Role role;
-    private final Integer version;
+    private Long id;
+    private String username;
+    private String password;
+    private Role role;
+    private Integer version;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

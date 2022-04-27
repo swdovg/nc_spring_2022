@@ -13,9 +13,11 @@ import java.util.List;
 public class LocationMapper {
     public LocationDto createFrom(Location location) {
         LocationDto locationDto = new LocationDto();
+
         locationDto.setId(location.getId());
-        locationDto.setLocation(location.getLocation());
+        locationDto.setLocation(location.getName());
         locationDto.setUserId(location.getUser().getId());
+
         return locationDto;
     }
 

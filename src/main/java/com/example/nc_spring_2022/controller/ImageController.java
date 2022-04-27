@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.zip.DataFormatException;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,12 +33,12 @@ public class ImageController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
+    public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws DataFormatException, IOException {
         Image image = imageService.findById(id);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.valueOf(image.getType()))
-                .body(ImageUtility.decompressImage(image.getImage()));
+                .body(ImageUtility.decompressImage(image.getImageBytes()));
     }
 
     @GetMapping("/info/{id}")

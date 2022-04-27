@@ -49,8 +49,8 @@ public class User {
     private AuthProvider provider = AuthProvider.LOCAL;
     @Column
     private Integer version = 0;
-    @OneToOne(targetEntity = Image.class)
-    private Image image;
+    private Long imageId;
+    private String imageUrl;
 
     @Override
     public boolean equals(Object o) {
