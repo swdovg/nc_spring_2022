@@ -37,7 +37,7 @@ const Menu = (props) => {
     return (
         <div className={cl.menu}>
             <ul className={cl.menu_box} {...props}>
-                 <li className={cl.menu_item}>All categories</li>
+                 <li className={cl.menu_item} onClick={(e) => props.updateCategory(null)}>All categories</li>
                  {categoryList?.map((item) =>
                     <li className={cl.menu_item} key={item.id} id={item.id} onClick={selectCategory}>
                         {item.name}

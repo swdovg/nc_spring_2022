@@ -95,7 +95,7 @@ const ConsumerTable = (props) => {
                                 price = {subscription.subscription.price}
                                 currency = {subscription.subscription.currency}
                                 orderId={subscription.orderId}
-                                //date = {(subscription.date).slice(8, 10)}
+                                date = {(subscription.date).slice(8, 10)}
                             />
                         )}
                     </>

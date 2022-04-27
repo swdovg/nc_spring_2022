@@ -19,7 +19,7 @@ const Subscription = (props)=>{
                 <td className="table_cont_item col-xl-6 col-lg-6">{props.title}</td>
                 <td className="table_cont_item col-xl-3 col-lg-3">{props.price} {props.currency}</td>
                 <td className="table_cont_item col-xl-3 col-lg-3">
-                    {props.date}
+
                     <button className="remove_btn" onClick={()=>setModalVisible(true)}/>
                 </td>
             </tr>
@@ -81,7 +81,7 @@ const SupplierTable = (props) => {
                 <tr className="table_heading">
                     <th className="table_heading_item col-xl-8 col-lg-8">service:</th>
                     <th className="table_heading_item col-xl-3 col-lg-3">price:</th>
-                    {/* <th className="table_heading_item col-xl-3 col-lg-3">{props.heading}</th> */}
+                    <th className="table_heading_item col-xl-3 col-lg-3">subscribers:</th>
                 </tr>
             </thead>
             <tbody>

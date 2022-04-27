@@ -10,25 +10,27 @@ const CardList = (props) => {
     const [cardList, setCardList] = useState([]);
 
      useEffect( () => {
-     if (props.selectedCategory!=null)
-           { let isMounted = true;
-            const controller = new AbortController(); //to cansel request if the component on mounting
+        let URL = "api/v1/subscription";
+        if (props.selectedCategory!=null)
+            URL = `api/v1/subscription/category/${props.selectedCategory}`;
+        let isMounted = true;
+        const controller = new AbortController(); //to cansel request if the component on mounting
 
-            const getCards = async () => {
-                try {
-                    let response = await axiosPrivate.get(`api/v1/subscription/category/${props.selectedCategory}`, {
-                        signal: controller.signal      //to allow to cansel a request
-                    });
-                    isMounted && setCardList(response.data.payload.content);
-                } catch(err) {
-                    console.log(err);
-                }
+        const getCards = async () => {
+            try {
+                let response = await axiosPrivate.get(URL, {
+                    signal: controller.signal      //to allow to cansel a request
+                });
+                isMounted && setCardList(response.data.payload.content);
+            } catch(err) {
+                console.log(err);
             }
-            getCards();
-            return () =>{
-                isMounted=false;
-                controller.abort();
-            }}
+        }
+        getCards();
+        return () =>{
+            isMounted=false;
+            controller.abort();
+        }
     }, [props.selectedCategory]);
 
     return (
