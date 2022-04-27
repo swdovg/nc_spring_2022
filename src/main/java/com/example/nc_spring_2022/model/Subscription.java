@@ -38,8 +38,8 @@ public class Subscription {
     private User supplier;
     @OneToOne(targetEntity = Category.class)
     private Category category;
-    @OneToOne(targetEntity = Image.class)
-    private Image image;
+    private Long imageId;
+    private String imageUrl;
 
     @Override
     public boolean equals(Object o) {

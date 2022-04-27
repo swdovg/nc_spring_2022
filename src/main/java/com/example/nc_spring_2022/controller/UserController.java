@@ -1,14 +1,12 @@
 package com.example.nc_spring_2022.controller;
 
 import com.example.nc_spring_2022.dto.model.*;
-import com.example.nc_spring_2022.model.User;
 import com.example.nc_spring_2022.service.AuthService;
 import com.example.nc_spring_2022.service.LocationService;
 import com.example.nc_spring_2022.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +48,9 @@ public class UserController {
         return new Response<>(userService.getUserDto());
     }
 
-    @DeleteMapping
-    public Response<String> deleteUser(@Valid @RequestBody User user) {
-        userService.delete(user);
+    @DeleteMapping("/{id}")
+    public Response<Void> deleteUser(@PathVariable Long id) {
+        userService.delete(id);
         return new Response<>("User was successfully deleted");
     }
 }

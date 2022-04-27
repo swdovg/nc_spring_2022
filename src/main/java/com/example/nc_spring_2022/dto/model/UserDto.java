@@ -15,4 +15,5 @@ public class UserDto {
     private Currency currency;
     private LocationDto defaultLocation;
     private Role role;
+    private String imageUrl;
 }

@@ -17,4 +17,6 @@ public abstract class OAuth2User {
     public abstract String getName();
 
     public abstract String getEmail();
+
+    public abstract String getImageUrl();
 }
