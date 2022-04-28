@@ -14,7 +14,7 @@ const ProfilePhoto = ({children,  ...props}) =>  {
      const [errMsg, setErrMsg] = useState("");
 
      useEffect( () => {
-        let isMounted = true;
+/*         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
 
         const getImage = async () => {
@@ -34,26 +34,18 @@ const ProfilePhoto = ({children,  ...props}) =>  {
         return () =>{
             isMounted=false;
             controller.abort();
-        }
+        } */
     }, [image]);
-
-
-    const onFileChange = (e) => {
-        e.preventDefault();
-        console.log(e.target.files);
-        setImage(e.target.files[0]);
-    };
 
      const upload = async (e) =>  {
         e.preventDefault();
-
         const formData = new FormData();
         formData.append("image", image);
         console.log(formData);
         try {
             const response = await axiosPrivate.post(
                POST_IMG_URL,
-               formData,
+               {formData},
                {
                    headers: {"Content-type": "multipart/form-data"},
                    withCredentials: true
@@ -80,7 +72,7 @@ const ProfilePhoto = ({children,  ...props}) =>  {
             <Modal visible={modalVisible} setVisible={setModalVisible}>
                 <form onSubmit={upload}>
                     <label className={classes.btn} > {props.label}
-                        <input type="file" id="fileInput" {...props} className={classes.input} onChange={onFileChange}>
+                        <input type="file" id="fileInput" {...props} className={classes.input} onChange={(e)=> setImage(e.target.files[0])}>
                             {children}
                         </input>
                     </label>

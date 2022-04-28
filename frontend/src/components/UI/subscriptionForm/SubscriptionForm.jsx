@@ -7,10 +7,11 @@ import Textarea from '../textarea/Textarea';
 import InputBtn from '../button/InputBtn';
 import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
 import Cookies from 'js-cookie';
+import usePostSubscription from "../../../services/usePostSubscription.js";
 
 const SUBSCRIPTION_URL = "api/v1/subscription";
 
-const SubscriptionForm = (...props) =>  {
+const SubscriptionForm = (props) =>  {
 
     const [count, setCount] = useState(0);
     const axiosPrivate = useAxiosPrivate();
@@ -54,8 +55,7 @@ const SubscriptionForm = (...props) =>  {
         setCategoryId(Number(el.getAttribute('id')));
     }
 
-
-    const handleSubmit = async (e) => {
+     const handleSubmit = async (e) => {
         e.preventDefault();
         const supplier = JSON.parse(Cookies.get("user"));
         try {
@@ -97,6 +97,7 @@ const SubscriptionForm = (...props) =>  {
         console.log(question);
     }
 
+
     return (
     <div>
         <h2 className={classes.heading}>Add New Subscription</h2>
@@ -104,15 +105,22 @@ const SubscriptionForm = (...props) =>  {
         <form onSubmit = {handleSubmit} className={classes.form}>
             <ul className={classes.form_inputs}>
                 <li>
-                    <Input required type="text" id="subscription-name" name="subscription-name" label="Name" onChange={(e)=> setTitle(e.target.value)}/>
+                    <Input required
+                        type="text"
+                        id="subscription-title"
+                        name="subscription-title"
+                        label="Title"
+                        onChange={(e)=> setTitle(e.target.value)}
+                        value={props.title}/>
                 </li>
                 <li>
-                    <Input required type="number" id="price" name="price" label="Price" onChange={(e)=> setPrice(e.target.value)}/>
+                    <Input required type="number" id="price" name="price" label="Price" onChange={(e)=> setPrice(e.target.value)}
+                        value={props.price}/>
                 </li>
                 <li>
                     <Select
                         name="currency" required="required"
-                        defaultValue="Currency"
+                        defaultValue={props.currency}
                         label="Currency"
                         onChange={(e)=> setCurrency(e.target.value)}>
                         <option value = "USD">USD </option>
@@ -122,7 +130,7 @@ const SubscriptionForm = (...props) =>  {
                 <li>
                     <Select
                         name="currency" required="required"
-                        defaultValue="Category"
+                        defaultValue={props.category}
                         label="Category"
                         onChange={onCategoryChange}>
                          {categoryList?.map((loc) =>
@@ -131,7 +139,7 @@ const SubscriptionForm = (...props) =>  {
                 </li>
                 <li>
                   <Textarea required id="description" name="description" label="Description" maxLength="120"
-                  onChange={(e)=> setDescription(e.target.value)}/>
+                  onChange={(e)=> setDescription(e.target.value)} value={props.description}/>
                 </li>
             </ul>
             {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question"

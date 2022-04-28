@@ -7,26 +7,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Modal from '../modal/Modal.jsx';
 import Button from '../button/Button.jsx';
 import DeleteModal from '../deleteModal/DeleteModal.jsx';
+import Subscription from './Subscription.jsx';
+import EditSubscriptionModal from '../editSubscriptionModal/EditSubscriptionModal.jsx';
 import Cookies from 'js-cookie';
 
-
-const Subscription = (props)=>{
-
-    const [modalVisible, setModalVisible] = useState(false);
-    return(
-        <>
-            <tr className="table_row">
-                <td className="table_cont_item col-xl-6 col-lg-6">{props.title}</td>
-                <td className="table_cont_item col-xl-3 col-lg-3">{props.price} {props.currency}</td>
-                <td className="table_cont_item col-xl-3 col-lg-3">
-
-                    <button className="remove_btn" onClick={()=>setModalVisible(true)}/>
-                </td>
-            </tr>
-            <DeleteModal orderId={props.id} visible = {modalVisible} setVisible={setModalVisible}/>
-        </>
-    )
-};
 
 const SupplierTable = (props) => {
 
@@ -35,19 +19,6 @@ const SupplierTable = (props) => {
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
-
-/*     const updateAmount = ()=> {
-        let amount = 0;
-        {subscriptions.length>0
-        ?
-            subscriptions.map((subscription) => {
-                amount = amount+subscription.price;
-            })
-        :
-            amount =0;
-        }
-        props.updateAmount(amount);
-    } */
 
      useEffect( () => {
 
@@ -81,7 +52,7 @@ const SupplierTable = (props) => {
                 <tr className="table_heading">
                     <th className="table_heading_item col-xl-8 col-lg-8">service:</th>
                     <th className="table_heading_item col-xl-3 col-lg-3">price:</th>
-                    <th className="table_heading_item col-xl-3 col-lg-3">subscribers:</th>
+                    {/* <th className="table_heading_item col-xl-3 col-lg-3">subscribers:</th> */}
                 </tr>
             </thead>
             <tbody>
