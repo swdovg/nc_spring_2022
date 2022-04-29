@@ -14,7 +14,6 @@ const ProductCard = (props) => {
         role = JSON.parse(Cookies.get("user")).role;
     }
 
-
     const addSubscription = () => {
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting

@@ -61,7 +61,7 @@ const Subscription = (props)=>{
                 price={subscription.price}
                 description={subscription.description}
                 currency={subscription.currency}
-                /* category={subscription.category} */
+                category={subscription.category}
             />
         </>
     )
