@@ -10,30 +10,36 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/order")
 public class OrderController {
     private final OrderService orderService;
 
+    @RolesAllowed("CONSUMER")
     @Operation(summary = "get orders for consumer")
     @GetMapping
     public Response<Page<SubscriptionOrderDto>> getOrdersForConsumer(Pageable pageable) {
         return new Response<>(orderService.getOrdersForConsumer(pageable));
     }
 
+    @RolesAllowed("SUPPLIER")
     @Operation(summary = "get orders for supplier")
     @GetMapping("/{subscriptionId}")
     public Response<Page<OrderDto>> getOrdersForSupplier(@PathVariable Long subscriptionId, Pageable pageable) {
         return new Response<>(orderService.getOrdersForSupplier(subscriptionId, pageable));
     }
 
+    @RolesAllowed("CONSUMER")
     @Operation(summary = "buy subscription")
     @PostMapping("/{subscriptionId}")
     public Response<SubscriptionOrderDto> createOrder(@PathVariable Long subscriptionId) {
         return new Response<>(orderService.save(subscriptionId));
     }
 
+    @RolesAllowed("CONSUMER")
     @Operation(summary = "cancel subscription")
     @DeleteMapping("/{orderId}")
     public Response<Void> deleteOrder(@PathVariable Long orderId) {

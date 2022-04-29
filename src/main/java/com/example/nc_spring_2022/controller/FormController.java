@@ -7,6 +7,7 @@ import com.example.nc_spring_2022.service.FormService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -25,11 +26,13 @@ public class FormController {
         return new Response<>(formService.getFormQuestionDtos(subscriptionId));
     }
 
+    @RolesAllowed("CONSUMER")
     @PostMapping("/answer")
     public Response<FormData> postAnswer(@RequestBody FormData formData) {
         return new Response<>(formService.saveAnswer(formData));
     }
 
+    @RolesAllowed("SUPPLIER")
     @PostMapping("/question")
     public Response<FormQuestionDto> postQuestion(@RequestBody FormQuestionDto formQuestionDto) {
         return new Response<>(formService.saveQuestion(formQuestionDto));

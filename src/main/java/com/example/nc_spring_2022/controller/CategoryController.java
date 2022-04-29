@@ -6,6 +6,7 @@ import com.example.nc_spring_2022.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @RolesAllowed("ADMIN")
     @PostMapping
     public Response<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         return new Response<>(categoryService.save(categoryDto));

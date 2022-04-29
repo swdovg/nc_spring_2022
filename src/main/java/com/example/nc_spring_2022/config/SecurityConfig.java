@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtUserDetailsService jwtUserDetailsService;
@@ -51,9 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/user", "/api/v1/location", "/api/v1/category",
-                        "/api/v1/subscription", "/api/v1/feedback", "/api/v1/form",
-                        "/api/v1/image/user", "/api/v1/image/subscription")
+                .antMatchers("/api/v1/user",
+                        "/api/v1/location",
+                        "/api/v1/form")
                 .authenticated()
                 .anyRequest()
                 .permitAll()

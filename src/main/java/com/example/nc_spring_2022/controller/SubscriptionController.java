@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 @RestController
@@ -36,24 +37,28 @@ public class SubscriptionController {
         return new Response<>(subscriptionService.getAll(pageable));
     }
 
+    @RolesAllowed("SUPPLIER")
     @Operation(summary = "get supplier's subscriptions")
     @GetMapping("/supplier")
     public Response<Page<SubscriptionDto>> getSubscriptionsForSupplier(Pageable pageable) {
         return new Response<>(subscriptionService.getDtosBySupplier(pageable));
     }
 
+    @RolesAllowed("SUPPLIER")
     @Operation(summary = "create new subscription")
     @PostMapping
     public Response<SubscriptionDto> createSubscription(@Valid @RequestBody SubscriptionDto subscriptionDto) {
         return new Response<>(subscriptionService.save(subscriptionDto));
     }
 
+    @RolesAllowed("SUPPLIER")
     @Operation(summary = "update existing subscription")
     @PutMapping
     public Response<SubscriptionDto> updateSubscription(@Valid @RequestBody SubscriptionDto subscriptionDto) {
         return new Response<>(subscriptionService.save(subscriptionDto));
     }
 
+    @RolesAllowed("SUPPLIER")
     @Operation(summary = "delete existing subscription")
     @DeleteMapping("/{subscriptionId}")
     public Response<Void> deleteSubscription(@PathVariable Long subscriptionId) {
