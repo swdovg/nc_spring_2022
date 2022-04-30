@@ -28,35 +28,28 @@ const UserInfo = (props) => {
             <div className="userinfo_head">
                 <img className="userinfo_head_img" src={profile_img} alt="Profile Image"/>
                 <p className="userinfo_head_name"> {user.name} </p>
-
-                {role==="ROLE_SUPPLIER"
-                    ?
-                    <Link to="/edit-user">
-                        <button className="setting_btn float-right" >
-                            <img className="setting_btn_img" src={setting} alt="setting"/>
-                        </button>
-                    </Link>
-                    :
-                    <Link to="/edit-user">
-                        <button className="setting_btn float-right" >
-                            <img className="setting_btn_img" src={setting} alt="setting"/>
-                        </button>
-                    </Link>
-                }
+                <Link to="/edit-user">
+                    <button className="setting_btn float-right" >
+                        <img className="setting_btn_img" src={setting} alt="setting"/>
+                    </button>
+                </Link>
             </div>
-{/*             <div className="userinfo_info"> */}
-{/*                 <p className="userinfo_info_text"> Your monthly profit:</p> */}
-{/*                 <p className="userinfo_info_number">150 </p> */}
-{/*                 <p className="userinfo_info_currency"> USD/month</p> */}
-{/*             </div> */}
             <hr />
-            <div className="userinfo_info">
-                <p className="userinfo_info_text"> Subcriptions:</p>
-                <p className="userinfo_info_number">{props.amount} </p>
-                <p className="userinfo_info_currency"> USD/month</p>
-            </div>
+            {user.role==="ROLE_SUPPLIER"
+                ?
+                <div className="userinfo_info">
+                    <p className="userinfo_info_text"> You have</p>
+                    <p className="userinfo_info_number">{props.number} </p>
+                    <p className="userinfo_info_currency">subscriptions</p>
+                </div>
+                :
+                <div className="userinfo_info">
+                    <p className="userinfo_info_text"> Subcriptions:</p>
+                    <p className="userinfo_info_number">{props.amount} </p>
+                    <p className="userinfo_info_currency"> USD/month</p>
+                </div>
+            }
         </div>
-
     );
 };
 

@@ -31,9 +31,13 @@ function CustomerView ()  {
     }
 
     const [amount, setAmount] = useState(0);
-
     const updateAmount = (value) => {
        setAmount(value);
+    }
+
+    const [number, setNumber] = useState(0);
+    const updateNumber = (value) => {
+       setNumber(value);
     }
 
     return (
@@ -56,9 +60,9 @@ function CustomerView ()  {
                         ?
                             <ConsumerTable heading="date of payment:" subscriptions={subscriptions} updateAmount={updateAmount}/>
                         :
-                            <SupplierTable heading="date of payment:" subscriptions={subscriptions} updateAmount={updateAmount}/>
+                            <SupplierTable heading="date of payment:" subscriptions={subscriptions} updateNumber={updateNumber}/>
                     }
-                    <UserInfo amount={amount}/>
+                    <UserInfo amount={amount} number={number}/>
                 </div>
             </div>
             <Footer />

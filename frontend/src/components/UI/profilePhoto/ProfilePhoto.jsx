@@ -14,7 +14,7 @@ const ProfilePhoto = ({children,  ...props}) =>  {
      const [errMsg, setErrMsg] = useState("");
 
      useEffect( () => {
-/*         let isMounted = true;
+        let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
 
         const getImage = async () => {
@@ -34,7 +34,7 @@ const ProfilePhoto = ({children,  ...props}) =>  {
         return () =>{
             isMounted=false;
             controller.abort();
-        } */
+        }
     }, [image]);
 
      const upload = async (e) =>  {
@@ -73,7 +73,7 @@ const ProfilePhoto = ({children,  ...props}) =>  {
             <Modal visible={modalVisible} setVisible={setModalVisible}>
                 <form onSubmit={upload}>
                     <label className={classes.btn} > {props.label}
-                        <input type="file" id="fileInput" {...props} className={classes.input} onChange={(e)=> setImage(e.target.files[0])}>
+                        <input type="file" id="fileInput" className={classes.input} onChange={(e)=> setImage(e.target.files[0])}>
                             {children}
                         </input>
                     </label>

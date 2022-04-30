@@ -16,8 +16,8 @@ import Cookies from 'js-cookie';
 const SupplierTable = (props) => {
 
     const [subscriptions, setSubscriptions] = useState({});
-    const [amount, setAmount] = useState(0);
     const axiosPrivate = useAxiosPrivate();
+    const [number, setNumber] = useState(0);
 
      useEffect( () => {
 
@@ -31,6 +31,9 @@ const SupplierTable = (props) => {
                      signal: controller.signal      //to allow to cansel a request
                  });
                  isMounted && setSubscriptions(response.data?.payload.content);
+
+                 setNumber(subscriptions.length);
+                 props.updateNumber(number);
             } catch(err) {
                  console.log(err);
             }

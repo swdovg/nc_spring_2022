@@ -142,9 +142,10 @@ const SubscriptionForm = (props) =>  {
                   <Textarea required id="description" name="description" label="Description" maxLength="120"
                   onChange={(e)=> setDescription(e.target.value)}/>
                 </li>
+
             </ul>
-         {/*    <Input type="text" name="question" label="Question"
-                onChange={(e)=> {setQuestion(e.target.value);}} /> */}
+            <Input type="text" name="question" label="Question"
+                onChange={(e)=> {setQuestion(e.target.value);}} />
             {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question"
                  onChange={(e)=> setQuestion(e.target.value)} />)}
 
