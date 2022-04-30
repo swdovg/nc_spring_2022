@@ -9,12 +9,13 @@ import Header from '../components/header/Header.jsx';
 import Footer from '../components/footer/Footer.jsx';
 import AddressForm from '../components/UI/addressForm/AddressForm.jsx';
 import PasswordForm from '../components/UI/passwordForm/PasswordForm.jsx';
+import SubscriptionForm from '../components/UI/subscriptionForm/SubscriptionForm.jsx';
 import Modal from '../components/UI/modal/Modal.jsx';
 import Input from '../components/UI/input/Input.jsx';
-import useRefreshToken from "../hook/useRefreshToken.js";
 import useAxiosPrivate from "../hook/useAxiosPrivate.js";
+import Cookies from 'js-cookie';
 
-const PHONE_REGEX = /^((\+7|7|8)+([0-9]){10})$/;
+
 const PWD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 const NAME_URL = "/api/v1/user/name";
 const LOCATION_URL = "/api/v1/user/location";
@@ -29,12 +30,12 @@ const EditUser = () => {
     const [errMsg, setErrMsg] = useState("");
 
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [validPhoneNumber, setValidPhoneNumber] = useState(false);
 
     const [name, setName] = useState("");
-    const [id, setId] = useState("");
+    const [userId, setId] = useState("");
     const [defaultLocation, setDefaultLocation] = useState("");
-    const [locations, setLocations] = useState({});
+    const [locationId, setLocationId] = useState();
+    const [locations, setLocations] = useState([]);
     const [currency, setCurrency] = useState("");
     const [role, setRole] = useState("");
 
@@ -51,37 +52,42 @@ const EditUser = () => {
     }, [password] );
 
     useEffect( () => {
+        const user = JSON.parse(Cookies.get("user"));
+        setName(user.name);
+        setDefaultLocation(user.defaultLocation?.location);
+        setLocationId(user.defaultLocation?.id);
+        setPhoneNumber(user.phoneNumber);
+        setRole(user.role);
+        setCurrency(user.currency);
+        setId(user.id);
+
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
 
         const getInfo = async () => {
             try {
-                const response = await axiosPrivate.get("api/v1/user", {
-                    signal: controller.signal      //to allow to cansel a request
-                });
-                isMounted && setName(response.data.payload.name);
-                isMounted && setId(response.data.payload.id);
-                isMounted && setPhoneNumber(response.data.payload.phoneNumber);
-                isMounted && setDefaultLocation(response.data.payload.defaultLocation);
-                isMounted && setCurrency(response.data.payload.currency);
-                isMounted && setRole(response.data.payload.role);
-
-                 response = await axiosPrivate.get("api/v1/location", {
+                 const response = await axiosPrivate.get(
+                 LOCATION_URL,
+                 {
                     signal: controller.signal      //to allow to cansel a request
                 });
                 isMounted && setLocations(response.data.payload);
-
             } catch(err) {
                 console.log(err);
             }
         }
         getInfo();
-
         return () =>{
             isMounted=false;
             controller.abort();
         }
     }, []);
+
+    const onLocationChange = (e) => {
+        setDefaultLocation(e.target.value);
+        const el = e.target.childNodes[e.target.selectedIndex];
+        setLocationId(Number(el.getAttribute('id')));
+    }
 
      const handleSubmit = async (e) => {
         e.preventDefault();
@@ -94,26 +100,23 @@ const EditUser = () => {
                    withCredentials: true
                }
             )
-/*             response = await axiosPrivate.put(
-                LOCATION_URL,
+            const curResponse = await axiosPrivate.put(
+                CUR_URL,
+                JSON.stringify({value: currency}),
                 {
-                    location: JSON.stringify(defaultLocation),
-                    userId: id
-                },
-                {
-                    headers: {'Content-Type': 'application/json'},
-                    withCredentials: true
-                }
-             ) */
-            response = await axiosPrivate.put(
-               CUR_URL,
-               JSON.stringify({value: currency}),
-               {
                    headers: {'Content-Type': 'application/json'},
                    withCredentials: true
-               }
+                }
             )
-             console.log(response.data);
+             const locResponse = await axiosPrivate.put(
+                 LOCATION_URL,
+                 JSON.stringify({id: locationId, location: defaultLocation, userId}),
+                 {
+                     headers: {'Content-Type': 'application/json'},
+                     withCredentials: true
+                 }
+            )
+
         }
         catch(err) {
             if (!err?.response)
@@ -122,9 +125,8 @@ const EditUser = () => {
                 setErrMsg("Invalid Data");
             else
                 setErrMsg("Submission Failed");
-            //errRef.current.focus();
         }
-        }
+     }
 
     return (
         <div>
@@ -167,29 +169,36 @@ const EditUser = () => {
                                     label={"Phone Number"}/>
                                 </li>
                                 <li>
+                                {locations?.length>0
+                                ?
                                     <Select
                                         defaultValue={defaultLocation}
-                                        onChange={(e)=> setDefaultLocation(e.target.value)}
-                                        options={[
-                                            {value:"1", name:"1"},
-                                            {value:"2", name:"2"}
-                                        ]}
-                                        label="Main Address"
-                                    />
+                                        onChange={onLocationChange}
+                                        label="Main Address">
+                                    {locations.map((loc) =>
+                                        <option key={loc.id} id={loc.id} value={loc.location}>{loc.location}</option>)}
+                                    </Select>
+                                :
+                                    <Input
+                                        type="text"
+                                        id="defaultLocation"
+                                        value = {defaultLocation}
+                                        label={"Main Address"}
+                                        onChange={(e)=> setDefaultLocation(e.target)}/>
+                                }
                                 </li>
                                 <li>
                                     <Select
                                         required="required"
                                         defaultValue={currency}
-                                        options={[
-                                            {value:"USD", name:"USD"},
-                                            {value:"RUB", name:"RUB"}
-                                        ]}
                                         label="Currency"
-                                        onChange={(e)=> setCurrency(e.target.value)}
-                                    />
+                                        onChange={(e)=> setCurrency(e.target.value)}>
+                                        <option value="USD"> USD</option>
+                                        <option value="RUB"> RUB</option>
+                                    </Select>
                                 </li>
                             </ul>
+                            <p> {errMsg}</p>
                             <Button className="inline-btn" >Save changes</Button>
                         </form>
                         <Button className="inline-btn" onClick={()=>setPasswordModalVisible(true)}>Change password</Button>
@@ -199,6 +208,9 @@ const EditUser = () => {
             <Footer />
             <Modal visible={addressModalVisible} setVisible={setAddressModalVisible}>
                 <AddressForm />
+            </Modal>
+            <Modal visible={subscriptionModalVisible} setVisible={setSubscriptionModalVisible}>
+                <SubscriptionForm />
             </Modal>
             <Modal visible={passwordModalVisible} setVisible={setPasswordModalVisible}>
                 <PasswordForm />

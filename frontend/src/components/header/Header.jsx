@@ -7,17 +7,19 @@ import facebook from '../../img/facebook.png';
 import twitter from '../../img/twitter.png';
 import {BrowserRouter, Routes ,Route,Link} from "react-router-dom";
 import {AuthContext} from '../../context/AuthContext.js';
+import useAuth from '../../hook/useAuth.js';
 import Cookies from 'js-cookie';
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Header = () => {
     const navigate = useNavigate();
-    const {auth, setAuth} = useContext(AuthContext);
+    const {auth, setAuth} = useAuth();
 
     const logout = event => {
         event.preventDefault();
         setAuth({});
         Cookies.remove("token");
+        Cookies.remove("user");
         navigate("/login");
     }
 
@@ -37,7 +39,7 @@ const Header = () => {
                             </button>
                         </div>
                         <div className="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
-                        {auth.isAuth
+                        {auth.id
                             ?
                             <div>
                                 <Link to="/customer-profile" className="header-sing-link">My profile</Link>

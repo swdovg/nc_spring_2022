@@ -22,6 +22,12 @@ body{
 button{
 	display: block;
 	border-width: 0;
+	outline:0 none ;
+	cursor: pointer;
+}
+
+a, a:visited, a:focus, a:active, a:hover, button:active, button:focus{
+    outline:0 none !important;
 }
 
 p{
@@ -36,4 +42,8 @@ ul {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+*:focus {
+    outline: none;
 }

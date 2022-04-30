@@ -1,11 +1,11 @@
 import React from 'react';
 import classes from './Textarea.module.css';
 
-const Textarea = ({id, name, label, maxlength}) => {
+const Textarea = (props) => {
     return (
         <div>
-            <label className={classes.label}>{label}</label>
-            <textarea className={classes.textarea} id={id} name={name} maxlength={maxlength}/>
+            <label className={classes.label}>{props.label}</label>
+            <textarea className={classes.textarea} id={props.id} name={props.name} maxlength={props.maxlength} {...props}/>
         </div>
     );
 };

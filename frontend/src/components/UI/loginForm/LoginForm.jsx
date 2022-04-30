@@ -8,10 +8,12 @@ import {Link} from "react-router-dom";
 import axios from "../../../api/axios.js"
 import useAuth from '../../../hook/useAuth.js';
 import Cookies from 'js-cookie';
+import useAxiosPrivate from "../../../hook/useAxiosPrivate.js"
 
 const LOGIN_URL = "api/v1/auth/login";
 
 const LoginForm = () => {
+    const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const {auth, setAuth} = useAuth();
 
@@ -39,13 +41,30 @@ const LoginForm = () => {
             )
             const accessToken = response?.data?.payload.token;
             const role = response?.data?.payload?.role;
-            const isAuth = true;
-            setAuth({email, password, role, accessToken, isAuth});
+
+            setAuth({email, password, role, accessToken});
             Cookies.set("token", accessToken);
-            console.log(response.data);
-            setEmail("");
-            setPassword("");
+
+            let isMounted = true;
+            const controller = new AbortController(); //to cansel request if the component on mounting
+
+            const getUserInfo = async () => {
+                try {
+                    const response = await axiosPrivate.get("api/v1/user", {
+                        signal: controller.signal      //to allow to cansel a request
+                    });
+                    Cookies.set("user", JSON.stringify(response.data?.payload))
+                } catch(err) {
+                    console.log(err);
+                    //navigate('/', { state: { from: location }, replace: true });
+                }
+            }
+            getUserInfo();
             navigate("/");
+            return () =>{
+                isMounted=false;
+                controller.abort();
+            }
         }
         catch(err) {
             if (!err?.response)
@@ -84,9 +103,9 @@ const LoginForm = () => {
             <Button>
                 Login now
             </Button>
-            <Button>
+{/*             <Button>
                 <img className="icon google-icon" src={google} alt="Google icon"/> Or sign-in with google
-            </Button>
+            </Button> */}
         </form>
     );
 };

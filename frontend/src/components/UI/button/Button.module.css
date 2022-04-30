@@ -17,6 +17,7 @@
 
 .btn:hover{
     background: #8C68FF;
+    cursor: pointer;
 }
 
 .btn:disabled{
