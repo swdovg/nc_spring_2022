@@ -143,7 +143,10 @@ const SignForm = () => {
                           {value: true, name:"Consumer"}
                       ]}
                       label="Role"
-                  />
+                  >
+                    <option value= "false">Supplier </option>
+                    <option value= "true">Consumer </option>
+                  </Select>
                 </li>
             </ul>
             <p ref={errRef}>{errMsg}</p>
