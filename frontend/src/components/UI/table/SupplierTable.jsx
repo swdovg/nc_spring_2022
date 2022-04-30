@@ -8,6 +8,7 @@ import Modal from '../modal/Modal.jsx';
 import Button from '../button/Button.jsx';
 import DeleteModal from '../deleteModal/DeleteModal.jsx';
 import Subscription from './Subscription.jsx';
+import OrderInfoTable from './OrderInfoTable.jsx';
 import EditSubscriptionModal from '../editSubscriptionModal/EditSubscriptionModal.jsx';
 import Cookies from 'js-cookie';
 
@@ -17,8 +18,6 @@ const SupplierTable = (props) => {
     const [subscriptions, setSubscriptions] = useState({});
     const [amount, setAmount] = useState(0);
     const axiosPrivate = useAxiosPrivate();
-    const navigate = useNavigate();
-    const location = useLocation();
 
      useEffect( () => {
 
@@ -34,11 +33,10 @@ const SupplierTable = (props) => {
                  isMounted && setSubscriptions(response.data?.payload.content);
             } catch(err) {
                  console.log(err);
-                 //navigate('/login', { state: { from: location }, replace: true });
             }
          }
          getSubscriptions();
-         //updateAmount();
+
          return () =>{
              isMounted=false;
              controller.abort();
@@ -50,8 +48,8 @@ const SupplierTable = (props) => {
         <table className="user_table col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
             <thead>
                 <tr className="table_heading">
-                    <th className="table_heading_item col-xl-8 col-lg-8">service:</th>
-                    <th className="table_heading_item col-xl-3 col-lg-3">price:</th>
+                    <th className="table_heading_item col-xl-7 col-lg-7">service:</th>
+                    <th className="table_heading_item col-xl-4 col-lg-4">price:</th>
                     {/* <th className="table_heading_item col-xl-3 col-lg-3">subscribers:</th> */}
                 </tr>
             </thead>
@@ -66,6 +64,9 @@ const SupplierTable = (props) => {
                                 price = {subscription.price}
                                 currency = {subscription.currency}
                                 id={subscription.id}
+                                subscription={subscription}
+                                category={subscription.category}
+                                description={subscription.description}
                                 //date = {(subscription.date).slice(8, 10)}
                             />
                         )}
@@ -74,7 +75,6 @@ const SupplierTable = (props) => {
             }
             </tbody>
         </table>
-
         </>
     )
 };

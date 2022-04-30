@@ -47,6 +47,7 @@ const ConsumerTable = (props) => {
             amount =0;
         }
         props.updateAmount(amount);
+        console.log(amount);
     }
 
      useEffect( () => {
@@ -72,7 +73,7 @@ const ConsumerTable = (props) => {
              isMounted=false;
              controller.abort();
          }
-     }, []);
+     },[]);
 
     return (
     <>

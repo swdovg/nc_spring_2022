@@ -150,7 +150,7 @@ const SubscriptionForm = (props) =>  {
             </Button>
 
             <Button>
-                Save changes
+                Create Subscription
             </Button>
         </form>
     </div>

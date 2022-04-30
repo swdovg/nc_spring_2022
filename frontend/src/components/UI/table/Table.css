@@ -1,5 +1,5 @@
 .user_table{
-    table-layout: fixed;
+
 }
 
 .table_heading{
@@ -51,7 +51,7 @@
 
 .edit_btn{
     display: inline;
-    margin-left: 30%;
+    margin-left: 10px;
     opacity: 0;
     width: 20px;
     height: 20px;
@@ -60,4 +60,22 @@
     background-repeat: no-repeat;
     background-position: center;
     border: 0px;
+}
+
+.info_btn{
+    display: inline;
+    margin-left: 30%;
+    opacity: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 5px;
+    background-image: url("../../../img/info_btn.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 0px;
+}
+
+.table_row:hover  .info_btn{
+    opacity: 1;
 }

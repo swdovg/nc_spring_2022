@@ -18,10 +18,11 @@ const EditSubscriptionModal = (props) => {
     const [count, setCount] = useState(0);
     const axiosPrivate = useAxiosPrivate();
     const [errMsg, setErrMsg] = useState("");
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [price, setPrice] = useState(0);
-    const [currency, setCurrency] = useState("USD");
+    const [id, setId] = useState(props.id);
+    const [title, setTitle] = useState(props.title);
+    const [description, setDescription] = useState(props.description);
+    const [price, setPrice] = useState(props.price);
+    const [currency, setCurrency] = useState(props.currency);
     const [averageRating, setAverageRating] = useState(0);
     const [category, setCategory] = useState({});
     const [categoryId, setCategoryId] = useState(0);
@@ -41,6 +42,12 @@ const EditSubscriptionModal = (props) => {
     }
 
     useEffect( () => {
+        setTitle(props.title);
+        setDescription(props.description);
+        setPrice(props.price);
+        setId(props.id);
+        setCurrency(props.currency);
+        setCategory(props.category);
 
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
@@ -69,9 +76,11 @@ const EditSubscriptionModal = (props) => {
             const response = await axiosPrivate.put(
                 SUBSCRIPTION_URL,
                 {
+                    id,
                     title,
                     description,
                     price,
+                    currency,
                     averageRating,
                     category: {
                      id: categoryId,
@@ -111,16 +120,16 @@ const EditSubscriptionModal = (props) => {
                                 name="subscription-title"
                                 label="Title"
                                 onChange={(e)=> setTitle(e.target.value)}
-                                value={props.title}/>
+                                value={title}/>
                         </li>
                         <li>
                             <Input required type="number" id="price" name="price" label="Price" onChange={(e)=> setPrice(e.target.value)}
-                                value={props.price}/>
+                                value={price}/>
                         </li>
                         <li>
                             <Select
                                 name="currency" required
-                                defaultValue={props.currency}
+                                defaultValue={currency}
                                 label="Currency"
                                 onChange={(e)=> setCurrency(e.target.value)}>
                                 <option value = "USD">USD </option>
@@ -129,8 +138,8 @@ const EditSubscriptionModal = (props) => {
                         </li>
                         <li>
                             <Select
-                                name="currency" required
-                                defaultValue={props.category?.name}
+                                name="Category" required
+                                defaultValue={category?.name}
                                 label="Category"
                                 onChange={onCategoryChange}>
                                  {categoryList?.map((loc) =>
@@ -139,7 +148,7 @@ const EditSubscriptionModal = (props) => {
                         </li>
                         <li>
                           <Textarea required id="description" name="description" label="Description" maxLength="120"
-                          onChange={(e)=> setDescription(e.target.value)} value={props.description}/>
+                          onChange={(e)=> setDescription(e.target.value)} value={description}/>
                         </li>
                     </ul>
                     {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question"
