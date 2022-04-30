@@ -16,7 +16,7 @@ const SubscriptionForm = (props) =>  {
     const [count, setCount] = useState(0);
     const axiosPrivate = useAxiosPrivate();
     const [errMsg, setErrMsg] = useState("");
-
+    const [id, setId] = useState("");
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState(0);
@@ -25,6 +25,7 @@ const SubscriptionForm = (props) =>  {
     const [category, setCategory] = useState({});
     const [categoryId, setCategoryId] = useState(0);
     const [categoryList, setCategoryList] = useState([]);
+    const [questions, setQuestions] = useState([]);
     const [question, setQuestion] = useState("");
 
     useEffect( () => {
@@ -57,6 +58,7 @@ const SubscriptionForm = (props) =>  {
 
      const handleSubmit = async (e) => {
         e.preventDefault();
+        setQuestions([...questions, question]);
         const supplier = JSON.parse(Cookies.get("user"));
         try {
             const response = await axiosPrivate.post(
@@ -79,6 +81,8 @@ const SubscriptionForm = (props) =>  {
                     withCredentials: true
                 }
              );
+            setId(response.data?.payload.id);
+            console.log(questions);
         }
         catch(err) {
             if (!err?.response)
@@ -94,7 +98,8 @@ const SubscriptionForm = (props) =>  {
     const addNewInput = async (e) => {
         e.preventDefault();
         setCount(count+1);
-        console.log(question);
+        setQuestions([...questions, question]);
+        console.log(questions);
     }
 
 
@@ -110,17 +115,14 @@ const SubscriptionForm = (props) =>  {
                         id="subscription-title"
                         name="subscription-title"
                         label="Title"
-                        onChange={(e)=> setTitle(e.target.value)}
-                        value={props.title}/>
+                        onChange={(e)=> setTitle(e.target.value)}/>
                 </li>
                 <li>
-                    <Input required type="number" id="price" name="price" label="Price" onChange={(e)=> setPrice(e.target.value)}
-                        value={props.price}/>
+                    <Input required type="number" id="price" name="price" label="Price" onChange={(e)=> setPrice(e.target.value)}/>
                 </li>
                 <li>
                     <Select
-                        name="currency" required="required"
-                        defaultValue={props.currency}
+                        name="currency" required
                         label="Currency"
                         onChange={(e)=> setCurrency(e.target.value)}>
                         <option value = "USD">USD </option>
@@ -129,26 +131,27 @@ const SubscriptionForm = (props) =>  {
                 </li>
                 <li>
                     <Select
-                        name="currency" required="required"
-                        defaultValue={props.category}
+                        name="currency" required
                         label="Category"
                         onChange={onCategoryChange}>
-                         {categoryList?.map((loc) =>
-                            <option key={loc.id} id={loc.id} value={loc.name}>{loc.name}</option>)}
+                         {categoryList?.map((item) =>
+                            <option key={item.id} id={item.id} value={item.name}>{item.name}</option>)}
                     </Select>
                 </li>
                 <li>
                   <Textarea required id="description" name="description" label="Description" maxLength="120"
-                  onChange={(e)=> setDescription(e.target.value)} value={props.description}/>
+                  onChange={(e)=> setDescription(e.target.value)}/>
                 </li>
             </ul>
+         {/*    <Input type="text" name="question" label="Question"
+                onChange={(e)=> {setQuestion(e.target.value);}} /> */}
             {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question"
                  onChange={(e)=> setQuestion(e.target.value)} />)}
 
-            <Button onClick={addNewInput}>
+            {/* <Button  onClick={addNewInput}>
                 Add question
-            </Button>
-
+            </Button> */}
+            <p>{errMsg} </p>
             <Button>
                 Create Subscription
             </Button>

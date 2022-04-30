@@ -25,7 +25,6 @@ const Subscription = (props)=>{
     const getSubscription=() => {
         setSubscription(props.subscription);
         setEditModalVisible(true);
-        console.log(props.description);
     }
 
     const getConsumers = () => {
@@ -37,7 +36,7 @@ const Subscription = (props)=>{
                 const response = await axiosPrivate.get(URL, {
                     signal: controller.signal      //to allow to cansel a request
                 });
-                setConsumers(response.data?.payload.content);
+                setConsumers(response.data.payload?.content);
                 console.log(consumers);
             } catch(err) {
                 console.log(err);

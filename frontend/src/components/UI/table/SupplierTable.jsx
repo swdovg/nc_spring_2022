@@ -67,7 +67,6 @@ const SupplierTable = (props) => {
                                 subscription={subscription}
                                 category={subscription.category}
                                 description={subscription.description}
-                                //date = {(subscription.date).slice(8, 10)}
                             />
                         )}
                     </>

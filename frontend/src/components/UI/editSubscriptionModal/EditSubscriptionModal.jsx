@@ -100,7 +100,7 @@ const EditSubscriptionModal = (props) => {
             if (!err?.response)
                 setErrMsg("No server response");
             else if (err.response?.status===400)
-                setErrMsg("Invalid Data");
+                setErrMsg("Please, check the data in every field");
             else
                 setErrMsg("Submission Failed");
         }
@@ -154,10 +154,10 @@ const EditSubscriptionModal = (props) => {
                     {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question"
                          onChange={(e)=> setQuestion(e.target.value)} />)}
 
-                    <Button onClick={addNewInput}>
+{/*                     <Button onClick={addNewInput}>
                         Add question
-                    </Button>
-
+                    </Button> */}
+                    <p>{errMsg} </p>
                     <Button>
                         Save changes
                     </Button>

@@ -45,12 +45,13 @@ const ProfilePhoto = ({children,  ...props}) =>  {
         try {
             const response = await axiosPrivate.post(
                POST_IMG_URL,
-               {formData},
+               formData,
                {
                    headers: {"Content-type": "multipart/form-data"},
                    withCredentials: true
                }
             )
+            setImage({});
             setModalVisible(false);
         }
         catch(err) {
