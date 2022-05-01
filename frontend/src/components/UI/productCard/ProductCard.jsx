@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import cl from './ProductCard.module.css';
 import '../../../styles/bootstrap.min.css';
 import Button from '../button/Button';
@@ -8,11 +8,13 @@ import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
 
 const ProductCard = (props) => {
 
-    const role = JSON.parse(Cookies.get("user")).role;
     const axiosPrivate = useAxiosPrivate();
+    let role = "ROLE_SUPPLIER";
+    if (Cookies.get("user")) {
+        role = JSON.parse(Cookies.get("user")).role;
+    }
 
     const addSubscription = () => {
-    console.log(props.id);
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
 

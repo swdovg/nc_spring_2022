@@ -1,5 +1,5 @@
 .user_table{
-    table-layout: fixed;
+
 }
 
 .table_heading{
@@ -29,8 +29,8 @@
 }
 
 .remove_btn{
-    display: inline;
-    margin-left: 50%;
+    display: inline-block;
+    margin-left: 10px;
     opacity: 0;
     width: 20px;
     height: 20px;
@@ -41,6 +41,41 @@
     border: 0px;
 }
 
-.table_row:hover .remove_btn {
+.table_row:hover .remove_btn{
+    opacity: 1;
+}
+
+.table_row:hover  .edit_btn{
+    opacity: 1;
+}
+
+.edit_btn{
+    display: inline;
+    margin-left: 10px;
+    opacity: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 5px;
+    background: url("../../../img/edit_btn.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 0px;
+}
+
+.info_btn{
+    display: inline;
+    margin-left: 30%;
+    opacity: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 5px;
+    background-image: url("../../../img/info_btn.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 0px;
+}
+
+.table_row:hover  .info_btn{
     opacity: 1;
 }

@@ -19,7 +19,7 @@ const Subscription = (props)=>{
                 <td className="table_cont_item col-xl-6 col-lg-6">{props.title}</td>
                 <td className="table_cont_item col-xl-3 col-lg-3">{props.price} {props.currency}</td>
                 <td className="table_cont_item col-xl-3 col-lg-3">
-                    {props.date}
+                    {props.date}th
                     <button className="remove_btn" onClick={()=>setModalVisible(true)}/>
                 </td>
             </tr>
@@ -47,6 +47,7 @@ const ConsumerTable = (props) => {
             amount =0;
         }
         props.updateAmount(amount);
+        console.log(amount);
     }
 
      useEffect( () => {
@@ -72,7 +73,7 @@ const ConsumerTable = (props) => {
              isMounted=false;
              controller.abort();
          }
-     }, []);
+     },[]);
 
     return (
     <>

@@ -41,8 +41,8 @@ const ProfilePhoto = ({children, ...props}) => {
     };
 
     const onFileUpload = async (e) => {
-        e.preventDefault();
 
+        e.preventDefault();
         const formData = new FormData();
         formData.append("image", image);
         try {
@@ -54,6 +54,7 @@ const ProfilePhoto = ({children, ...props}) => {
                     withCredentials: true
                 }
             )
+            setImage({});
             setModalVisible(false);
             updateImage();
         } catch (err) {
@@ -77,6 +78,7 @@ const ProfilePhoto = ({children, ...props}) => {
                 <form onSubmit={onFileUpload}>
                     <label className={classes.btn}> {props.label}
                         <input type="file" id="fileInput" {...props} className={classes.input} onChange={onFileChange}>
+
                             {children}
                         </input>
                     </label>

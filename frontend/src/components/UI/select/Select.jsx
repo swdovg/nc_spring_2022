@@ -1,15 +1,14 @@
 import React from 'react';
 import classes from './Select.module.css';
 
-const Select = ({children,defaultValue, value, label, onChange}) => {
+const Select = ({children, ...props}) => {
     return (
-        <div>
-            <label className={classes.label}>{label}</label>
-            <select value={value} className={classes.select} onChange = {onChange}>
-                <option value="" disabled selected>{defaultValue}</option>
-                {children}
-            </select>
-        </div>
+            <label className={classes.label}>{props.label}
+                <select className={classes.select} onChange = {props.onChange}>
+                    <option value={props.defaultValue} disabled selected>{props.defaultValue}</option>
+                    {children}
+                </select>
+            </label>
     );
 };
 export default Select;

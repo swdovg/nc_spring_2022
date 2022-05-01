@@ -5,7 +5,7 @@ const Textarea = (props) => {
     return (
         <div>
             <label className={classes.label}>{props.label}</label>
-            <textarea className={classes.textarea} id={props.id} name={props.name} maxlength={props.maxlength} {...props}/>
+            <textarea className={classes.textarea} id={props.id} name={props.name} maxLength={props.maxlength} {...props}/>
         </div>
     );
 };
