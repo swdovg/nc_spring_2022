@@ -7,47 +7,17 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Modal from '../modal/Modal.jsx';
 import Button from '../button/Button.jsx';
 import DeleteModal from '../deleteModal/DeleteModal.jsx';
+import Subscription from './Subscription.jsx';
+import OrderInfoTable from './OrderInfoTable.jsx';
+import EditSubscriptionModal from '../editSubscriptionModal/EditSubscriptionModal.jsx';
 import Cookies from 'js-cookie';
 
-
-const Subscription = (props)=>{
-
-    const [modalVisible, setModalVisible] = useState(false);
-    return(
-        <>
-            <tr className="table_row">
-                <td className="table_cont_item col-xl-6 col-lg-6">{props.title}</td>
-                <td className="table_cont_item col-xl-3 col-lg-3">{props.price} {props.currency}</td>
-                <td className="table_cont_item col-xl-3 col-lg-3">
-
-                    <button className="remove_btn" onClick={()=>setModalVisible(true)}/>
-                </td>
-            </tr>
-            <DeleteModal orderId={props.id} visible = {modalVisible} setVisible={setModalVisible}/>
-        </>
-    )
-};
 
 const SupplierTable = (props) => {
 
     const [subscriptions, setSubscriptions] = useState({});
-    const [amount, setAmount] = useState(0);
     const axiosPrivate = useAxiosPrivate();
-    const navigate = useNavigate();
-    const location = useLocation();
-
-/*     const updateAmount = ()=> {
-        let amount = 0;
-        {subscriptions.length>0
-        ?
-            subscriptions.map((subscription) => {
-                amount = amount+subscription.price;
-            })
-        :
-            amount =0;
-        }
-        props.updateAmount(amount);
-    } */
+    const [number, setNumber] = useState(0);
 
      useEffect( () => {
 
@@ -61,13 +31,15 @@ const SupplierTable = (props) => {
                      signal: controller.signal      //to allow to cansel a request
                  });
                  isMounted && setSubscriptions(response.data?.payload.content);
+
+                 setNumber(subscriptions.length);
+                 props.updateNumber(number);
             } catch(err) {
                  console.log(err);
-                 //navigate('/login', { state: { from: location }, replace: true });
             }
          }
          getSubscriptions();
-         //updateAmount();
+
          return () =>{
              isMounted=false;
              controller.abort();
@@ -79,9 +51,9 @@ const SupplierTable = (props) => {
         <table className="user_table col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
             <thead>
                 <tr className="table_heading">
-                    <th className="table_heading_item col-xl-8 col-lg-8">service:</th>
-                    <th className="table_heading_item col-xl-3 col-lg-3">price:</th>
-                    <th className="table_heading_item col-xl-3 col-lg-3">subscribers:</th>
+                    <th className="table_heading_item col-xl-7 col-lg-7">service:</th>
+                    <th className="table_heading_item col-xl-4 col-lg-4">price:</th>
+                    {/* <th className="table_heading_item col-xl-3 col-lg-3">subscribers:</th> */}
                 </tr>
             </thead>
             <tbody>
@@ -95,7 +67,9 @@ const SupplierTable = (props) => {
                                 price = {subscription.price}
                                 currency = {subscription.currency}
                                 id={subscription.id}
-                                //date = {(subscription.date).slice(8, 10)}
+                                subscription={subscription}
+                                category={subscription.category}
+                                description={subscription.description}
                             />
                         )}
                     </>
@@ -103,7 +77,6 @@ const SupplierTable = (props) => {
             }
             </tbody>
         </table>
-
         </>
     )
 };

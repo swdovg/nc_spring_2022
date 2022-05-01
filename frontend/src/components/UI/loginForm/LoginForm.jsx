@@ -99,7 +99,7 @@ const LoginForm = () => {
                 </li>
             </ul>
             <p ref={errRef}>{errMsg}</p>
-            <Link to="#" className="login-forgot-link">Forgot password?</Link>
+            {/* <Link to="#" className="login-forgot-link">Forgot password?</Link> */}
             <Button>
                 Login now
             </Button>

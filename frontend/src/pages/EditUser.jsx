@@ -14,6 +14,7 @@ import Modal from '../components/UI/modal/Modal.jsx';
 import Input from '../components/UI/input/Input.jsx';
 import useAxiosPrivate from "../hook/useAxiosPrivate.js";
 import Cookies from 'js-cookie';
+import usePostSubscription from "../services/usePostSubscription.js";
 
 
 const PWD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
@@ -210,7 +211,7 @@ const EditUser = () => {
                 <AddressForm />
             </Modal>
             <Modal visible={subscriptionModalVisible} setVisible={setSubscriptionModalVisible}>
-                <SubscriptionForm />
+                <SubscriptionForm submitFunction={usePostSubscription}/>
             </Modal>
             <Modal visible={passwordModalVisible} setVisible={setPasswordModalVisible}>
                 <PasswordForm />
