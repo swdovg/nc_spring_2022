@@ -1,6 +1,5 @@
 package com.example.nc_spring_2022.config;
 
-import com.example.nc_spring_2022.security.FilterChainExceptionHandler;
 import com.example.nc_spring_2022.security.jwt.JwtTokenFilter;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
 import com.example.nc_spring_2022.security.jwt.JwtUserDetailsService;
@@ -17,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -29,7 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
-    private final FilterChainExceptionHandler filterChainExceptionHandler;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -61,9 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationEntryPoint())
                 .and()
-                .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
                 .addFilterBefore(
-                        new JwtTokenFilter(jwtTokenProvider, jwtUserDetailsService, authenticationManager()),
+                        new JwtTokenFilter(jwtTokenProvider, jwtUserDetailsService),
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .oauth2Login()
