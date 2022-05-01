@@ -1,79 +1,84 @@
-import React, {useContext, useState, useEffect, useRef} from 'react';
+import React, {useState} from 'react';
 import classes from './ProfilePhoto.module.css';
 import Button from '../button/Button';
-import useAxiosPrivate from "../../../hook/useAxiosPrivate.js"
-import profile_img from "./profile-img.png";
+import useAxiosPrivate from '../../../hook/useAxiosPrivate.js';
+import profile_img from './profile-img.png';
 import Modal from '../modal/Modal.jsx';
 
-const POST_IMG_URL = "/api/v1/image/user";
+const POST_IMG_URL = '/api/v1/image/user';
 
-const ProfilePhoto = ({children,  ...props}) =>  {
-     const [modalVisible, setModalVisible] = useState(false);
-     const axiosPrivate = useAxiosPrivate();
-     const [image, setImage] = useState({});
-     const [errMsg, setErrMsg] = useState("");
+const ProfilePhoto = ({children, ...props}) => {
+    const [modalVisible, setModalVisible] = useState(false);
+    const axiosPrivate = useAxiosPrivate();
+    const [imageUrl, setImageUrl] = useState(profile_img);
+    const [image, setImage] = useState();
+    const [errMsg, setErrMsg] = useState("");
 
-     useEffect( () => {
-        let isMounted = true;
+    const updateImage = () => {
         const controller = new AbortController(); //to cansel request if the component on mounting
 
         const getImage = async () => {
             try {
-                const response = await axiosPrivate.get("api/v1/image", {
-                    signal: controller.signal      //to allow to cansel a request
+                const userResponse = await axiosPrivate.get("api/v1/user", {
+                    signal: controller.signal      //to allow to cancel a request
                 });
-                isMounted && setImage(response?.data);
-
-            } catch(err) {
+                setImageUrl(userResponse.data.payload.imageUrl);
+            } catch (err) {
                 console.log(err);
-                setImage(`${profile_img}`);
             }
         }
         getImage();
 
-        return () =>{
-            isMounted=false;
+        return () => {
             controller.abort();
         }
-    }, [image]);
+    }
 
-     const upload = async (e) =>  {
+
+    const onFileChange = (e) => {
+        e.preventDefault();
+        setImage(e.target.files[0]);
+    };
+
+    const onFileUpload = async (e) => {
+
         e.preventDefault();
         const formData = new FormData();
         formData.append("image", image);
-        console.log(formData);
         try {
-            const response = await axiosPrivate.post(
-               POST_IMG_URL,
-               formData,
-               {
-                   headers: {"Content-type": "multipart/form-data"},
-                   withCredentials: true
-               }
+            await axiosPrivate.post(
+                POST_IMG_URL,
+                formData,
+                {
+                    headers: {"Content-type": "multipart/form-data"},
+                    withCredentials: true
+                }
             )
             setImage({});
             setModalVisible(false);
-        }
-        catch(err) {
+            updateImage();
+        } catch (err) {
             if (err?.response)
                 setErrMsg(err.message)
             else if (err.response?.status === 500)
                 setErrMsg("Maximum size is 1MB");
         }
-
     }
+
+    updateImage();
 
     return (
         <div className={classes.profile_photo}>
-            <img src={image} alt="Profile Image" className={classes.profile_photo_img} />
-            <Button label="Change Photo" url={POST_IMG_URL} onClick={()=>setModalVisible(true)}>
+            <img src={imageUrl} alt="Profile Image" className={classes.profile_photo_img}/>
+            <Button label="Change Photo" url={POST_IMG_URL} onClick={() => setModalVisible(true)}>
                 Change Photo
             </Button>
 
             <Modal visible={modalVisible} setVisible={setModalVisible}>
-                <form onSubmit={upload}>
-                    <label className={classes.btn} > {props.label}
-                        <input type="file" id="fileInput" className={classes.input} onChange={(e)=> setImage(e.target.files[0])}>
+                <form onSubmit={onFileUpload}>
+                    <label className={classes.btn}> {props.label}
+                        <input type="file" id="fileInput" {...props} className={classes.input} onChange={onFileChange}>
+
                             {children}
                         </input>
                     </label>

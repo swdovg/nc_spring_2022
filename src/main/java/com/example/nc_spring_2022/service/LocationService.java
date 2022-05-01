@@ -57,7 +57,9 @@ public class LocationService {
     }
 
     public Location save(Location location) {
-        checkPermissions(location.getId());
+        if (location.getId() != null) {
+            checkPermissions(location.getId());
+        }
         return locationRepository.save(location);
     }
 

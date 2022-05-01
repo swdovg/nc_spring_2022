@@ -8,9 +8,11 @@ import com.example.nc_spring_2022.util.ImageUtility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
@@ -20,11 +22,13 @@ import java.util.zip.DataFormatException;
 public class ImageController {
     private final ImageService imageService;
 
+    @PreAuthorize("authenticated")
     @PostMapping("/user")
     public Response<ImageDto> uploadNewUserImage(@RequestParam("image") MultipartFile image) throws IOException {
         return new Response<>(imageService.saveUserImage(image));
     }
 
+    @RolesAllowed("CONSUMER")
     @PostMapping("/subscription")
     public Response<ImageDto> uploadNewSubscriptionImage(@RequestParam("image") MultipartFile image,
                                                          @RequestParam("subscriptionId") Long subscriptionId)

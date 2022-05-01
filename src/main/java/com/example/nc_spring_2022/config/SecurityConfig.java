@@ -1,6 +1,5 @@
 package com.example.nc_spring_2022.config;
 
-import com.example.nc_spring_2022.security.FilterChainExceptionHandler;
 import com.example.nc_spring_2022.security.jwt.JwtTokenFilter;
 import com.example.nc_spring_2022.security.jwt.JwtTokenProvider;
 import com.example.nc_spring_2022.security.jwt.JwtUserDetailsService;
@@ -17,11 +16,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtUserDetailsService jwtUserDetailsService;
@@ -29,7 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
-    private final FilterChainExceptionHandler filterChainExceptionHandler;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -51,9 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/user", "/api/v1/location", "/api/v1/category",
-                        "/api/v1/subscription", "/api/v1/feedback", "/api/v1/form",
-                        "/api/v1/image/user", "/api/v1/image/subscription")
+                .antMatchers("/api/v1/user",
+                        "/api/v1/location",
+                        "/api/v1/form")
                 .authenticated()
                 .anyRequest()
                 .permitAll()
@@ -61,9 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationEntryPoint())
                 .and()
-                .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
                 .addFilterBefore(
-                        new JwtTokenFilter(jwtTokenProvider, jwtUserDetailsService, authenticationManager()),
+                        new JwtTokenFilter(jwtTokenProvider, jwtUserDetailsService),
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .oauth2Login()
