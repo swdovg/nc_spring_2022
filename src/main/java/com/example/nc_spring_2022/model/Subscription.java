@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -38,6 +39,10 @@ public class Subscription {
     private User supplier;
     @OneToOne(targetEntity = Category.class)
     private Category category;
+    @OneToMany(targetEntity = FormQuestion.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FormQuestion> questions;
+    @OneToMany(targetEntity = Order.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
     private Long imageId;
     private String imageUrl;
 
