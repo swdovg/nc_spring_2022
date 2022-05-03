@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -26,7 +28,8 @@ public class Order {
     private UUID businessKey = IdGenerator.createId();
     @OneToOne(targetEntity = User.class)
     private User user;
-    @OneToOne(targetEntity = Subscription.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(targetEntity = Subscription.class)
     private Subscription subscription;
     @Column(nullable = false)
     private Date date = new Date();

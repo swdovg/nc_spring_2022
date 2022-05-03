@@ -7,7 +7,6 @@ import com.example.nc_spring_2022.model.Subscription;
 import com.example.nc_spring_2022.repository.SubscriptionRepository;
 import com.example.nc_spring_2022.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,8 +19,6 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionMapper subscriptionMapper;
     private final AuthenticationFacade authenticationFacade;
-    @Lazy
-    private final OrderService orderService;
 
     public Page<SubscriptionDto> getAll(Pageable pageable) {
         Page<Subscription> subscriptions = subscriptionRepository.findAll(pageable);
@@ -86,7 +83,6 @@ public class SubscriptionService {
         Subscription subscription = findById(id);
         verifySubscriptionsOwner(subscription, userId);
 
-        orderService.deleteBySubscriptionId(id);
         subscriptionRepository.deleteById(id);
     }
 }

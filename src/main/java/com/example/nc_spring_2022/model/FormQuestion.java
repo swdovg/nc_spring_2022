@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -22,7 +24,8 @@ public class FormQuestion {
     @NaturalId
     @Column(nullable = false, unique = true)
     private UUID businessKey = IdGenerator.createId();
-    @ManyToOne(targetEntity = Subscription.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(targetEntity = Subscription.class, cascade = CascadeType.ALL)
     private Subscription subscription;
     @Column(nullable = false)
     private String question;
