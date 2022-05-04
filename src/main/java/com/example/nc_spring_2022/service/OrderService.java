@@ -69,10 +69,6 @@ public class OrderService {
         }
     }
 
-/*    public void deleteBySubscriptionId(Long subscriptionId) {
-        orderRepository.deleteAllBySubscriptionId(subscriptionId);
-    }*/
-
     public void delete(Long id) {
         orderRepository.deleteById(id);
     }
