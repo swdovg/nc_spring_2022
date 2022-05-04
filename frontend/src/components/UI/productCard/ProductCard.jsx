@@ -1,7 +1,9 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import cl from './ProductCard.module.css';
 import '../../../styles/bootstrap.min.css';
 import Button from '../button/Button';
+import Modal from '../modal/Modal';
+import Input from '../input/Input';
 import card_img from '../../../img/profile_img.png';
 import Cookies from 'js-cookie';
 import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
@@ -9,29 +11,50 @@ import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
 const ProductCard = (props) => {
 
     const axiosPrivate = useAxiosPrivate();
+    const [questions, setQuestions] = useState();
+    const [questionModalVisible, setQuestionModalVisible] = useState(false);
     let role = "ROLE_SUPPLIER";
     if (Cookies.get("user")) {
         role = JSON.parse(Cookies.get("user")).role;
     }
 
-    const addSubscription = () => {
+    const addSubscription = async () => {
+        try {
+            const response = await axiosPrivate.post(`api/v1/order/${props.id}`);
+        } catch(err) {
+            console.log(err);
+        }
+
+    }
+
+    const onAddClick = (e) => {
+        e.preventDefault();
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
 
-            const addSubscription = async () => {
-                try {
-                    const response = await axiosPrivate.post(`api/v1/order/${props.id}`, {
-                        signal: controller.signal      //to allow to cansel a request
-                    });
-                } catch(err) {
-                    console.log(err);
-                }
+        const getQuestions = async () => {
+            const URL = `/api/v1/form/question/${props.id}`;
+            try {
+                 const response = await axiosPrivate.get(URL, {
+                     signal: controller.signal      //to allow to cansel a request
+                 });
+                 isMounted && setQuestions(response.data.payload);
+                 console.log(questions);
+            } catch(err) {
+                 console.log(err);
             }
+        }
+        getQuestions();
+        if (questions.length === 0) {
             addSubscription();
-            return () =>{
-                isMounted=false;
-                controller.abort();
-            }
+        }
+        else {
+            setQuestionModalVisible(true);
+        }
+        return () =>{
+         isMounted=false;
+         controller.abort();
+        }
     }
 
     return (
@@ -47,13 +70,19 @@ const ProductCard = (props) => {
                     <p className={cl.card_description}> {props.description}</p>
                     {role==="ROLE_CONSUMER"
                         ?
-                        <button  className={cl.card_btn} onClick= {addSubscription}> add</button>
+                        <button  className={cl.card_btn} onClick= {onAddClick}> add</button>
                         :
                         <> </>
                     }
                 </div>
             </div>
-
+            <Modal visible ={questionModalVisible} setVisible ={setQuestionModalVisible}>
+                <form>
+                    {questions?.map((item) =>
+                        <Input key={item.id} id={item.id} label={item.question}/>)}
+                    <Button> Submit </Button>
+                </form>
+            </Modal>
         </>
     );
 };

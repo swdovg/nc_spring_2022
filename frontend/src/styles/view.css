@@ -17,6 +17,6 @@
 .cont{
 	align-content: centre;
     align:centre;
-    height: 100vh;
+    min-height: 100vh;
 }
 

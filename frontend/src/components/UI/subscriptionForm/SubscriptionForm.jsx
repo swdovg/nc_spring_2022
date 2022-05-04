@@ -11,13 +11,14 @@ import Cookies from 'js-cookie';
 import usePostSubscription from "../../../services/usePostSubscription.js";
 
 const SUBSCRIPTION_URL = "api/v1/subscription";
+const QUESTION_URL = "/api/v1/form/question";
 
 const SubscriptionForm = (props) =>  {
 
     const [count, setCount] = useState(0);
     const axiosPrivate = useAxiosPrivate();
     const [errMsg, setErrMsg] = useState("");
-    const [id, setId] = useState("");
+    const [id, setId] = useState();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState(0);
@@ -28,6 +29,7 @@ const SubscriptionForm = (props) =>  {
     const [categoryList, setCategoryList] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [question, setQuestion] = useState("");
+    const supplier = JSON.parse(Cookies.get("user"));
 
     useEffect( () => {
 
@@ -57,10 +59,7 @@ const SubscriptionForm = (props) =>  {
         setCategoryId(Number(el.getAttribute('id')));
     }
 
-     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setQuestions([...questions, question]);
-        const supplier = JSON.parse(Cookies.get("user"));
+    const postSubscription = async () => {
         try {
             const response = await axiosPrivate.post(
                 SUBSCRIPTION_URL,
@@ -68,7 +67,7 @@ const SubscriptionForm = (props) =>  {
                     title,
                     description,
                     price,
-                    averageRating,
+                    currency,
                     category: {
                      id: categoryId,
                      name: category,
@@ -82,28 +81,60 @@ const SubscriptionForm = (props) =>  {
                     withCredentials: true
                 }
              );
-            setId(response.data?.payload.id);
-            console.log(questions);
-            props.setVisible(false);
+            setId(response.data.payload?.id);
+            console.log(id);
         }
         catch(err) {
-            if (!err?.response)
-                setErrMsg("No server response");
-            else if (err.response?.status===400)
-                setErrMsg("Invalid Data");
-            else
-                setErrMsg("Submission Failed");
+            setErrMsg(err.response.message);
         }
+    }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (id === undefined){
+            postSubscription();
+        }
+        try {
+            const questionResponse = await axiosPrivate.post(
+                QUESTION_URL,
+                {
+                    subscriptionId: id,
+                    question: question
+                 },
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
+                }
+             );
+        }
+        catch(err) {
+            setErrMsg(err.response.message);
+        }
+        props.setVisible(false);
     }
 
     const addNewInput = async (e) => {
         e.preventDefault();
-        setCount(count+1);
-        setQuestions([...questions, question]);
-        console.log(questions);
+        if (id===undefined){
+            postSubscription();
+        }
+        try {
+            const questionResponse = await axiosPrivate.post(
+                "/api/v1/form/question",
+                {
+                    subscriptionId: id,
+                    question: question
+                 },
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
+                }
+             );
+        }
+        catch(err) {
+            setErrMsg("Something went wrong. Try again, please");
+        }
     }
-
 
     return (
         <Modal visible={props.visible} setVisible={props.setVisible}>
@@ -147,15 +178,14 @@ const SubscriptionForm = (props) =>  {
                         </li>
 
                     </ul>
-                    <Input type="text" name="question" label="Question"
+                    <Input type="text" name="question" label="Question (optional)"
                         onChange={(e)=> {setQuestion(e.target.value);}} />
-                    {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question"
+                    {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question (optional)"
                          onChange={(e)=> setQuestion(e.target.value)} />)}
-
-                    {/* <Button  onClick={addNewInput}>
-                        Add question
-                    </Button> */}
                     <p>{errMsg} </p>
+                    <Button  onClick={addNewInput}>
+                        Add question
+                    </Button>
                     <Button>
                         Create Subscription
                     </Button>
