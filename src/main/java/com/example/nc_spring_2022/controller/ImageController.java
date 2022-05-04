@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
@@ -28,7 +27,7 @@ public class ImageController {
         return new Response<>(imageService.saveUserImage(image));
     }
 
-    @RolesAllowed("CONSUMER")
+    @PreAuthorize("hasRole('ROLE_SUPPLIER')")
     @PostMapping("/subscription")
     public Response<ImageDto> uploadNewSubscriptionImage(@RequestParam("image") MultipartFile image,
                                                          @RequestParam("subscriptionId") Long subscriptionId)
