@@ -206,7 +206,7 @@ const EditUser = () => {
                                     label={"Phone Number"}/>
                                 </li>
                                 <li>
-                                {locations?.length>0
+                                {locations?.length>2
                                 ?
                                     <Select
                                         defaultValue={defaultLocation}

@@ -12,7 +12,7 @@ import Cookies from 'js-cookie';
 const UserInfo = (props) => {
 
     const [name, setName] = useState();
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState(JSON.parse(Cookies.get("user")));
     const [role, setRole] = useState();
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
@@ -20,14 +20,12 @@ const UserInfo = (props) => {
     const [image, setImage] = useState();
 
     useEffect( () => {
-        setUser(JSON.parse(Cookies.get("user")));
         if (user.imageUrl) {
             setImage(user.imageUrl);
         }
         else {
             setImage(profile_img);
-        }
-    }, []);
+    }, [user]);
 
 
     return (
