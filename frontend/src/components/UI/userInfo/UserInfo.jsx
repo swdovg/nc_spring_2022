@@ -17,16 +17,23 @@ const UserInfo = (props) => {
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
+    const [image, setImage] = useState();
 
     useEffect( () => {
         setUser(JSON.parse(Cookies.get("user")));
+        if (user.imageUrl) {
+            setImage(user.imageUrl);
+        }
+        else {
+            setImage(profile_img);
+        }
     }, []);
 
 
     return (
         <div className="col-xl-4 col-lg-4 d-md-none d-sm-none d-none d-lg-block d-xl-block">
             <div className="userinfo_head">
-                <img className="userinfo_head_img" src={profile_img} alt="Profile Image"/>
+                <img className="userinfo_head_img" src={image} alt="Profile Image"/>
                 <p className="userinfo_head_name"> {user.name} </p>
                 <Link to="/edit-user">
                     <button className="setting_btn float-right" >
