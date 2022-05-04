@@ -25,6 +25,7 @@ const UserInfo = (props) => {
         }
         else {
             setImage(profile_img);
+        }
     }, [user]);
 
 
