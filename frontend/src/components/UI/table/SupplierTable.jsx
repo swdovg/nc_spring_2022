@@ -53,7 +53,6 @@ const SupplierTable = (props) => {
                 <tr className="table_heading">
                     <th className="table_heading_item col-xl-7 col-lg-7">service:</th>
                     <th className="table_heading_item col-xl-4 col-lg-4">price:</th>
-                    {/* <th className="table_heading_item col-xl-3 col-lg-3">subscribers:</th> */}
                 </tr>
             </thead>
             <tbody>

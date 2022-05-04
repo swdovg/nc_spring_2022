@@ -3,13 +3,12 @@ import useAxiosPrivate from "../../../hook/useAxiosPrivate.js"
 import Input from '../input/Input.jsx';
 import Button from "../button/Button";
 import classes from './PasswordForm.module.css';
-import Select from '../select/Select';
-import Textarea from '../textarea/Textarea';
+import Modal from "../modal/Modal";
 
 const PWD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 const REGISTER_URL = "api/v1/user/password";
 
-const PasswordForm = () => {
+const PasswordForm = (props) => {
 
     const axiosPrivate = useAxiosPrivate();
     const [errMsg, setErrMsg] = useState("");
@@ -38,7 +37,7 @@ const PasswordForm = () => {
                    withCredentials: true
                }
             )
-             console.log(response.data);
+            props.setVisible(false);
         }
         catch(err) {
             if (!err?.response)
@@ -52,7 +51,7 @@ const PasswordForm = () => {
     }
 
     return (
-
+    <Modal visible={props.visible} setVisible={props.setVisible}>
         <div>
             <h2 className={classes.heading}>Change Password</h2>
             <hr className={classes.line} />
@@ -71,6 +70,7 @@ const PasswordForm = () => {
                 </Button>
             </form>
         </div>
+    </Modal>
     );
 };
 

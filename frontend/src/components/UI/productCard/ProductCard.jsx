@@ -53,6 +53,7 @@ const ProductCard = (props) => {
                     }
                 </div>
             </div>
+
         </>
     );
 };

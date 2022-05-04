@@ -94,7 +94,8 @@ const EditSubscriptionModal = (props) => {
                     headers: {'Content-Type': 'application/json'},
                     withCredentials: true
                 }
-             );
+            );
+            props.setVisible(false);
         }
         catch(err) {
             if (!err?.response)

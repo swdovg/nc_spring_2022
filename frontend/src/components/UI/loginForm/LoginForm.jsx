@@ -56,7 +56,6 @@ const LoginForm = () => {
                     Cookies.set("user", JSON.stringify(response.data?.payload))
                 } catch(err) {
                     console.log(err);
-                    //navigate('/', { state: { from: location }, replace: true });
                 }
             }
             getUserInfo();
