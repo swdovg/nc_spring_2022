@@ -24,17 +24,6 @@ const Header = () => {
         navigate("/login");
     }
 
-    useEffect( () => {
-        try{
-            const user = JSON.parse(Cookies.get("user"));
-            if (user){
-                setIsAuth(true);
-            }
-        }
-        catch {
-            setIsAuth(false);
-        }
-    },[auth])
 
     return(
         <header className="header">
@@ -52,7 +41,7 @@ const Header = () => {
                             </button>
                         </div>
                         <div className="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
-                        {isAuth
+                        {auth.email
                             ?
                             <div>
                                 <Link to="/customer-profile" className="header-sing-link">My profile</Link>

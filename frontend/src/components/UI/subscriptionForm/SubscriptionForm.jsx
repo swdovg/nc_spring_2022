@@ -5,6 +5,7 @@ import classes from './SubscriptionForm.module.css';
 import Select from '../select/Select';
 import Textarea from '../textarea/Textarea';
 import InputBtn from '../button/InputBtn';
+import Modal from "../modal/Modal";
 import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
 import Cookies from 'js-cookie';
 import usePostSubscription from "../../../services/usePostSubscription.js";
@@ -83,6 +84,7 @@ const SubscriptionForm = (props) =>  {
              );
             setId(response.data?.payload.id);
             console.log(questions);
+            props.setVisible(false);
         }
         catch(err) {
             if (!err?.response)
@@ -104,60 +106,62 @@ const SubscriptionForm = (props) =>  {
 
 
     return (
-    <div>
-        <h2 className={classes.heading}>Add New Subscription</h2>
-        <hr className={classes.line} />
-        <form onSubmit = {handleSubmit} className={classes.form}>
-            <ul className={classes.form_inputs}>
-                <li>
-                    <Input required
-                        type="text"
-                        id="subscription-title"
-                        name="subscription-title"
-                        label="Title"
-                        onChange={(e)=> setTitle(e.target.value)}/>
-                </li>
-                <li>
-                    <Input required type="number" id="price" name="price" label="Price" onChange={(e)=> setPrice(e.target.value)}/>
-                </li>
-                <li>
-                    <Select
-                        name="currency" required
-                        label="Currency"
-                        onChange={(e)=> setCurrency(e.target.value)}>
-                        <option value = "USD">USD </option>
-                        <option value = "RUB">RUB </option>
-                    </Select>
-                </li>
-                <li>
-                    <Select
-                        name="currency" required
-                        label="Category"
-                        onChange={onCategoryChange}>
-                         {categoryList?.map((item) =>
-                            <option key={item.id} id={item.id} value={item.name}>{item.name}</option>)}
-                    </Select>
-                </li>
-                <li>
-                  <Textarea required id="description" name="description" label="Description" maxLength="120"
-                  onChange={(e)=> setDescription(e.target.value)}/>
-                </li>
+        <Modal visible={props.visible} setVisible={props.setVisible}>
+            <div>
+                <h2 className={classes.heading}>Add New Subscription</h2>
+                <hr className={classes.line} />
+                <form onSubmit = {handleSubmit} className={classes.form}>
+                    <ul className={classes.form_inputs}>
+                        <li>
+                            <Input required
+                                type="text"
+                                id="subscription-title"
+                                name="subscription-title"
+                                label="Title"
+                                onChange={(e)=> setTitle(e.target.value)}/>
+                        </li>
+                        <li>
+                            <Input required type="number" id="price" name="price" label="Price" onChange={(e)=> setPrice(e.target.value)}/>
+                        </li>
+                        <li>
+                            <Select
+                                name="currency" required
+                                label="Currency"
+                                onChange={(e)=> setCurrency(e.target.value)}>
+                                <option value = "USD">USD </option>
+                                <option value = "RUB">RUB </option>
+                            </Select>
+                        </li>
+                        <li>
+                            <Select
+                                name="currency" required
+                                label="Category"
+                                onChange={onCategoryChange}>
+                                 {categoryList?.map((item) =>
+                                    <option key={item.id} id={item.id} value={item.name}>{item.name}</option>)}
+                            </Select>
+                        </li>
+                        <li>
+                          <Textarea required id="description" name="description" label="Description" maxLength="120"
+                          onChange={(e)=> setDescription(e.target.value)}/>
+                        </li>
 
-            </ul>
-            <Input type="text" name="question" label="Question"
-                onChange={(e)=> {setQuestion(e.target.value);}} />
-            {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question"
-                 onChange={(e)=> setQuestion(e.target.value)} />)}
+                    </ul>
+                    <Input type="text" name="question" label="Question"
+                        onChange={(e)=> {setQuestion(e.target.value);}} />
+                    {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question"
+                         onChange={(e)=> setQuestion(e.target.value)} />)}
 
-            {/* <Button  onClick={addNewInput}>
-                Add question
-            </Button> */}
-            <p>{errMsg} </p>
-            <Button>
-                Create Subscription
-            </Button>
-        </form>
-    </div>
+                    {/* <Button  onClick={addNewInput}>
+                        Add question
+                    </Button> */}
+                    <p>{errMsg} </p>
+                    <Button>
+                        Create Subscription
+                    </Button>
+                </form>
+            </div>
+        </Modal>
     );
 };
 

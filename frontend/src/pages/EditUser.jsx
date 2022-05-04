@@ -244,9 +244,7 @@ const EditUser = () => {
             </div>
             <Footer />
             <AddressForm visible={addressModalVisible} setVisible={setAddressModalVisible}/>
-            <Modal visible={subscriptionModalVisible} setVisible={setSubscriptionModalVisible}>
-                <SubscriptionForm submitFunction={usePostSubscription}/>
-            </Modal>
+            <SubscriptionForm submitFunction={usePostSubscription} visible={subscriptionModalVisible} setVisible={setSubscriptionModalVisible}/>
             <PasswordForm visible={passwordModalVisible} setVisible={setPasswordModalVisible} />
         </div>
         );

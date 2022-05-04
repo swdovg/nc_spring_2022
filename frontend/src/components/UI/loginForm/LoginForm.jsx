@@ -39,8 +39,8 @@ const LoginForm = () => {
                    withCredentials: true
                 }
             )
-            const accessToken = response?.data?.payload.token;
-            const role = response?.data?.payload?.role;
+            const accessToken = response.data?.payload.token;
+            const role = response.data?.payload.role;
 
             setAuth({email, password, role, accessToken});
             Cookies.set("token", accessToken);
