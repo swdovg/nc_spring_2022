@@ -89,7 +89,7 @@ public class ImageService {
 
     private void checkPermissionsToUpdateSubscriptionImage(Subscription subscription) {
         Long userId = authenticationFacade.getUserId();
-        if (subscription.getSupplier().getId().equals(userId)) {
+        if (!subscription.getSupplier().getId().equals(userId)) {
             throw new AuthorizationException("You can not edit another's subscription");
         }
     }

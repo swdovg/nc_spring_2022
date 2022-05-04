@@ -8,9 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.security.RolesAllowed;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,28 +17,28 @@ import javax.annotation.security.RolesAllowed;
 public class OrderController {
     private final OrderService orderService;
 
-    @RolesAllowed("CONSUMER")
+    @PreAuthorize("hasRole('ROLE_CONSUMER')")
     @Operation(summary = "get orders for consumer")
     @GetMapping
     public Response<Page<SubscriptionOrderDto>> getOrdersForConsumer(Pageable pageable) {
         return new Response<>(orderService.getOrdersForConsumer(pageable));
     }
 
-    @RolesAllowed("SUPPLIER")
+    @PreAuthorize("hasRole('ROLE_SUPPLIER')")
     @Operation(summary = "get orders for supplier")
     @GetMapping("/{subscriptionId}")
     public Response<Page<OrderDto>> getOrdersForSupplier(@PathVariable Long subscriptionId, Pageable pageable) {
         return new Response<>(orderService.getOrdersForSupplier(subscriptionId, pageable));
     }
 
-    @RolesAllowed("CONSUMER")
+    @PreAuthorize("hasRole('ROLE_CONSUMER')")
     @Operation(summary = "buy subscription")
     @PostMapping("/{subscriptionId}")
     public Response<SubscriptionOrderDto> createOrder(@PathVariable Long subscriptionId) {
         return new Response<>(orderService.save(subscriptionId));
     }
 
-    @RolesAllowed("CONSUMER")
+    @PreAuthorize("hasRole('ROLE_CONSUMER')")
     @Operation(summary = "cancel subscription")
     @DeleteMapping("/{orderId}")
     public Response<Void> deleteOrder(@PathVariable Long orderId) {

@@ -15,7 +15,7 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
-//    @RolesAllowed("ADMIN")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public Response<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         return new Response<>(categoryService.save(categoryDto));
