@@ -11,9 +11,14 @@ import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
 const ProductCard = (props) => {
 
     const axiosPrivate = useAxiosPrivate();
-    const [questions, setQuestions] = useState();
+    const [questions, setQuestions] = useState([]);
+    const [question, setQuestion] = useState({});
     const [image, setImage] = useState(card_img);
     const [questionModalVisible, setQuestionModalVisible] = useState(false);
+    const [answer, setAnswer] = useState();
+    const [answers, setAnswers] = useState({});
+    var i =0;
+
     let role = "ROLE_SUPPLIER";
     if (Cookies.get("user")) {
         role = JSON.parse(Cookies.get("user")).role;
@@ -46,12 +51,14 @@ const ProductCard = (props) => {
                      signal: controller.signal      //to allow to cansel a request
                  });
                  isMounted && setQuestions(response.data.payload);
+                 isMounted && setQuestion(questions[i]);
                  console.log(questions);
             } catch(err) {
                  console.log(err);
             }
         }
         getQuestions();
+
         if (questions.length === 0) {
             addSubscription();
         }
@@ -65,7 +72,14 @@ const ProductCard = (props) => {
         }
     }
 
+    const onAnswersSubmit = (e) => {
+        e.preventDefault();
+        console.log(answer);
+    }
+
     const onAnswerChange = (e) => {
+        e.preventDefault();
+        setQuestion(e.target.value);
 
     }
 
@@ -89,10 +103,10 @@ const ProductCard = (props) => {
                 </div>
             </div>
             <Modal visible ={questionModalVisible} setVisible ={setQuestionModalVisible}>
-                <form>
-                    {questions?.map((item) =>
+                <form onSubmit = {onAnswersSubmit}>
+                   {questions?.map((item) =>
                         <Input key={item.id} id={item.id} label={item.question} onChange = {onAnswerChange}/>)}
-                    <Button> Submit </Button>
+                        <Button> Submit </Button>
                 </form>
             </Modal>
         </>

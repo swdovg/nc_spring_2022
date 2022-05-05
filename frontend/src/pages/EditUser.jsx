@@ -139,6 +139,7 @@ const EditUser = () => {
                  }
             );
             getUserInfo();
+            setErrMsg("");
         }
         catch(err) {
             if (!err?.response)

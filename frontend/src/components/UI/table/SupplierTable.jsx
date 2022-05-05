@@ -18,6 +18,7 @@ const SupplierTable = (props) => {
     const [subscriptions, setSubscriptions] = useState({});
     const axiosPrivate = useAxiosPrivate();
     const [number, setNumber] = useState(0);
+    const [isChanged, setIsChanged] = useState(false);
 
      useEffect( () => {
 
@@ -44,7 +45,7 @@ const SupplierTable = (props) => {
              isMounted=false;
              controller.abort();
          }
-     }, []);
+     }, [number, isChanged]);
 
     return (
     <>
@@ -69,6 +70,8 @@ const SupplierTable = (props) => {
                                 subscription={subscription}
                                 category={subscription.category}
                                 description={subscription.description}
+                                subscriptions = {subscriptions}
+                                isChanged = {(value) => setIsChanged(true)}
                             />
                         )}
                     </>

@@ -50,9 +50,9 @@ const UserInfo = (props) => {
                 </div>
                 :
                 <div className="userinfo_info">
-                    <p className="userinfo_info_text"> Subcriptions:</p>
-                    <p className="userinfo_info_number">{props.amount} </p>
-                    <p className="userinfo_info_currency"> USD/month</p>
+                    <p className="userinfo_info_text"> You have</p>
+                    <p className="userinfo_info_number">{props.number} </p>
+                    <p className="userinfo_info_currency"> subscriptions</p>
                 </div>
             }
         </div>

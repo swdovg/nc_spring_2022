@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import Button from "../button/Button";
 import '../../../styles/bootstrap.min.css';
 import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
@@ -8,12 +8,16 @@ const CardList = (props) => {
 
     const axiosPrivate = useAxiosPrivate();
     const [cardList, setCardList] = useState([]);
+    const [page, setPage] = useState(props.page);
+    const [cardsPerPage, setCardsPerPage] = useState(10);
+    const [isMounted, setIsMounted] = useState(false);
 
      useEffect( () => {
-        let URL = "api/v1/subscription";
+        setIsMounted(true);
+        let URL = `/api/v1/subscription?page=${page}&size=10`;
         if (props.selectedCategory!=null)
-            URL = `api/v1/subscription/category/${props.selectedCategory}`;
-        let isMounted = true;
+            URL = `api/v1/subscription/category/${props.selectedCategory}?page=${page}&size=10`;
+
         const controller = new AbortController(); //to cansel request if the component on mounting
 
         const getCards = async () => {
@@ -23,27 +27,29 @@ const CardList = (props) => {
                     signal: controller.signal      //to allow to cansel a request
                 });
                 isMounted && setCardList(response.data.payload.content);
+                console.log(cardList);
             } catch(err) {
                 console.log(err);
             }
         }
         getCards();
         return () =>{
-            isMounted=false;
+            setIsMounted(false);
             controller.abort();
         }
-    }, [props.selectedCategory]);
+    }, [props.selectedCategory, page]);
 
      const filteredCards = cardList.filter( card => {
             return card.title.toLowerCase().includes(props.searchValue.toLowerCase())
-    } )
+    } );
 
     return (
+    <>
         <div className="row">
-             {filteredCards.map((card, i) =>
+             {filteredCards.map((card) =>
                 <div className="col-xl-6 col-lg-6">
                     <ProductCard
-                        key={i}
+                        key={card.id}
                         id={card.id}
                         price={card.price}
                         currency={card.currency}
@@ -53,6 +59,7 @@ const CardList = (props) => {
                         image={card.imageUrl}/>
                 </div>)}
         </div>
+        </>
 
     );
 };

@@ -21,6 +21,14 @@ const Subscription = (props)=>{
     const axiosPrivate = useAxiosPrivate();
     const [subscription, setSubscription] = useState({});
     const [consumers, setConsumers] = useState([]);
+    const [isChanged, setIsChanged] = useState(false);
+
+    useEffect( () => {
+        if(isChanged) {
+            props.isChanged(isChanged);
+            console.log("aaaa");
+        }
+    }, [isChanged] )
 
     const getSubscription=() => {
         setSubscription(props.subscription);
@@ -37,7 +45,6 @@ const Subscription = (props)=>{
                     signal: controller.signal      //to allow to cansel a request
                 });
                 setConsumers(response.data.payload?.content);
-                console.log(consumers);
             } catch(err) {
                 console.log(err);
             }
@@ -60,7 +67,13 @@ const Subscription = (props)=>{
                 <button className="remove_btn" onClick={()=>setDeleteModalVisible(true)}/>
             </td>
 
-            <DeleteModal orderId={props.id} visible = {modalVisible} setVisible={setDeleteModalVisible}/>
+            <DeleteModal
+                orderId={props.id}
+                visible = {modalVisible}
+                setVisible={setDeleteModalVisible}
+                subscriptions={props.subscriptions}
+                key={props.key}
+                deleted = {(value)=>setIsChanged(true)}/>
             <EditSubscriptionModal
                 id={props.id}
                 visible = {editModalVisible}
@@ -70,6 +83,7 @@ const Subscription = (props)=>{
                 description={props.description}
                 currency={props.currency}
                 category={props.category?.name}
+                changed = {(value)=>setIsChanged(true)}
             />
              <Modal visible={infoModalVisible} setVisible={setInfoModalVisible}>
                 <OrderInfoTable consumers={consumers}/>

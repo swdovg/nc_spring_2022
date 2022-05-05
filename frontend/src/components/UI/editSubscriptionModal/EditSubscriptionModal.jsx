@@ -97,34 +97,37 @@ const EditSubscriptionModal = (props) => {
         catch(err) {
             setErrMsg(err.response.message);
         }
+        props.changed(true);
+        console.log("changed");
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (id === undefined){
-            putSubscription();
+        putSubscription();
+
+        if (image != null) {
+            const formData = new FormData();
+            formData.append("image", image);
+            const POST_IMG_URL = `/api/v1/image/subscription?subscriptionId=${id}`;
+            try {
+                await axiosPrivate.post(
+                    POST_IMG_URL,
+                    formData,
+                    {
+                        headers: {"Content-type": "multipart/form-data"},
+                        withCredentials: true
+                    }
+                )
+                setImage({});
+            }
+            catch (err) {
+                if (err?.response)
+                    setErrMsg(err.message)
+                else if (err.response?.status === 500)
+                    setErrMsg("Maximum size is 1MB");
+            }
         }
 
-        const formData = new FormData();
-        formData.append("image", image);
-        const POST_IMG_URL = `/api/v1/image/subscription?subscriptionId=${id}`;
-        try {
-            await axiosPrivate.post(
-                POST_IMG_URL,
-                formData,
-                {
-                    headers: {"Content-type": "multipart/form-data"},
-                    withCredentials: true
-                }
-            )
-            setImage({});
-        }
-        catch (err) {
-            if (err?.response)
-                setErrMsg(err.message)
-            else if (err.response?.status === 500)
-                setErrMsg("Maximum size is 1MB");
-        }
         if (question != "") {
             try {
                 const questionResponse = await axiosPrivate.post(

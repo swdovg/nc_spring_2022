@@ -7,12 +7,14 @@ import Footer from '../components/footer/Footer.jsx';
 import Menu from '../components/UI/menu/Menu.jsx';
 import Search from '../components/UI/search/Search.jsx';
 import CardList from '../components/UI/cardList/CardList.jsx';
+import Pagination from '../components/UI/pagination/Pagination.jsx';
 
 
 const Main = () => {
 
     const [selectedCategory, setSelectedCategory] = useState();
     const [search, setSearch] = useState("");
+    const [selectedPage, setSelectedPage] = useState(0);
 
     const updateCategory = (value) => {
        setSelectedCategory(value);
@@ -39,13 +41,11 @@ const Main = () => {
                         <Menu updateCategory={updateCategory}/>
                     </div>
                     <div className="col-xl-9 col-lg-9 main_cards">
-                        <CardList selectedCategory={selectedCategory} searchValue={search}/>
+                        <CardList selectedCategory={selectedCategory} searchValue={search} page={selectedPage}/>
                     </div>
-
                 </div>
             </div>
             <Footer />
-
         </div>
         );
     };
