@@ -118,6 +118,7 @@ const EditUser = () => {
                          withCredentials: true
                      }
                 );
+                setLocationId(locResponse.data.payload.id);
             }
             if (locations.length <2) {
                 const locResponse = await axiosPrivate.put(

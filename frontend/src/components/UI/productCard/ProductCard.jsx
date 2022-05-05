@@ -12,11 +12,19 @@ const ProductCard = (props) => {
 
     const axiosPrivate = useAxiosPrivate();
     const [questions, setQuestions] = useState();
+    const [image, setImage] = useState(card_img);
     const [questionModalVisible, setQuestionModalVisible] = useState(false);
     let role = "ROLE_SUPPLIER";
     if (Cookies.get("user")) {
         role = JSON.parse(Cookies.get("user")).role;
     }
+
+    useEffect( () => {
+        if (props.image) {
+            setImage(props.image);
+        }
+    }, [] );
+
 
     const addSubscription = async () => {
         try {
@@ -24,7 +32,6 @@ const ProductCard = (props) => {
         } catch(err) {
             console.log(err);
         }
-
     }
 
     const onAddClick = (e) => {
@@ -50,6 +57,7 @@ const ProductCard = (props) => {
         }
         else {
             setQuestionModalVisible(true);
+
         }
         return () =>{
          isMounted=false;
@@ -57,11 +65,15 @@ const ProductCard = (props) => {
         }
     }
 
+    const onAnswerChange = (e) => {
+
+    }
+
     return (
         <>
             <div className={cl.card}>
                 <div>
-                    <img src={card_img} alt="Profile Image" className={cl.card_img} />
+                    <img src={image} alt="Profile Image" className={cl.card_img} />
                     <p className={cl.card_price}>{props.price} {props.currency}</p>
                 </div>
                 <div className={cl.card_info}>
@@ -79,7 +91,7 @@ const ProductCard = (props) => {
             <Modal visible ={questionModalVisible} setVisible ={setQuestionModalVisible}>
                 <form>
                     {questions?.map((item) =>
-                        <Input key={item.id} id={item.id} label={item.question}/>)}
+                        <Input key={item.id} id={item.id} label={item.question} onChange = {onAnswerChange}/>)}
                     <Button> Submit </Button>
                 </form>
             </Modal>

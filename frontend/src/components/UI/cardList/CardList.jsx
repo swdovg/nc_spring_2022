@@ -18,7 +18,8 @@ const CardList = (props) => {
 
         const getCards = async () => {
             try {
-                let response = await axiosPrivate.get(URL, {
+                let response = await axiosPrivate.get(URL,
+                {
                     signal: controller.signal      //to allow to cansel a request
                 });
                 isMounted && setCardList(response.data.payload.content);
@@ -41,7 +42,15 @@ const CardList = (props) => {
         <div className="row">
              {filteredCards.map((card, i) =>
                 <div className="col-xl-6 col-lg-6">
-                    <ProductCard key={i} id={card.id} price={card.price} currency={card.currency} title={card.title} supplier={card.supplier.name} description={card.description}/>
+                    <ProductCard
+                        key={i}
+                        id={card.id}
+                        price={card.price}
+                        currency={card.currency}
+                        title={card.title}
+                        supplier={card.supplier.name}
+                        description={card.description}
+                        image={card.imageUrl}/>
                 </div>)}
         </div>
 

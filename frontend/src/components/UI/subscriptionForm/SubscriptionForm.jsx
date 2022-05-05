@@ -17,7 +17,7 @@ const SubscriptionForm = (props) =>  {
 
     const [count, setCount] = useState(0);
     const axiosPrivate = useAxiosPrivate();
-    const [errMsg, setErrMsg] = useState("");
+    const [errMsg, setErrMsg] = useState("You can add a question form in edit mode");
     const [id, setId] = useState();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -29,6 +29,7 @@ const SubscriptionForm = (props) =>  {
     const [categoryList, setCategoryList] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [question, setQuestion] = useState("");
+    const [image, setImage] = useState();
     const supplier = JSON.parse(Cookies.get("user"));
 
     useEffect( () => {
@@ -94,27 +95,51 @@ const SubscriptionForm = (props) =>  {
         if (id === undefined){
             postSubscription();
         }
+
+        const formData = new FormData();
+        formData.append("image", image);
+        const POST_IMG_URL = `/api/v1/image/subscription?subscriptionId=${id}`;
         try {
-            const questionResponse = await axiosPrivate.post(
-                QUESTION_URL,
+            await axiosPrivate.post(
+                POST_IMG_URL,
+                formData,
                 {
-                    subscriptionId: id,
-                    question: question
-                 },
-                {
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {"Content-type": "multipart/form-data"},
                     withCredentials: true
                 }
-             );
+            )
+            setImage({});
         }
-        catch(err) {
-            setErrMsg(err.response.message);
+        catch (err) {
+            if (err?.response)
+                setErrMsg(err.message)
+            else if (err.response?.status === 500)
+                setErrMsg("Maximum size is 1MB");
+        }
+        if (question != "") {
+            try {
+                const questionResponse = await axiosPrivate.post(
+                    QUESTION_URL,
+                    {
+                        subscriptionId: id,
+                        question: question
+                     },
+                    {
+                        headers: {'Content-Type': 'application/json'},
+                        withCredentials: true
+                    }
+                 );
+            }
+            catch(err) {
+                setErrMsg(err.response.message);
+            }
         }
         props.setVisible(false);
     }
 
     const addNewInput = async (e) => {
         e.preventDefault();
+        setCount(count+1);
         if (id===undefined){
             postSubscription();
         }
@@ -176,16 +201,22 @@ const SubscriptionForm = (props) =>  {
                           <Textarea required id="description" name="description" label="Description" maxLength="120"
                           onChange={(e)=> setDescription(e.target.value)}/>
                         </li>
-
+                        <li>
+                            <label className={classes.file_upload}>
+                                Choose photo
+                            <input className={classes.input_file}  type="file" onChange={(e) => setImage(e.target.files[0])}/>
+                            </label>
+                        </li>
                     </ul>
-                    <Input type="text" name="question" label="Question (optional)"
+{/*                     <Input type="text" name="question" label="Question (optional)"
                         onChange={(e)=> {setQuestion(e.target.value);}} />
                     {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question (optional)"
                          onChange={(e)=> setQuestion(e.target.value)} />)}
-                    <p>{errMsg} </p>
+
                     <Button  onClick={addNewInput}>
                         Add question
-                    </Button>
+                    </Button> */}
+                    <p>{errMsg} </p>
                     <Button>
                         Create Subscription
                     </Button>
