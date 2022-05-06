@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import '../styles/main.css';
 import '../styles/style.css';
 import '../styles/bootstrap.min.css';
 import Header from '../components/header/Header.jsx';
 import Footer from '../components/footer/Footer.jsx';
 import Menu from '../components/UI/menu/Menu.jsx';
+import Button from '../components/UI/button/Button.jsx';
 import Search from '../components/UI/search/Search.jsx';
 import CardList from '../components/UI/cardList/CardList.jsx';
 import Pagination from '../components/UI/pagination/Pagination.jsx';
@@ -14,7 +15,6 @@ const Main = () => {
 
     const [selectedCategory, setSelectedCategory] = useState();
     const [search, setSearch] = useState("");
-    const [selectedPage, setSelectedPage] = useState(0);
 
     const updateCategory = (value) => {
        setSelectedCategory(value);
@@ -23,6 +23,21 @@ const Main = () => {
     const updateSearchInput = (value) => {
         setSearch(value);
     }
+
+/*     useEffect( () => {
+        if (isLoading) return;
+        if(observer.current) observer.current.disconnect();
+
+        var callback = function(entries, observer) {
+            if (entries[0].isIntersecting){
+                console.log(page);
+                setPage(page+1);
+            }
+        };
+        observer.current = new IntersectionObserver(callback);
+        observer.current.observe(lastElement.current);
+
+    }, [isLoading] ) */
 
     return (
         <div>
@@ -38,14 +53,16 @@ const Main = () => {
             </div>
                 <div className="row">
                     <div className="col-xl-3 col-lg-3 d-sm-none d-none d-md-none d-lg-block">
-                        <Menu updateCategory={updateCategory}/>
+                        <Menu updateCategory={updateCategory} />
                     </div>
                     <div className="col-xl-9 col-lg-9 main_cards">
-                        <CardList selectedCategory={selectedCategory} searchValue={search} page={selectedPage}/>
+                        <CardList
+                            selectedCategory={selectedCategory}
+                            searchValue={search}/>
                     </div>
                 </div>
             </div>
-            <Footer />
+            <Footer/>
         </div>
         );
     };

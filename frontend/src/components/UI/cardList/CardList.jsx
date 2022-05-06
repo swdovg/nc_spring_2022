@@ -3,21 +3,22 @@ import Button from "../button/Button";
 import '../../../styles/bootstrap.min.css';
 import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
 import ProductCard from '../productCard/ProductCard.jsx';
+import {getPageCount} from "../../../utils/getPageCount";
 
 const CardList = (props) => {
 
     const axiosPrivate = useAxiosPrivate();
     const [cardList, setCardList] = useState([]);
-    const [page, setPage] = useState(props.page);
-    const [cardsPerPage, setCardsPerPage] = useState(10);
+    const [page, setPage] = useState(0);
     const [isMounted, setIsMounted] = useState(false);
+    const [totalsPages, setTotalPages] = useState(0);
 
      useEffect( () => {
         setIsMounted(true);
-        let URL = `/api/v1/subscription?page=${page}&size=10`;
-        if (props.selectedCategory!=null)
-            URL = `api/v1/subscription/category/${props.selectedCategory}?page=${page}&size=10`;
-
+        let URL = `/api/v1/subscription`;
+        if (props.selectedCategory!=null){
+            URL = `api/v1/subscription/category/${props.selectedCategory}`;
+        }
         const controller = new AbortController(); //to cansel request if the component on mounting
 
         const getCards = async () => {
@@ -26,8 +27,7 @@ const CardList = (props) => {
                 {
                     signal: controller.signal      //to allow to cansel a request
                 });
-                isMounted && setCardList(response.data.payload.content);
-                console.log(cardList);
+                setCardList(response.data.payload.content);
             } catch(err) {
                 console.log(err);
             }
@@ -37,7 +37,7 @@ const CardList = (props) => {
             setIsMounted(false);
             controller.abort();
         }
-    }, [props.selectedCategory, page]);
+    }, [props.selectedCategory]);
 
      const filteredCards = cardList.filter( card => {
             return card.title.toLowerCase().includes(props.searchValue.toLowerCase())
@@ -59,6 +59,7 @@ const CardList = (props) => {
                         image={card.imageUrl}/>
                 </div>)}
         </div>
+
         </>
 
     );

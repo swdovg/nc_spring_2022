@@ -4,7 +4,7 @@ import '../../styles/bootstrap.min.css';
 import '../../styles/style.css';
 
 
-const Footer = () => {
+const Footer = (props) => {
     return(
         <footer className="footer">
                 <div className="container">

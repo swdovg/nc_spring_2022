@@ -16,7 +16,7 @@ const ProductCard = (props) => {
     const [image, setImage] = useState(card_img);
     const [questionModalVisible, setQuestionModalVisible] = useState(false);
     const [answer, setAnswer] = useState();
-    const [answers, setAnswers] = useState({});
+    const [answers, setAnswers] = useState([]);
     var i =0;
 
     let role = "ROLE_SUPPLIER";
@@ -64,24 +64,25 @@ const ProductCard = (props) => {
         }
         else {
             setQuestionModalVisible(true);
-
         }
         return () =>{
          isMounted=false;
          controller.abort();
         }
     }
+    let copy = Object.assign([], answers);
+
+    const onAnswersChange = (e) => {
+        e.preventDefault();
+        setAnswer(e.target.value);
+        setAnswers([...answers, answer]);
+        console.log(answers)
+    }
 
     const onAnswersSubmit = (e) => {
         e.preventDefault();
-        console.log(answer);
     }
 
-    const onAnswerChange = (e) => {
-        e.preventDefault();
-        setQuestion(e.target.value);
-
-    }
 
     return (
         <>
@@ -105,7 +106,7 @@ const ProductCard = (props) => {
             <Modal visible ={questionModalVisible} setVisible ={setQuestionModalVisible}>
                 <form onSubmit = {onAnswersSubmit}>
                    {questions?.map((item) =>
-                        <Input key={item.id} id={item.id} label={item.question} onChange = {onAnswerChange}/>)}
+                        <Input key={item.id} id={item.id} label={item.question} onChange = {onAnswersChange}/>)}
                         <Button> Submit </Button>
                 </form>
             </Modal>

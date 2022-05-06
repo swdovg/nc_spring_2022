@@ -1,20 +1,21 @@
-import React, {useState, useEffect} from 'react';
-import cl from './Pagination.module.css';
+import React from 'react';
+import {getPagesArray} from "../../../utils/getPageCount";
 
-
-
-const Pagination = (props) => { return (
-        <div className={cl.pagination}>
-          <a href="#">&laquo;</a>
-          <a href="#">1</a>
-          <a href="#" class="active">2</a>
-          <a href="#">3</a>
-          <a href="#">4</a>
-          <a href="#">5</a>
-          <a href="#">6</a>
-          <a href="#">&raquo;</a>
+const Pagination = ({totalPages, page, changePage}) => {
+    let pagesArray = getPagesArray(totalPages);
+    return (
+        <div className="page__wrapper">
+            {pagesArray.map(p =>
+                <a
+                    onClick={() => changePage(p)}
+                    key={p}
+                    className={page === p ? 'page page__current' : 'page'}
+                >
+                        {p}
+                    </a>
+            )}
         </div>
-        );
-    };
+    );
+};
 
 export default Pagination;
