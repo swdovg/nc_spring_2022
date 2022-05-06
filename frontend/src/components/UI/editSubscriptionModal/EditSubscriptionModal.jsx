@@ -5,6 +5,7 @@ import classes from '../subscriptionForm/SubscriptionForm.module.css';
 import Select from '../select/Select';
 import Textarea from '../textarea/Textarea';
 import InputBtn from '../button/InputBtn';
+import InputFile from '../inputFile/InputFile';
 import '../../../styles/bootstrap.min.css';
 import SubscriptionForm from '../subscriptionForm/SubscriptionForm';
 import Cookies from 'js-cookie';
@@ -12,8 +13,10 @@ import Modal from '../modal/Modal.jsx';
 import useAxiosPrivate from "../../../hook/useAxiosPrivate.js";
 
 const SUBSCRIPTION_URL = "api/v1/subscription";
+const QUESTION_URL = "/api/v1/form/question";
 
 const EditSubscriptionModal = (props) => {
+    const POST_IMG_URL = `/api/v1/image/subscription?subscriptionId=${props.id}`;
 
     const [count, setCount] = useState(0);
     const axiosPrivate = useAxiosPrivate();
@@ -28,17 +31,13 @@ const EditSubscriptionModal = (props) => {
     const [categoryId, setCategoryId] = useState(0);
     const [categoryList, setCategoryList] = useState([]);
     const [question, setQuestion] = useState("");
+    const [image, setImage] = useState();
+    const supplier = JSON.parse(Cookies.get("user"));
 
     const onCategoryChange = (e) => {
         setCategory(e.target.value);
         const el = e.target.childNodes[e.target.selectedIndex];
         setCategoryId(Number(el.getAttribute('id')));
-    }
-
-    const addNewInput = async (e) => {
-        e.preventDefault();
-        setCount(count+1);
-        console.log(question);
     }
 
     useEffect( () => {
@@ -69,9 +68,7 @@ const EditSubscriptionModal = (props) => {
         }
     }, []);
 
-     const handleSubmit = async (e) => {
-        e.preventDefault();
-        const supplier = JSON.parse(Cookies.get("user"));
+    const putSubscription = async () => {
         try {
             const response = await axiosPrivate.put(
                 SUBSCRIPTION_URL,
@@ -81,7 +78,6 @@ const EditSubscriptionModal = (props) => {
                     description,
                     price,
                     currency,
-                    averageRating,
                     category: {
                      id: categoryId,
                      name: category,
@@ -95,17 +91,89 @@ const EditSubscriptionModal = (props) => {
                     withCredentials: true
                 }
              );
+            setId(response.data.payload?.id);
+            console.log(id);
         }
         catch(err) {
-            if (!err?.response)
-                setErrMsg("No server response");
-            else if (err.response?.status===400)
-                setErrMsg("Please, check the data in every field");
-            else
-                setErrMsg("Submission Failed");
+            setErrMsg(err.response.message);
+        }
+        props.changed(true);
+        console.log("changed");
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        putSubscription();
+
+        if (image != null) {
+            const formData = new FormData();
+            formData.append("image", image);
+            const POST_IMG_URL = `/api/v1/image/subscription?subscriptionId=${id}`;
+            try {
+                await axiosPrivate.post(
+                    POST_IMG_URL,
+                    formData,
+                    {
+                        headers: {"Content-type": "multipart/form-data"},
+                        withCredentials: true
+                    }
+                )
+                setImage({});
+            }
+            catch (err) {
+                if (err?.response)
+                    setErrMsg(err.message)
+                else if (err.response?.status === 500)
+                    setErrMsg("Maximum size is 1MB");
+            }
         }
 
+        if (question != "") {
+            try {
+                const questionResponse = await axiosPrivate.post(
+                    QUESTION_URL,
+                    {
+                        subscriptionId: id,
+                        question: question
+                     },
+                    {
+                        headers: {'Content-Type': 'application/json'},
+                        withCredentials: true
+                    }
+                 );
+            }
+            catch(err) {
+                setErrMsg(err.response.message);
+            }
+        }
+
+        props.setVisible(false);
     }
+
+    const addNewInput = async (e) => {
+        e.preventDefault();
+        setCount(count+1);
+        if (id===undefined){
+            putSubscription();
+        }
+        try {
+            const questionResponse = await axiosPrivate.post(
+                "/api/v1/form/question",
+                {
+                    subscriptionId: id,
+                    question: question
+                 },
+                {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
+                }
+             );
+        }
+        catch(err) {
+            setErrMsg("Something went wrong. Try again, please");
+        }
+    }
+
     return (
         <Modal visible={props.visible} setVisible={props.setVisible}>
             <div>
@@ -150,14 +218,22 @@ const EditSubscriptionModal = (props) => {
                           <Textarea required id="description" name="description" label="Description" maxLength="120"
                           onChange={(e)=> setDescription(e.target.value)} value={description}/>
                         </li>
+                        <li>
+                            <label className={classes.file_upload}>
+                                Choose photo
+                            <input className={classes.input_file}  type="file" onChange={(e) => setImage(e.target.files[0])}/>
+                            </label>
+                        </li>
                     </ul>
+                    <Input type="text" name="question" label="Question (optional)"
+                        onChange={(e)=> {setQuestion(e.target.value);}} />
                     {[...Array(count)].map((i) => <Input type="text" key={i} name="question" label="Question"
                          onChange={(e)=> setQuestion(e.target.value)} />)}
-
-{/*                     <Button onClick={addNewInput}>
-                        Add question
-                    </Button> */}
                     <p>{errMsg} </p>
+                    <Button onClick={addNewInput}>
+                        Add question
+                    </Button>
+
                     <Button>
                         Save changes
                     </Button>

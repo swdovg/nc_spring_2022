@@ -1,5 +1,6 @@
 import React from 'react';
 //import cl from './ProductCard.module.css';
+import { useNavigate } from 'react-router-dom';
 import '../../../styles/bootstrap.min.css';
 import Button from '../button/Button';
 import Cookies from 'js-cookie';
@@ -10,9 +11,11 @@ const DeleteModal = (props) => {
 
     const role = JSON.parse(Cookies.get("user")).role;
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
 
     const deleteSubscription = () => {
-
+        props.deleted(true);
+        console.log("deleted")
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
         let URL = `api/v1/subscription/${props.orderId}`;
@@ -23,6 +26,7 @@ const DeleteModal = (props) => {
                 const response = await axiosPrivate.delete(URL, {
                     signal: controller.signal      //to allow to cansel a request
                 });
+
             } catch(err) {
                 console.log(err);
             }

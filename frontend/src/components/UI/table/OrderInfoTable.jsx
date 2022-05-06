@@ -37,10 +37,10 @@ const OrderInfoTable = (props) => {
                     <>
                         {consumers?.map((item, i) =>
                             <tr className="table_row" key={i}>
-                                <td className="table_cont_item col-xl-7 col-lg-7">{item.consumer?.name}</td>
-                                <td className="table_cont_item col-xl-5 col-lg-5">{item.consumer?.email}</td>
-                                <td className="table_cont_item col-xl-5 col-lg-5">{item.consumer?.phoneNumber}</td>
-                                <td className="table_cont_item col-xl-5 col-lg-5">{item.consumer?.defaultLocation}</td>
+                                <td className="table_cont_item col-xl-2 col-lg-2">{item.consumer?.name}</td>
+                                <td className="table_cont_item col-xl-2 col-lg-2">{item.consumer?.email}</td>
+                                <td className="table_cont_item col-xl-2 col-lg-2">{item.consumer?.phoneNumber}</td>
+                                <td className="table_cont_item col-xl-6 col-lg-6">{item.consumer?.defaultLocation.location}</td>
                             </tr>
                         )}
                     </>

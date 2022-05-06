@@ -58,7 +58,7 @@ function CustomerView ()  {
                 <div className="row ">
                      {role==="ROLE_CONSUMER"
                         ?
-                            <ConsumerTable heading="date of payment:" subscriptions={subscriptions} updateAmount={updateAmount}/>
+                            <ConsumerTable heading="date of payment:" subscriptions={subscriptions} updateNumber={updateNumber}/>
                         :
                             <SupplierTable heading="date of payment:" subscriptions={subscriptions} updateNumber={updateNumber}/>
                     }

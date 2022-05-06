@@ -3,9 +3,11 @@
 }
 
 .userinfo_head_img{
-margin-right: 21px;
-    max-width: 55px;
+    margin-right: 21px;
+    width: 55px;
+    height: 55px;
     display: inline;
+    border-radius: 50px;
 }
 
 .userinfo_head_name{

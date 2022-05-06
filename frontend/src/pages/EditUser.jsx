@@ -19,7 +19,8 @@ import usePostSubscription from "../services/usePostSubscription.js";
 
 const PWD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 const NAME_URL = "/api/v1/user/name";
-const LOCATION_URL = "/api/v1/user/location";
+const USER_LOCATION_URL = "/api/v1/user/location";
+const LOCATION_URL = "/api/v1/location";
 const CUR_URL = "/api/v1/user/currency";
 const ROLES= {
     supplier: "ROLE_SUPPLIER",
@@ -28,10 +29,9 @@ const ROLES= {
 
 const EditUser = () => {
     const axiosPrivate = useAxiosPrivate();
+    let user = JSON.parse(Cookies.get("user"));
     const [errMsg, setErrMsg] = useState("");
-
     const [phoneNumber, setPhoneNumber] = useState("");
-
     const [name, setName] = useState("");
     const [userId, setId] = useState("");
     const [defaultLocation, setDefaultLocation] = useState("");
@@ -53,7 +53,6 @@ const EditUser = () => {
     }, [password] );
 
     useEffect( () => {
-        const user = JSON.parse(Cookies.get("user"));
         setName(user.name);
         setDefaultLocation(user.defaultLocation?.location);
         setLocationId(user.defaultLocation?.id);
@@ -65,19 +64,19 @@ const EditUser = () => {
         let isMounted = true;
         const controller = new AbortController(); //to cansel request if the component on mounting
 
-        const getInfo = async () => {
+        const getLocations = async () => {
             try {
                  const response = await axiosPrivate.get(
-                 LOCATION_URL,
+                 USER_LOCATION_URL,
                  {
                     signal: controller.signal      //to allow to cansel a request
                 });
-                isMounted && setLocations(response.data.payload);
+                isMounted && setLocations(response.data?.payload);
             } catch(err) {
                 console.log(err);
             }
         }
-        getInfo();
+        getLocations();
         return () =>{
             isMounted=false;
             controller.abort();
@@ -109,15 +108,38 @@ const EditUser = () => {
                    withCredentials: true
                 }
             )
+            console.log(locations.length);
+            if (locations.length === 0) {
+                const locResponse = await axiosPrivate.post(
+                     LOCATION_URL,
+                     JSON.stringify({value: defaultLocation}),
+                     {
+                         headers: {'Content-Type': 'application/json'},
+                         withCredentials: true
+                     }
+                );
+                setLocationId(locResponse.data.payload.id);
+            }
+            if (locations.length <2) {
+                const locResponse = await axiosPrivate.put(
+                     LOCATION_URL,
+                     JSON.stringify({id: locationId, location: defaultLocation, userId}),
+                     {
+                         headers: {'Content-Type': 'application/json'},
+                         withCredentials: true
+                     }
+                );
+            }
              const locResponse = await axiosPrivate.put(
-                 LOCATION_URL,
+                 USER_LOCATION_URL,
                  JSON.stringify({id: locationId, location: defaultLocation, userId}),
                  {
                      headers: {'Content-Type': 'application/json'},
                      withCredentials: true
                  }
-            )
-
+            );
+            getUserInfo();
+            setErrMsg("");
         }
         catch(err) {
             if (!err?.response)
@@ -128,6 +150,22 @@ const EditUser = () => {
                 setErrMsg("Submission Failed");
         }
      }
+
+    const getUserInfo = async () => {
+        let isMounted = true;
+        const controller = new AbortController(); //to cansel request if the component on mounting
+        try {
+            const response = await axiosPrivate.get("api/v1/user", {
+                signal: controller.signal      //to allow to cansel a request
+            });
+            Cookies.set("user", JSON.stringify(response.data?.payload))
+        } catch(err) {
+            console.log(err);
+        }
+        isMounted=false;
+        controller.abort();
+        user = JSON.parse(Cookies.get("user"));
+    }
 
     return (
         <div>
@@ -170,7 +208,7 @@ const EditUser = () => {
                                     label={"Phone Number"}/>
                                 </li>
                                 <li>
-                                {locations?.length>0
+                                {locations?.length>2
                                 ?
                                     <Select
                                         defaultValue={defaultLocation}
@@ -185,7 +223,7 @@ const EditUser = () => {
                                         id="defaultLocation"
                                         value = {defaultLocation}
                                         label={"Main Address"}
-                                        onChange={(e)=> setDefaultLocation(e.target)}/>
+                                        onChange={(e)=> setDefaultLocation(e.target.value)}/>
                                 }
                                 </li>
                                 <li>
@@ -207,15 +245,9 @@ const EditUser = () => {
                 </div>
             </div>
             <Footer />
-            <Modal visible={addressModalVisible} setVisible={setAddressModalVisible}>
-                <AddressForm />
-            </Modal>
-            <Modal visible={subscriptionModalVisible} setVisible={setSubscriptionModalVisible}>
-                <SubscriptionForm submitFunction={usePostSubscription}/>
-            </Modal>
-            <Modal visible={passwordModalVisible} setVisible={setPasswordModalVisible}>
-                <PasswordForm />
-            </Modal>
+            <AddressForm visible={addressModalVisible} setVisible={setAddressModalVisible}/>
+            <SubscriptionForm submitFunction={usePostSubscription} visible={subscriptionModalVisible} setVisible={setSubscriptionModalVisible}/>
+            <PasswordForm visible={passwordModalVisible} setVisible={setPasswordModalVisible} />
         </div>
         );
     };

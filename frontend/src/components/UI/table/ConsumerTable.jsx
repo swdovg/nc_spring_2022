@@ -10,34 +10,44 @@ import DeleteModal from '../deleteModal/DeleteModal.jsx';
 import Cookies from 'js-cookie';
 
 
-const Subscription = (props)=>{
+const Subscription = (prop)=>{
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [isChanged, setIsChanged] = useState(false);
+
+    useEffect( () => {
+        if(isChanged) {
+            prop.isChanged(isChanged);
+            console.log("aaaa");
+        }
+    }, [isChanged] );
+
     return(
         <>
             <tr className="table_row">
-                <td className="table_cont_item col-xl-6 col-lg-6">{props.title}</td>
-                <td className="table_cont_item col-xl-3 col-lg-3">{props.price} {props.currency}</td>
+                <td className="table_cont_item col-xl-6 col-lg-6">{prop.title}</td>
+                <td className="table_cont_item col-xl-3 col-lg-3">{prop.price} {prop.currency}</td>
                 <td className="table_cont_item col-xl-3 col-lg-3">
-                    {props.date}th
+                    {prop.date}th
                     <button className="remove_btn" onClick={()=>setModalVisible(true)}/>
                 </td>
             </tr>
-            <DeleteModal orderId={props.orderId} visible = {modalVisible} setVisible={setModalVisible}/>
+            <DeleteModal orderId={prop.orderId} visible = {modalVisible} setVisible={setModalVisible} deleted = {(value)=>setIsChanged(true)}/>
         </>
     )
 };
 
 const ConsumerTable = (props) => {
 
-    const [subscriptions, setSubscriptions] = useState({});
-    const [amount, setAmount] = useState(0);
+    const [subscriptions, setSubscriptions] = useState([]);
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
+    var amount = 0;
+    const [number, setNumber] = useState(0);
+    const [isChanged, setIsChanged] = useState(false);
 
     const updateAmount = ()=> {
-        let amount = 0;
         {subscriptions.length>0
         ?
             subscriptions.map((subscription) => {
@@ -62,18 +72,20 @@ const ConsumerTable = (props) => {
                      signal: controller.signal      //to allow to cansel a request
                  });
                  isMounted && setSubscriptions(response.data?.payload.content);
+
+                 setNumber(subscriptions.length);
+                 props.updateNumber(number);
             } catch(err) {
                  console.log(err);
-                 //navigate('/login', { state: { from: location }, replace: true });
             }
          }
          getSubscriptions();
-         updateAmount();
+
          return () =>{
              isMounted=false;
              controller.abort();
          }
-     },[]);
+     },[number, isChanged]);
 
     return (
     <>
@@ -97,6 +109,7 @@ const ConsumerTable = (props) => {
                                 currency = {subscription.subscription.currency}
                                 orderId={subscription.orderId}
                                 date = {(subscription.date).slice(8, 10)}
+                                isChanged = {(value) => setIsChanged(true)}
                             />
                         )}
                     </>

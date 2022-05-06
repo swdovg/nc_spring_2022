@@ -14,6 +14,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const Header = () => {
     const navigate = useNavigate();
     const {auth, setAuth} = useAuth();
+    const [isAuth, setIsAuth] = useState(false);
 
     const logout = event => {
         event.preventDefault();
@@ -22,6 +23,7 @@ const Header = () => {
         Cookies.remove("user");
         navigate("/login");
     }
+
 
     return(
         <header className="header">
@@ -39,7 +41,7 @@ const Header = () => {
                             </button>
                         </div>
                         <div className="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
-                        {auth.id
+                        {auth.email
                             ?
                             <div>
                                 <Link to="/customer-profile" className="header-sing-link">My profile</Link>

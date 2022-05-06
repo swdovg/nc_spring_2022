@@ -18,6 +18,7 @@ const SupplierTable = (props) => {
     const [subscriptions, setSubscriptions] = useState({});
     const axiosPrivate = useAxiosPrivate();
     const [number, setNumber] = useState(0);
+    const [isChanged, setIsChanged] = useState(false);
 
      useEffect( () => {
 
@@ -44,7 +45,7 @@ const SupplierTable = (props) => {
              isMounted=false;
              controller.abort();
          }
-     }, []);
+     }, [number, isChanged]);
 
     return (
     <>
@@ -53,7 +54,6 @@ const SupplierTable = (props) => {
                 <tr className="table_heading">
                     <th className="table_heading_item col-xl-7 col-lg-7">service:</th>
                     <th className="table_heading_item col-xl-4 col-lg-4">price:</th>
-                    {/* <th className="table_heading_item col-xl-3 col-lg-3">subscribers:</th> */}
                 </tr>
             </thead>
             <tbody>
@@ -70,6 +70,8 @@ const SupplierTable = (props) => {
                                 subscription={subscription}
                                 category={subscription.category}
                                 description={subscription.description}
+                                subscriptions = {subscriptions}
+                                isChanged = {(value) => setIsChanged(true)}
                             />
                         )}
                     </>
