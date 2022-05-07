@@ -12,12 +12,13 @@ const ProductCard = (props) => {
 
     const axiosPrivate = useAxiosPrivate();
     const [questions, setQuestions] = useState([]);
+    const [orderId, setOrderId] = useState();
+    const [i, setI] = useState(0);
     const [question, setQuestion] = useState({});
     const [image, setImage] = useState(card_img);
     const [questionModalVisible, setQuestionModalVisible] = useState(false);
     const [answer, setAnswer] = useState();
     const [answers, setAnswers] = useState([]);
-    var i =0;
 
     let role = "ROLE_SUPPLIER";
     if (Cookies.get("user")) {
@@ -34,6 +35,7 @@ const ProductCard = (props) => {
     const addSubscription = async () => {
         try {
             const response = await axiosPrivate.post(`api/v1/order/${props.id}`);
+            setOrderId(response.data.payload.orderId);
         } catch(err) {
             console.log(err);
         }
@@ -52,35 +54,50 @@ const ProductCard = (props) => {
                  });
                  isMounted && setQuestions(response.data.payload);
                  isMounted && setQuestion(questions[i]);
-                 console.log(questions);
+
             } catch(err) {
                  console.log(err);
             }
         }
         getQuestions();
-
-        if (questions.length === 0) {
-            addSubscription();
-        }
-        else {
+        addSubscription();
+        if (questions.length != 0) {
             setQuestionModalVisible(true);
         }
+
         return () =>{
          isMounted=false;
          controller.abort();
         }
     }
-    let copy = Object.assign([], answers);
 
-    const onAnswersChange = (e) => {
-        e.preventDefault();
-        setAnswer(e.target.value);
-        setAnswers([...answers, answer]);
-        console.log(answers)
+    const sendAnswer = async (answer, id) => {
+        try {
+            const response = await axiosPrivate.post(`/api/v1/form/answer`,
+            {
+                  formQuestionId: id,
+                  orderId: orderId,
+                  answer: answer
+            });
+        } catch(err) {
+            console.log(err);
+        }
     }
+
 
     const onAnswersSubmit = (e) => {
         e.preventDefault();
+        console.log(i);
+        console.log(questions.length);
+        sendAnswer(answer, question.id);
+        if (i<questions.length) {
+            setI(i+1);
+            setQuestion(questions[i]);
+        }
+        else{
+            setQuestionModalVisible(false);
+        }
+        setAnswer("");
     }
 
 
@@ -104,10 +121,9 @@ const ProductCard = (props) => {
                 </div>
             </div>
             <Modal visible ={questionModalVisible} setVisible ={setQuestionModalVisible}>
-                <form onSubmit = {onAnswersSubmit}>
-                   {questions?.map((item) =>
-                        <Input key={item.id} id={item.id} label={item.question} onChange = {onAnswersChange}/>)}
-                        <Button> Submit </Button>
+                <form>
+                        <Input id={question?.id} label={question?.question} onChange={(e) => setAnswer(e.target.value)} value = {answer}/>
+                        <Button onClick = {onAnswersSubmit}> Submit </Button>
                 </form>
             </Modal>
         </>
