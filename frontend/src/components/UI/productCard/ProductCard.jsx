@@ -84,7 +84,7 @@ const ProductCard = (props) => {
         }
     }
 
-    var i=0;
+    let i=0;
     const onAnswersSubmit = (e) => {
         e.preventDefault();
         console.log(i);
