@@ -13,7 +13,6 @@ const ProductCard = (props) => {
     const axiosPrivate = useAxiosPrivate();
     const [questions, setQuestions] = useState([]);
     const [orderId, setOrderId] = useState();
-    //const [i, setI] = useState(0);
     const [question, setQuestion] = useState({});
     const [image, setImage] = useState(card_img);
     const [questionModalVisible, setQuestionModalVisible] = useState(false);
@@ -27,14 +26,13 @@ const ProductCard = (props) => {
     }
 
     useEffect( () => {
-        if (props.image) {
+        if (props.image)
             setImage(props.image);
-        }
     }, [] );
 
 
     const addSubscription = async () => {
-        let response
+        let response;
         try {
             response = await axiosPrivate.post(`api/v1/order/${props.id}`);
             setOrderId(response.data.payload.orderId);
@@ -55,12 +53,9 @@ const ProductCard = (props) => {
                  const response = await axiosPrivate.get(URL);
                  setQuestions(response.data.payload);
                  isMounted && setQuestion(questions[i]);
-                if (questions.length != 0) {
+                if ((questions.length != 0)&&(response!=400)) {
                     setQuestionModalVisible(true);
                     setModalVisible(false);
-                }
-                else if (response===400){
-                    setModalVisible(true);
                 }
             } catch(err) {
                  console.log(err);
@@ -84,13 +79,14 @@ const ProductCard = (props) => {
         }
     }
 
-    let i=0;
+    const [i, setI] = useState(0);
     const onAnswersSubmit = (e) => {
         e.preventDefault();
         console.log(i);
         sendAnswer(answer, question.id);
         if (i<questions.length) {
-            i=i+1;
+            //i=i+1;
+            setI(i+1);
             setQuestion(questions[i]);
         }
         else{
