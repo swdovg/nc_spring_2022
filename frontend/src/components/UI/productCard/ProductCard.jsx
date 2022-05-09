@@ -13,10 +13,11 @@ const ProductCard = (props) => {
     const axiosPrivate = useAxiosPrivate();
     const [questions, setQuestions] = useState([]);
     const [orderId, setOrderId] = useState();
-    const [i, setI] = useState(0);
+    //const [i, setI] = useState(0);
     const [question, setQuestion] = useState({});
     const [image, setImage] = useState(card_img);
     const [questionModalVisible, setQuestionModalVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const [answer, setAnswer] = useState();
     const [answers, setAnswers] = useState([]);
 
@@ -33,42 +34,41 @@ const ProductCard = (props) => {
 
 
     const addSubscription = async () => {
+        let response
         try {
-            const response = await axiosPrivate.post(`api/v1/order/${props.id}`);
+            response = await axiosPrivate.post(`api/v1/order/${props.id}`);
             setOrderId(response.data.payload.orderId);
         } catch(err) {
-            console.log(err);
+             if (err.response?.status===400)
+                setModalVisible(true);
+            response=err.response;
         }
+        return response;
     }
 
     const onAddClick = (e) => {
         e.preventDefault();
         let isMounted = true;
-        const controller = new AbortController(); //to cansel request if the component on mounting
-
         const getQuestions = async () => {
             const URL = `/api/v1/form/question/${props.id}`;
             try {
-                 const response = await axiosPrivate.get(URL, {
-                     signal: controller.signal      //to allow to cansel a request
-                 });
-                 isMounted && setQuestions(response.data.payload);
+                 const response = await axiosPrivate.get(URL);
+                 setQuestions(response.data.payload);
                  isMounted && setQuestion(questions[i]);
-
+                if (questions.length != 0) {
+                    setQuestionModalVisible(true);
+                    setModalVisible(false);
+                }
+                else if (response===400){
+                    setModalVisible(true);
+                }
             } catch(err) {
                  console.log(err);
             }
+            isMounted=false;
         }
+        const response = addSubscription();
         getQuestions();
-        addSubscription();
-        if (questions.length != 0) {
-            setQuestionModalVisible(true);
-        }
-
-        return () =>{
-         isMounted=false;
-         controller.abort();
-        }
     }
 
     const sendAnswer = async (answer, id) => {
@@ -84,14 +84,13 @@ const ProductCard = (props) => {
         }
     }
 
-
+    var i=0;
     const onAnswersSubmit = (e) => {
         e.preventDefault();
         console.log(i);
-        console.log(questions.length);
         sendAnswer(answer, question.id);
         if (i<questions.length) {
-            setI(i+1);
+            i=i+1;
             setQuestion(questions[i]);
         }
         else{
@@ -125,6 +124,10 @@ const ProductCard = (props) => {
                         <Input id={question?.id} label={question?.question} onChange={(e) => setAnswer(e.target.value)} value = {answer}/>
                         <Button onClick = {onAnswersSubmit}> Submit </Button>
                 </form>
+            </Modal>
+            <Modal visible ={modalVisible} setVisible ={setModalVisible}>
+                <p> You are already subscribed </p>
+                <Button onClick = {()=> setModalVisible(false)}> Okay </Button>
             </Modal>
         </>
     );
