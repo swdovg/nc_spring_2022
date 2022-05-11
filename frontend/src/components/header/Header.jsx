@@ -33,12 +33,12 @@ const Header = () => {
                         <Link to="/"><img src={logo} alt="Space" className="logo"/></Link>
                         </div>
                         <div className="offset-xl-2 offset-lg-2 col-xl-3 col-lg-3 col-md-3 d-sm-none d-none d-md-block d-xl-block">
-                            <button className="icon">
+                            <a className="icon" href="https://facebook.com/">
                                 <img src={facebook} alt="facebook"/>
-                            </button>
-                            <button className="icon">
+                            </a>
+                            <a className="icon" href="https://twitter.com/">
                                 <img src={twitter} alt="twitter"/>
-                            </button>
+                            </a>
                         </div>
                         <div className="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6">
                         {auth.email
