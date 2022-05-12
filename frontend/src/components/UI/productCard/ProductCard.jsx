@@ -117,7 +117,7 @@ const ProductCard = (props) => {
             </div>
             <Modal visible ={questionModalVisible} setVisible ={setQuestionModalVisible}>
                 <form>
-                        <Input id={question?.id} label={question?.question} onChange={(e) => setAnswer(e.target.value)} value = {answer}/>
+                        <Input required id={question?.id} label={question?.question} onChange={(e) => setAnswer(e.target.value)} value = {answer}/>
                         <Button onClick = {onAnswersSubmit}> Submit </Button>
                 </form>
             </Modal>

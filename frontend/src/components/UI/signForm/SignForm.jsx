@@ -1,6 +1,5 @@
 import React, {useContext, useState, useRef, useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
-import google from './google.svg';
 import Input from '../input/Input.jsx';
 import Button from "../button/Button";
 import Select from '../select/Select';
@@ -65,7 +64,6 @@ const SignForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(JSON.stringify({email, password, phoneNumber, name, isConsumer}));
          try {
             const response = await axios.post(
                REGISTER_URL,
@@ -75,8 +73,6 @@ const SignForm = () => {
                    withCredentials: true
                }
             )
-
-             console.log(response.data);
              navigate("/login");
              //Cookies.set("token", accessToken);
 
