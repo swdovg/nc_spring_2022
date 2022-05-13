@@ -19,9 +19,7 @@ const Menu = (props) => {
 
         const getCategories = async () => {
             try {
-                let response = await axiosPrivate.get("api/v1/category/0", {
-                    signal: controller.signal      //to allow to cansel a request
-                });
+                let response = await axiosPrivate.get("api/v1/category/0");
                 isMounted && setCategoryList(response.data.payload);
             } catch(err) {
                 console.log(err);

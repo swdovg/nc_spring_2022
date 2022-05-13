@@ -27,7 +27,7 @@ const CardList = (props) => {
                 {
                     signal: controller.signal      //to allow to cansel a request
                 });
-                setCardList(response.data.payload.content);
+                setCardList(response.data.payload?.content);
             } catch(err) {
                 console.log(err);
             }

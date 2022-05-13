@@ -54,8 +54,8 @@ const ProductCard = (props) => {
                  setQuestions(response.data.payload);
                  isMounted && setQuestion(questions[i]);
                 if ((questions.length != 0)&&(response!=400)) {
-                    setQuestionModalVisible(true);
                     setModalVisible(false);
+                    setQuestionModalVisible(true);
                 }
             } catch(err) {
                  console.log(err);
@@ -117,7 +117,7 @@ const ProductCard = (props) => {
             </div>
             <Modal visible ={questionModalVisible} setVisible ={setQuestionModalVisible}>
                 <form>
-                        <Input id={question?.id} label={question?.question} onChange={(e) => setAnswer(e.target.value)} value = {answer}/>
+                        <Input required id={question?.id} label={question?.question} onChange={(e) => setAnswer(e.target.value)} value = {answer}/>
                         <Button onClick = {onAnswersSubmit}> Submit </Button>
                 </form>
             </Modal>
