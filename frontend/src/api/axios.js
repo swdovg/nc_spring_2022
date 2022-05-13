@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://nc-spring-2022.herokuapp.com";
+const BASE_URL = "https://nc-spring-2022.herokuapp.com/";
 
 export default axios.create({
     baseURL: BASE_URL

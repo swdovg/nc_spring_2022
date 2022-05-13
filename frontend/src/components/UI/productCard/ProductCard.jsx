@@ -54,8 +54,8 @@ const ProductCard = (props) => {
                  setQuestions(response.data.payload);
                  isMounted && setQuestion(questions[i]);
                 if ((questions.length != 0)&&(response!=400)) {
-                    setQuestionModalVisible(true);
                     setModalVisible(false);
+                    setQuestionModalVisible(true);
                 }
             } catch(err) {
                  console.log(err);
